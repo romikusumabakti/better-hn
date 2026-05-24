@@ -26,6 +26,7 @@ interface FilterPanelProps {
 	totalCount: number;
 	visibleCount: number;
 	onClose?: () => void;
+	id?: string;
 }
 
 export function FilterPanel({
@@ -35,6 +36,7 @@ export function FilterPanel({
 	totalCount,
 	visibleCount,
 	onClose,
+	id = "filter-panel",
 }: FilterPanelProps) {
 	const panelRef = useRef<HTMLDivElement>(null);
 	const onCloseRef = useRef(onClose);
@@ -49,9 +51,12 @@ export function FilterPanel({
 		const FOCUSABLE =
 			'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
+		let closedByKeyboard = false;
+
 		const handleKeyDown = (e: KeyboardEvent) => {
 			if (e.key === "Escape") {
 				e.preventDefault();
+				closedByKeyboard = true;
 				onCloseRef.current?.();
 				return;
 			}
@@ -74,10 +79,25 @@ export function FilterPanel({
 			}
 		};
 
+		const handleClickOutside = (e: MouseEvent) => {
+			if (window.innerWidth < 640) return;
+			const toggle = document.getElementById("filter-toggle");
+			if (
+				!panel.contains(e.target as Node) &&
+				!toggle?.contains(e.target as Node)
+			) {
+				onCloseRef.current?.();
+			}
+		};
+
 		panel.addEventListener("keydown", handleKeyDown);
+		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
 			panel.removeEventListener("keydown", handleKeyDown);
-			document.getElementById("filter-toggle")?.focus();
+			document.removeEventListener("mousedown", handleClickOutside);
+			if (closedByKeyboard) {
+				document.getElementById("filter-toggle")?.focus();
+			}
 		};
 	}, []);
 
@@ -89,13 +109,13 @@ export function FilterPanel({
 	return (
 		<TooltipProvider>
 			<div
-				id="filter-panel"
+				id={id}
 				ref={panelRef}
 				role="dialog"
 				aria-label="Filters"
 				aria-modal="true"
 				tabIndex={-1}
-				className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up outline-none sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm"
+				className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up outline-none sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:z-50 sm:max-h-none sm:overflow-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-xl sm:w-80 sm:animate-slide-down"
 			>
 				{/* Mobile drag handle */}
 				<div className="mx-auto mb-4 h-1 w-8 rounded-full bg-border sm:hidden" />

@@ -202,22 +202,31 @@ export function StoriesFeed() {
 					filterOpen={showFilters}
 					onToggleFilter={() => setShowFilters((v) => !v)}
 					filterActive={isFilterActive}
+					filterPanel={
+						showFilters ? (
+							<FilterPanel
+								filters={filters}
+								onChange={handleFiltersChange}
+								onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
+								totalCount={scored.length}
+								visibleCount={filtered.length}
+								onClose={() => setShowFilters(false)}
+							/>
+						) : undefined
+					}
 				/>
 
-				{/* Mobile backdrop */}
+				{/* Mobile backdrop + bottom sheet (outside header to avoid backdrop-filter containing block) */}
 				<div
 					hidden={!showFilters}
 					className="backdrop-overlay fixed inset-0 z-30 bg-black/40 sm:hidden"
 					onClick={() => setShowFilters(false)}
 					aria-hidden
 				/>
-
-				<main
-					id="main-content"
-					className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
-				>
-					{showFilters && (
+				{showFilters && (
+					<div className="sm:hidden">
 						<FilterPanel
+							id="filter-panel-mobile"
 							filters={filters}
 							onChange={handleFiltersChange}
 							onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
@@ -225,7 +234,13 @@ export function StoriesFeed() {
 							visibleCount={filtered.length}
 							onClose={() => setShowFilters(false)}
 						/>
-					)}
+					</div>
+				)}
+
+				<main
+					id="main-content"
+					className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
+				>
 					{error && (
 						<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
 							<AlertCircle className="h-4 w-4 shrink-0" />
