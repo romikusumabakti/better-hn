@@ -57,6 +57,7 @@ export function StoriesFeed() {
 			return DEFAULT_FILTERS;
 		}
 	});
+	const [showFilters, setShowFilters] = useState(false);
 	const [page, setPage] = useState(1);
 
 	const { data, error, isLoading, mutate, isValidating } = useSWR<HNStory[]>(
@@ -72,6 +73,11 @@ export function StoriesFeed() {
 			localStorage.setItem("hn-filters", JSON.stringify(next));
 		} catch {}
 	}, []);
+
+	const isFilterActive =
+		filters.alpha !== DEFAULT_FILTERS.alpha ||
+		filters.minScore !== DEFAULT_FILTERS.minScore ||
+		filters.query !== DEFAULT_FILTERS.query;
 
 	const scored: ScoredStory[] = useMemo(() => {
 		if (!data) return [];
@@ -102,15 +108,20 @@ export function StoriesFeed() {
 				isRefreshing={isValidating}
 				onRefresh={() => mutate()}
 				storyCount={filtered.length}
+				filterOpen={showFilters}
+				onToggleFilter={() => setShowFilters((v) => !v)}
+				filterActive={isFilterActive}
 			/>
 
 			<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-6">
-				<FilterPanel
-					filters={filters}
-					onChange={handleFiltersChange}
-					totalCount={scored.length}
-					visibleCount={filtered.length}
-				/>
+				{showFilters && (
+					<FilterPanel
+						filters={filters}
+						onChange={handleFiltersChange}
+						totalCount={scored.length}
+						visibleCount={filtered.length}
+					/>
+				)}
 
 				{error && (
 					<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">

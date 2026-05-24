@@ -1,6 +1,6 @@
 "use client";
 
-import { Moon, RefreshCw, Sun, Zap } from "lucide-react";
+import { Moon, RefreshCw, SlidersHorizontal, Sun, Zap } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -9,9 +9,12 @@ interface HeaderProps {
 	isRefreshing?: boolean;
 	onRefresh?: () => void;
 	storyCount?: number;
+	filterOpen?: boolean;
+	onToggleFilter?: () => void;
+	filterActive?: boolean;
 }
 
-export function Header({ isRefreshing, onRefresh, storyCount }: HeaderProps) {
+export function Header({ isRefreshing, onRefresh, storyCount, filterOpen, onToggleFilter, filterActive }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
 
 	return (
@@ -37,6 +40,23 @@ export function Header({ isRefreshing, onRefresh, storyCount }: HeaderProps) {
 				</div>
 
 				<div className="flex items-center gap-1">
+					{onToggleFilter && (
+						<Button
+							variant="ghost"
+							size="icon"
+							onClick={onToggleFilter}
+							className={cn(
+								"relative h-8 w-8 text-muted-foreground hover:text-foreground",
+								filterOpen && "text-foreground bg-accent",
+							)}
+						>
+							<SlidersHorizontal className="h-4 w-4" />
+							{filterActive && (
+								<span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+							)}
+							<span className="sr-only">Toggle filters</span>
+						</Button>
+					)}
 					{onRefresh && (
 						<Button
 							variant="ghost"
