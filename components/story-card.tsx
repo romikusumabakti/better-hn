@@ -46,7 +46,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 		<article className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:border-border/80 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in">
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
-				<div className="hidden shrink-0 sm:flex">
+				<div className="flex shrink-0">
 					<span className="mt-0.5 font-mono text-xs font-medium text-muted-foreground/60 w-5 text-right">
 						{rank}
 					</span>
@@ -69,7 +69,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 								target="_blank"
 								rel="noopener noreferrer"
 								onClick={(e) => e.stopPropagation()}
-								className="shrink-0 rounded px-1.5 py-0 font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors"
+								className="shrink-0 rounded pr-1.5 py-0 font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors"
 							>
 								{story.domain}
 							</a>
