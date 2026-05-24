@@ -1,6 +1,7 @@
 "use client";
 
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { HNComment } from "@/lib/hn-api";
@@ -42,11 +43,13 @@ export function Comment({ comment, depth }: CommentProps) {
 					className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors select-none"
 					aria-label={collapsed ? "Expand comment" : "Collapse comment"}
 				>
-					{collapsed ? (
-						<ChevronRight className="h-3 w-3 shrink-0" />
-					) : (
+					<motion.span
+						animate={{ rotate: collapsed ? -90 : 0 }}
+						transition={{ duration: 0.15, ease: "easeInOut" }}
+						className="flex items-center"
+					>
 						<ChevronDown className="h-3 w-3 shrink-0" />
-					)}
+					</motion.span>
 				</button>
 				<Link
 					href={`/user/${comment.by}`}
@@ -70,23 +73,32 @@ export function Comment({ comment, depth }: CommentProps) {
 				)}
 			</div>
 
-			{!collapsed && (
-				<>
-					{comment.text && (
-						<div
-							className="mb-1.5 max-w-[72ch] text-[0.9rem] leading-7 text-foreground/85 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_b]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_i]:italic [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:text-xs"
-							dangerouslySetInnerHTML={{ __html: sanitize(comment.text) }}
-						/>
-					)}
-					{comment.children.length > 0 && (
-						<div>
-							{comment.children.map((child) => (
-								<Comment key={child.id} comment={child} depth={depth + 1} />
-							))}
-						</div>
-					)}
-				</>
-			)}
+			<AnimatePresence initial={false}>
+				{!collapsed && (
+					<motion.div
+						key="content"
+						initial={{ height: 0, opacity: 0 }}
+						animate={{ height: "auto", opacity: 1 }}
+						exit={{ height: 0, opacity: 0 }}
+						transition={{ duration: 0.18, ease: [0.4, 0, 0.2, 1] }}
+						style={{ overflow: "hidden" }}
+					>
+						{comment.text && (
+							<div
+								className="mb-1.5 max-w-[72ch] text-[0.9rem] leading-7 text-foreground/85 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_b]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_i]:italic [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:text-xs"
+								dangerouslySetInnerHTML={{ __html: sanitize(comment.text) }}
+							/>
+						)}
+						{comment.children.length > 0 && (
+							<div>
+								{comment.children.map((child) => (
+									<Comment key={child.id} comment={child} depth={depth + 1} />
+								))}
+							</div>
+						)}
+					</motion.div>
+				)}
+			</AnimatePresence>
 		</div>
 	);
 }

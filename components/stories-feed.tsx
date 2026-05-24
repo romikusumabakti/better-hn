@@ -1,5 +1,6 @@
 "use client";
 
+import { AnimatePresence, motion } from "framer-motion";
 import { AlertCircle, Loader2, SearchX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
@@ -62,11 +63,54 @@ export function StoriesFeed() {
 	const [showFilters, setShowFilters] = useState(false);
 	const [page, setPage] = useState(1);
 
+	// Toast
+	const [toastMsg, setToastMsg] = useState<string | null>(null);
+	const prevValidatingRef = useRef(false);
+
 	const { data, error, isLoading, mutate, isValidating } = useSWR<HNStory[]>(
 		"/api/stories",
 		fetcher,
 		{ revalidateOnFocus: false },
 	);
+
+	// Show toast when refresh completes
+	useEffect(() => {
+		if (prevValidatingRef.current && !isValidating && data) {
+			setToastMsg("Feed updated");
+			const t = setTimeout(() => setToastMsg(null), 2500);
+			return () => clearTimeout(t);
+		}
+		prevValidatingRef.current = isValidating;
+	}, [isValidating, data]);
+
+	// Save scroll position
+	useEffect(() => {
+		let timer: ReturnType<typeof setTimeout>;
+		const save = () => {
+			clearTimeout(timer);
+			timer = setTimeout(() => {
+				sessionStorage.setItem("hn-scroll", String(window.scrollY));
+			}, 100);
+		};
+		window.addEventListener("scroll", save, { passive: true });
+		return () => {
+			window.removeEventListener("scroll", save);
+			clearTimeout(timer);
+		};
+	}, []);
+
+	// Restore scroll after data loads
+	const scrollRestored = useRef(false);
+	useEffect(() => {
+		if (isLoading || scrollRestored.current) return;
+		scrollRestored.current = true;
+		const saved = sessionStorage.getItem("hn-scroll");
+		if (saved && parseInt(saved, 10) > 0) {
+			requestAnimationFrame(() => {
+				window.scrollTo({ top: parseInt(saved, 10), behavior: "instant" });
+			});
+		}
+	}, [isLoading]);
 
 	const handleFiltersChange = useCallback((next: FilterState) => {
 		setFilters(next);
@@ -161,13 +205,21 @@ export function StoriesFeed() {
 					filterActive={isFilterActive}
 				/>
 
-				{showFilters && (
-					<div
-						className="fixed inset-0 z-30 bg-black/40 sm:hidden"
-						onClick={() => setShowFilters(false)}
-						aria-hidden
-					/>
-				)}
+				{/* Mobile backdrop */}
+				<AnimatePresence>
+					{showFilters && (
+						<motion.div
+							key="backdrop"
+							initial={{ opacity: 0 }}
+							animate={{ opacity: 1 }}
+							exit={{ opacity: 0 }}
+							transition={{ duration: 0.2 }}
+							className="fixed inset-0 z-30 bg-black/40 sm:hidden"
+							onClick={() => setShowFilters(false)}
+							aria-hidden
+						/>
+					)}
+				</AnimatePresence>
 
 				<main
 					id="main-content"
@@ -183,7 +235,6 @@ export function StoriesFeed() {
 							onClose={() => setShowFilters(false)}
 						/>
 					)}
-
 					{error && (
 						<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
 							<AlertCircle className="h-4 w-4 shrink-0" />
@@ -267,6 +318,22 @@ export function StoriesFeed() {
 						</>
 					)}
 				</main>
+
+				{/* Toast */}
+				<AnimatePresence>
+					{toastMsg && (
+						<motion.div
+							key="toast"
+							initial={{ opacity: 0, y: 8, scale: 0.96 }}
+							animate={{ opacity: 1, y: 0, scale: 1 }}
+							exit={{ opacity: 0, y: 8, scale: 0.96 }}
+							transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+							className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
+						>
+							{toastMsg}
+						</motion.div>
+					)}
+				</AnimatePresence>
 			</div>
 		</PullToRefresh>
 	);
