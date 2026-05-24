@@ -90,7 +90,7 @@ export function Header({
 								size="icon"
 								onClick={onToggleFilter}
 								aria-expanded={filterOpen}
-								aria-controls="filter-panel"
+								aria-haspopup="dialog"
 								className={cn(
 									"relative h-8 w-8 text-muted-foreground hover:text-foreground",
 									filterOpen && "text-foreground bg-accent",
@@ -102,9 +102,7 @@ export function Header({
 								)}
 								<span className="sr-only">Toggle filters (press ?)</span>
 							</Button>
-							<div className="hidden sm:block">
-								{filterPanel}
-							</div>
+							<div className="hidden sm:block">{filterPanel}</div>
 						</div>
 					)}
 					{onRefresh && (

@@ -258,6 +258,20 @@ kbd {
 	height: 0;
 	opacity: 0;
 }
+
+/* Fallback: browsers without interpolate-size use max-height animation */
+@supports not (interpolate-size: allow-keywords) {
+	.comment-body {
+		max-height: 2000px;
+		transition:
+			max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+			opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+	}
+	[data-collapsed] .comment-body {
+		max-height: 0;
+	}
+}
+
 .comment-chevron {
 	transition: rotate 0.15s ease;
 }

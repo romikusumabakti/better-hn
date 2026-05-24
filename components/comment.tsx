@@ -36,21 +36,16 @@ export function Comment({ comment, depth }: CommentProps) {
 				depth > 0 && depth <= 4 && "ml-3 sm:ml-5",
 			)}
 		>
-			{/* Full-row toggle — large click target */}
-			<div
-				role="button"
-				tabIndex={0}
-				aria-expanded={!collapsed}
-				onClick={() => setCollapsed(!collapsed)}
-				onKeyDown={(e) => {
-					if (e.key === "Enter" || e.key === " ") {
-						e.preventDefault();
-						setCollapsed(!collapsed);
-					}
-				}}
-				className="flex w-full cursor-pointer select-none items-center gap-1.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-			>
-				<ChevronDown className="comment-chevron h-3 w-3 shrink-0" />
+			{/* Full-row toggle — invisible button overlay (same pattern as StoryCard) */}
+			<div className="relative flex w-full select-none items-center gap-1.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground">
+				<button
+					type="button"
+					aria-expanded={!collapsed}
+					aria-label={`${collapsed ? "Expand" : "Collapse"} comment by ${comment.by}`}
+					onClick={() => setCollapsed(!collapsed)}
+					className="absolute inset-0 cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				/>
+				<ChevronDown className="comment-chevron relative h-3 w-3 shrink-0" />
 				<Link
 					href={`/user/${comment.by}`}
 					className="relative z-10 font-medium transition-colors hover:text-primary"
@@ -58,7 +53,9 @@ export function Comment({ comment, depth }: CommentProps) {
 				>
 					{comment.by}
 				</Link>
-				<span className="select-none text-muted-foreground/40" aria-hidden>·</span>
+				<span className="select-none text-muted-foreground/40" aria-hidden>
+					·
+				</span>
 				<time
 					dateTime={new Date(comment.time * 1000).toISOString()}
 					className="text-muted-foreground/60"

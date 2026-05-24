@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle, Loader2, SearchX } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
@@ -46,21 +47,52 @@ function StorySkeleton() {
 	);
 }
 
+function parseFiltersFromURL(
+	sp: ReturnType<typeof useSearchParams>,
+): Partial<FilterState> {
+	const out: Partial<FilterState> = {};
+	const alpha = parseFloat(sp.get("alpha") ?? "");
+	if (!Number.isNaN(alpha) && alpha >= 0.1 && alpha <= 2.0) out.alpha = alpha;
+	const min = parseFloat(sp.get("min") ?? "");
+	if (!Number.isNaN(min) && min >= 0) out.minScore = min;
+	const q = sp.get("q");
+	if (q) out.query = q;
+	return out;
+}
+
 export function StoriesFeed() {
+	const router = useRouter();
+	const searchParams = useSearchParams();
+
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const activeRef = useRef<HTMLDivElement | null>(null);
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
+	const urlUpdateTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-	const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+	// URL params take precedence over localStorage on initial load
+	const hasURLParams = useRef(
+		searchParams.has("alpha") ||
+			searchParams.has("min") ||
+			searchParams.has("q"),
+	);
 
+	const [filters, setFilters] = useState<FilterState>(() => ({
+		...DEFAULT_FILTERS,
+		...parseFiltersFromURL(searchParams),
+	}));
+
+	// Load localStorage only when no URL params present
 	useEffect(() => {
+		if (hasURLParams.current) return;
 		try {
 			const stored = localStorage.getItem("hn-filters");
 			if (stored) setFilters((prev) => ({ ...prev, ...JSON.parse(stored) }));
 		} catch {}
 	}, []);
+
 	const [showFilters, setShowFilters] = useState(false);
 	const [page, setPage] = useState(1);
+	const [liveMsg, setLiveMsg] = useState("");
 
 	// Toast
 	const [toastMsg, setToastMsg] = useState<string | null>(null);
@@ -111,13 +143,29 @@ export function StoriesFeed() {
 		}
 	}, [isLoading]);
 
-	const handleFiltersChange = useCallback((next: FilterState) => {
-		setFilters(next);
-		setPage(1);
-		try {
-			localStorage.setItem("hn-filters", JSON.stringify(next));
-		} catch {}
-	}, []);
+	const handleFiltersChange = useCallback(
+		(next: FilterState) => {
+			setFilters(next);
+			setPage(1);
+			try {
+				localStorage.setItem("hn-filters", JSON.stringify(next));
+			} catch {}
+
+			// Debounce URL update (avoids rapid pushes while typing in query)
+			if (urlUpdateTimer.current) clearTimeout(urlUpdateTimer.current);
+			urlUpdateTimer.current = setTimeout(() => {
+				const params = new URLSearchParams();
+				if (next.alpha !== DEFAULT_FILTERS.alpha)
+					params.set("alpha", String(next.alpha));
+				if (next.minScore !== DEFAULT_FILTERS.minScore)
+					params.set("min", String(next.minScore));
+				if (next.query) params.set("q", next.query);
+				const qs = params.toString();
+				router.replace(qs ? `/?${qs}` : "/", { scroll: false });
+			}, 300);
+		},
+		[router],
+	);
 
 	const isFilterActive =
 		filters.alpha !== DEFAULT_FILTERS.alpha ||
@@ -176,6 +224,13 @@ export function StoriesFeed() {
 	useEffect(() => {
 		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
 	}, [activeIndex]);
+
+	// Announce new stories to screen readers when infinite scroll loads more
+	useEffect(() => {
+		if (page > 1 && visible.length > 0) {
+			setLiveMsg(`Showing ${visible.length} of ${filtered.length} stories`);
+		}
+	}, [page, visible.length, filtered.length]);
 
 	useEffect(() => {
 		if (!hasMore || isLoading) return;
@@ -325,9 +380,23 @@ export function StoriesFeed() {
 					)}
 				</main>
 
-				{/* Toast */}
+				{/* Screen-reader announcements (always in DOM for aria-live to work) */}
+				<div role="status" aria-live="polite" className="sr-only">
+					{toastMsg}
+				</div>
+				<div
+					role="status"
+					aria-live="polite"
+					aria-atomic="true"
+					className="sr-only"
+				>
+					{liveMsg}
+				</div>
+
+				{/* Visual toast (aria-hidden — announcement handled above) */}
 				<div
 					hidden={!toastMsg}
+					aria-hidden="true"
 					className="toast-pill fixed bottom-20 left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
 				>
 					{toastMsg}

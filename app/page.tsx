@@ -1,4 +1,4 @@
-import { ViewTransition } from "react";
+import { Suspense, ViewTransition } from "react";
 import { StoriesFeed } from "@/components/stories-feed";
 
 export default function Home() {
@@ -8,7 +8,10 @@ export default function Home() {
 			exit={{ "nav-forward": "nav-forward", default: "none" }}
 			default="none"
 		>
-			<StoriesFeed />
+			{/* Suspense required because StoriesFeed uses useSearchParams() */}
+			<Suspense>
+				<StoriesFeed />
+			</Suspense>
 		</ViewTransition>
 	);
 }
