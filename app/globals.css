@@ -92,22 +92,23 @@ body {
 	background: oklch(0.72 0.19 32 / 0.25);
 }
 
-@keyframes fade-in {
-	from {
+/* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
+.card-enter {
+	transition:
+		border-color 0.15s ease,
+		box-shadow 0.15s ease,
+		opacity 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms),
+		transform 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms);
+}
+
+@starting-style {
+	.card-enter {
 		opacity: 0;
-		transform: translateY(8px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
+		transform: translateY(7px);
 	}
 }
 
-.animate-fade-in {
-	animation: fade-in 0.25s ease both;
-	animation-delay: calc(min(var(--card-index, 0), 8) * 35ms);
-}
-
+/* ─── Dropdown / panel slide ─── */
 @keyframes slide-down {
 	from {
 		opacity: 0;
@@ -139,5 +140,79 @@ body {
 @media (min-width: 640px) {
 	.animate-sheet-up {
 		animation: slide-down 0.18s ease forwards;
+	}
+}
+
+/* ─── View Transitions ─── */
+
+/* Keep header anchored during page transitions */
+::view-transition-group(site-header) {
+	animation: none;
+	z-index: 100;
+}
+::view-transition-old(site-header) {
+	display: none;
+}
+::view-transition-new(site-header) {
+	animation: none;
+}
+
+/* Shared keyframes for directional slides */
+@keyframes vt-fade {
+	from { opacity: 0; }
+	to   { opacity: 1; }
+}
+
+@keyframes vt-slide-x {
+	from { translate: var(--slide-offset, 0); }
+	to   { translate: 0; }
+}
+
+/* Forward navigation: old slides left, new enters from right */
+::view-transition-old(.nav-forward) {
+	--slide-offset: -40px;
+	animation:
+		150ms ease-in both vt-fade reverse,
+		350ms ease-in-out both vt-slide-x reverse;
+}
+::view-transition-new(.nav-forward) {
+	--slide-offset: 40px;
+	animation:
+		200ms ease-out 150ms both vt-fade,
+		350ms ease-in-out both vt-slide-x;
+}
+
+/* Back navigation: old slides right, new enters from left */
+::view-transition-old(.nav-back) {
+	--slide-offset: 40px;
+	animation:
+		150ms ease-in both vt-fade reverse,
+		350ms ease-in-out both vt-slide-x reverse;
+}
+::view-transition-new(.nav-back) {
+	--slide-offset: -40px;
+	animation:
+		200ms ease-out 150ms both vt-fade,
+		350ms ease-in-out both vt-slide-x;
+}
+
+/* ─── Reduced motion ─── */
+@media (prefers-reduced-motion: reduce) {
+	::view-transition-old(*),
+	::view-transition-new(*),
+	::view-transition-group(*) {
+		animation-duration: 0s !important;
+		animation-delay: 0s !important;
+	}
+
+	.card-enter {
+		transition: border-color 0.15s ease, box-shadow 0.15s ease;
+	}
+
+	@starting-style {
+		.card-enter {
+			opacity: 1;
+			transform: none;
+		}
 	}
 }

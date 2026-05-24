@@ -22,18 +22,19 @@ function getTypeLabel(story: ScoredStory): string | null {
 function ScoreBadge({ score }: { score: number }) {
 	const cls =
 		score >= 100
-			? "bg-rose-500/15 text-rose-600 dark:text-rose-400"
+			? "text-primary font-bold"
 			: score >= 50
-				? "bg-orange-500/15 text-orange-600 dark:text-orange-400"
+				? "text-primary/80 font-semibold"
 				: score >= 20
-					? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+					? "text-primary/65"
 					: score >= 5
-						? "bg-green-500/15 text-green-600 dark:text-green-400"
-						: "bg-blue-500/15 text-blue-600 dark:text-blue-400";
+						? "text-muted-foreground"
+						: "text-muted-foreground/55";
+
 	return (
 		<span
 			className={cn(
-				"inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-xs font-semibold",
+				"inline-flex items-center gap-1 font-mono text-xs tabular-nums",
 				cls,
 			)}
 		>
@@ -49,13 +50,14 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 	return (
 		<article
 			className={cn(
-				"group relative rounded-xl border bg-card transition-all duration-200 hover:border-border hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in",
+				"group relative rounded-xl border bg-card card-enter @container hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
 				isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border",
 			)}
 		>
 			{/* Stretched link — covers the whole card */}
 			<Link
 				href={`/story/${story.id}`}
+				transitionTypes={["nav-forward"]}
 				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 				aria-label={story.title}
 			/>
@@ -63,7 +65,7 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
 				<div className="flex shrink-0">
-					<span className="mt-0.5 font-mono text-xs font-medium text-muted-foreground/60 w-5 text-right">
+					<span className="mt-0.5 w-5 text-right font-mono text-xs font-medium text-muted-foreground/50">
 						{rank}
 					</span>
 				</div>
@@ -84,17 +86,17 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 								href={`https://${story.domain}`}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
 							>
 								{story.domain}
 							</a>
 						)}
 					</div>
 
-					<h2 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-lg">
+					<h2 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary @sm:text-lg">
 						{story.title}
 						{story.url && (
-							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:opacity-100 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-primary" />
 						)}
 					</h2>
 
@@ -104,7 +106,8 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 						<span className="font-mono">{story.score} pts</span>
 						<Link
 							href={`/story/${story.id}`}
-							className="relative z-10 hover:text-foreground transition-colors"
+							transitionTypes={["nav-forward"]}
+							className="relative z-10 transition-colors hover:text-foreground"
 						>
 							{story.descendants ?? 0} comments
 						</Link>
@@ -113,7 +116,8 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 						</time>
 						<Link
 							href={`/user/${story.by}`}
-							className="relative z-10 hidden sm:inline hover:text-foreground transition-colors"
+							transitionTypes={["nav-forward"]}
+							className="relative z-10 hidden transition-colors hover:text-foreground @sm:inline"
 						>
 							{story.by}
 						</Link>

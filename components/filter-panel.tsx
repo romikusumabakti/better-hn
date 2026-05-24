@@ -42,7 +42,7 @@ export function FilterPanel({
 
 	return (
 		<TooltipProvider>
-			<div className="fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm">
+			<div className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm">
 				{/* Mobile drag handle */}
 				<div className="mx-auto mb-4 h-1 w-8 rounded-full bg-border sm:hidden" />
 
@@ -74,7 +74,7 @@ export function FilterPanel({
 					</div>
 				</div>
 
-				<div className="grid gap-4 sm:grid-cols-3">
+				<div className="grid gap-4 @sm:grid-cols-3">
 					{/* Alpha */}
 					<div className="space-y-2.5">
 						<div className="flex items-center justify-between">

@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, ViewTransition } from "react";
 import { Comment } from "@/components/comment";
 import { Header } from "@/components/header";
 import { Badge } from "@/components/ui/badge";
@@ -114,11 +114,17 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 		: undefined;
 
 	return (
+		<ViewTransition
+			enter={{ "nav-forward": "nav-forward", default: "none" }}
+			exit={{ "nav-back": "nav-back", default: "none" }}
+			default="none"
+		>
 		<div className="min-h-screen bg-background">
 			<Header />
 			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
 				<Link
 					href="/"
+					transitionTypes={["nav-back"]}
 					className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
 				>
 					<ArrowLeft className="h-4 w-4" />
@@ -211,8 +217,8 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 
 				{/* Comments */}
 				<section>
-					<h2 className="mb-4 text-base font-semibold text-foreground">
-						{story.descendants ?? 0} Comments
+					<h2 className="mb-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+						{story.descendants ?? 0} comments
 					</h2>
 					<Suspense fallback={<CommentsSkeleton />}>
 						<StoryComments kids={story.kids ?? []} storyId={storyId} />
@@ -220,5 +226,6 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 				</section>
 			</main>
 		</div>
+		</ViewTransition>
 	);
 }

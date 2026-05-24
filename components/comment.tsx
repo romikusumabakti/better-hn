@@ -73,7 +73,7 @@ export function Comment({ comment, depth }: CommentProps) {
 				<>
 					{comment.text && (
 						<div
-							className="text-sm text-foreground/90 leading-relaxed mb-1 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_p]:mb-2 [&_p:last-child]:mb-0 [&_pre]:bg-muted [&_pre]:rounded-md [&_pre]:p-3 [&_pre]:overflow-x-auto [&_pre]:my-2 [&_pre]:text-xs [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-xs [&_i]:italic [&_b]:font-semibold"
+							className="mb-1.5 max-w-[72ch] text-[0.9rem] leading-7 text-foreground/85 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_b]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_i]:italic [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:text-xs"
 							dangerouslySetInnerHTML={{ __html: comment.text }}
 						/>
 					)}

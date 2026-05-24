@@ -37,7 +37,10 @@ export function Header({
 		!mounted ? Sun : theme === "dark" ? Moon : theme === "system" ? Monitor : Sun;
 
 	return (
-		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+		<header
+			className="sticky top-0 z-50 border-b border-border/50 bg-background/92 backdrop-blur-md"
+			style={{ viewTransitionName: "site-header" }}
+		>
 			<div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
 				<Link
 					href="/"

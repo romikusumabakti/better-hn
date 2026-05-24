@@ -7,7 +7,6 @@ import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { StoryCard } from "@/components/story-card";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
 import { scoreStories } from "@/lib/hn-api";
@@ -49,18 +48,16 @@ function StorySkeleton() {
 export function StoriesFeed() {
 	const [activeIndex, setActiveIndex] = useState(-1);
 	const activeRef = useRef<HTMLDivElement | null>(null);
+	const sentinelRef = useRef<HTMLDivElement | null>(null);
 
-	const [filters, setFilters] = useState<FilterState>(() => {
-		if (typeof window === "undefined") return DEFAULT_FILTERS;
+	const [filters, setFilters] = useState<FilterState>(DEFAULT_FILTERS);
+
+	useEffect(() => {
 		try {
 			const stored = localStorage.getItem("hn-filters");
-			return stored
-				? { ...DEFAULT_FILTERS, ...JSON.parse(stored) }
-				: DEFAULT_FILTERS;
-		} catch {
-			return DEFAULT_FILTERS;
-		}
-	});
+			if (stored) setFilters((prev) => ({ ...prev, ...JSON.parse(stored) }));
+		} catch {}
+	}, []);
 	const [showFilters, setShowFilters] = useState(false);
 	const [page, setPage] = useState(1);
 
@@ -135,6 +132,20 @@ export function StoriesFeed() {
 	useEffect(() => {
 		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
 	}, [activeIndex]);
+
+	useEffect(() => {
+		if (!hasMore || isLoading) return;
+		const el = sentinelRef.current;
+		if (!el) return;
+		const observer = new IntersectionObserver(
+			(entries) => {
+				if (entries[0].isIntersecting) setPage((p) => p + 1);
+			},
+			{ rootMargin: "300px" },
+		);
+		observer.observe(el);
+		return () => observer.disconnect();
+	}, [hasMore, isLoading]);
 
 	return (
 		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
@@ -220,20 +231,12 @@ export function StoriesFeed() {
 					)}
 
 					{hasMore && (
-						<div className="flex justify-center pb-8 pt-2">
-							<Button
-								variant="outline"
-								onClick={() => setPage((p) => p + 1)}
-								className="px-8"
-							>
-								Load more ({filtered.length - visible.length} remaining)
-							</Button>
-						</div>
+						<div ref={sentinelRef} className="h-1" aria-hidden />
 					)}
 
 					{!hasMore && visible.length > 0 && (
-						<p className="pb-8 pt-2 text-center text-xs text-muted-foreground">
-							Showing all {filtered.length} stories
+						<p className="pb-8 pt-2 text-center text-xs text-muted-foreground/50">
+							{filtered.length} stories
 						</p>
 					)}
 				</main>
