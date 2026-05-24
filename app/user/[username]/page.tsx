@@ -142,7 +142,7 @@ export default async function UserPage({
 	return (
 		<div className="min-h-screen bg-background">
 			<Header />
-			<main className="mx-auto max-w-4xl px-4 py-6">
+			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
 				<Link
 					href="/"
 					className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"

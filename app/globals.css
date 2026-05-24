@@ -81,6 +81,7 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-geist-sans, system-ui, sans-serif);
 	min-height: 100dvh;
+	text-rendering: optimizeLegibility;
 }
 
 * {
@@ -103,7 +104,8 @@ body {
 }
 
 .animate-fade-in {
-	animation: fade-in 0.3s ease forwards;
+	animation: fade-in 0.25s ease both;
+	animation-delay: calc(min(var(--card-index, 0), 8) * 35ms);
 }
 
 @keyframes slide-down {
@@ -119,4 +121,23 @@ body {
 
 .animate-slide-down {
 	animation: slide-down 0.18s ease forwards;
+}
+
+@keyframes sheet-up {
+	from {
+		transform: translateY(100%);
+	}
+	to {
+		transform: translateY(0);
+	}
+}
+
+.animate-sheet-up {
+	animation: sheet-up 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+}
+
+@media (min-width: 640px) {
+	.animate-sheet-up {
+		animation: slide-down 0.18s ease forwards;
+	}
 }

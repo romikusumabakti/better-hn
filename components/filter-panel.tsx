@@ -1,6 +1,6 @@
 "use client";
 
-import { Info, RotateCcw } from "lucide-react";
+import { Info, RotateCcw, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -24,6 +24,7 @@ interface FilterPanelProps {
 	onReset: () => void;
 	totalCount: number;
 	visibleCount: number;
+	onClose?: () => void;
 }
 
 export function FilterPanel({
@@ -32,6 +33,7 @@ export function FilterPanel({
 	onReset,
 	totalCount,
 	visibleCount,
+	onClose,
 }: FilterPanelProps) {
 	const isModified =
 		filters.alpha !== DEFAULTS.alpha ||
@@ -40,21 +42,36 @@ export function FilterPanel({
 
 	return (
 		<TooltipProvider>
-			<div className="animate-slide-down rounded-xl border border-border bg-card p-4 shadow-sm">
+			<div className="fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm">
+				{/* Mobile drag handle */}
+				<div className="mx-auto mb-4 h-1 w-8 rounded-full bg-border sm:hidden" />
+
 				<div className="mb-3 flex items-center justify-between">
 					<span className="text-sm font-medium text-muted-foreground">
 						Filters
 					</span>
-					{isModified && (
-						<button
-							type="button"
-							onClick={onReset}
-							className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-						>
-							<RotateCcw className="h-3 w-3" />
-							Reset
-						</button>
-					)}
+					<div className="flex items-center gap-2">
+						{isModified && (
+							<button
+								type="button"
+								onClick={onReset}
+								className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+							>
+								<RotateCcw className="h-3 w-3" />
+								Reset
+							</button>
+						)}
+						{onClose && (
+							<button
+								type="button"
+								onClick={onClose}
+								className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground sm:hidden"
+								aria-label="Close filters"
+							>
+								<X className="h-4 w-4" />
+							</button>
+						)}
+					</div>
 				</div>
 
 				<div className="grid gap-4 sm:grid-cols-3">

@@ -2,6 +2,7 @@ import {
 	ArrowLeft,
 	ArrowUpRight,
 	Clock,
+	ExternalLink,
 	MessageSquare,
 	Triangle,
 	User,
@@ -115,7 +116,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 	return (
 		<div className="min-h-screen bg-background">
 			<Header />
-			<main className="mx-auto max-w-4xl px-4 py-6">
+			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
 				<Link
 					href="/"
 					className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -147,7 +148,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 						)}
 					</div>
 
-					<h1 className="mb-4 text-xl font-bold leading-snug text-foreground sm:text-2xl">
+					<h1 className="mb-4 text-2xl font-bold leading-snug text-foreground sm:text-3xl">
 						{story.url ? (
 							<a
 								href={story.url}
@@ -200,9 +201,10 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							href={hnUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="ml-auto text-xs transition-colors hover:text-foreground"
+							className="ml-auto inline-flex items-center gap-1 text-xs transition-colors hover:text-foreground"
 						>
-							View on HN →
+							View on HN
+							<ExternalLink className="h-3 w-3" />
 						</a>
 					</div>
 				</article>

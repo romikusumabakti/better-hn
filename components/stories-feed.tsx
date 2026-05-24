@@ -148,7 +148,18 @@ export function StoriesFeed() {
 					filterActive={isFilterActive}
 				/>
 
-				<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6">
+				{showFilters && (
+					<div
+						className="fixed inset-0 z-30 bg-black/40 sm:hidden"
+						onClick={() => setShowFilters(false)}
+						aria-hidden
+					/>
+				)}
+
+				<main
+					id="main-content"
+					className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
+				>
 					{showFilters && (
 						<FilterPanel
 							filters={filters}
@@ -156,6 +167,7 @@ export function StoriesFeed() {
 							onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
 							totalCount={scored.length}
 							visibleCount={filtered.length}
+							onClose={() => setShowFilters(false)}
 						/>
 					)}
 
@@ -190,7 +202,13 @@ export function StoriesFeed() {
 					{!isLoading && visible.length > 0 && (
 						<div className="space-y-3">
 							{visible.map((story, i) => (
-								<div key={story.id} ref={i === activeIndex ? activeRef : null}>
+								<div
+									key={story.id}
+									ref={i === activeIndex ? activeRef : null}
+									style={
+										{ "--card-index": Math.min(i, 8) } as React.CSSProperties
+									}
+								>
 									<StoryCard
 										story={story}
 										rank={i + 1}

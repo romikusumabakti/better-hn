@@ -113,7 +113,7 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 						</time>
 						<Link
 							href={`/user/${story.by}`}
-							className="relative z-10 hover:text-foreground transition-colors"
+							className="relative z-10 hidden sm:inline hover:text-foreground transition-colors"
 						>
 							{story.by}
 						</Link>

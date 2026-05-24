@@ -11,16 +11,26 @@ interface CommentProps {
 	depth: number;
 }
 
+const DEPTH_BORDER_COLORS = [
+	"border-border/65",
+	"border-border/50",
+	"border-border/38",
+	"border-border/28",
+] as const;
+
 export function Comment({ comment, depth }: CommentProps) {
 	const [collapsed, setCollapsed] = useState(false);
 	const hoursAgo = (Date.now() / 1000 - comment.time) / 3600;
 
 	if (!comment.text && comment.children.length === 0) return null;
 
+	const depthBorder =
+		DEPTH_BORDER_COLORS[Math.min(depth - 1, DEPTH_BORDER_COLORS.length - 1)];
+
 	return (
 		<div
 			className={cn(
-				depth > 0 && "border-l border-border/40 pl-3 sm:pl-4",
+				depth > 0 && `border-l pl-3 sm:pl-4 ${depthBorder}`,
 				depth > 0 && depth <= 4 && "ml-3 sm:ml-5",
 			)}
 		>
