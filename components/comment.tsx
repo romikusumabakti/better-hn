@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, ChevronRight, Clock, User } from "lucide-react";
+import { ChevronDown, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import type { HNComment } from "@/lib/hn-api";
@@ -39,17 +39,16 @@ export function Comment({ comment, depth }: CommentProps) {
 				</button>
 				<Link
 					href={`/user/${comment.by}`}
-					className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
+					className="text-xs font-medium text-muted-foreground hover:text-foreground transition-colors"
 					onClick={(e) => e.stopPropagation()}
 				>
-					<User className="h-3 w-3" />
 					{comment.by}
 				</Link>
+				<span className="text-muted-foreground/40 text-xs select-none">·</span>
 				<time
 					dateTime={new Date(comment.time * 1000).toISOString()}
-					className="flex items-center gap-1 text-xs text-muted-foreground/60"
+					className="text-xs text-muted-foreground/60"
 				>
-					<Clock className="h-3 w-3" />
 					{formatTime(hoursAgo)}
 				</time>
 				{collapsed && comment.children.length > 0 && (

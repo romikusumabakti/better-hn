@@ -1,7 +1,7 @@
 "use client";
 
 import { AlertCircle, SearchX } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
@@ -47,6 +47,9 @@ function StorySkeleton() {
 }
 
 export function StoriesFeed() {
+	const [activeIndex, setActiveIndex] = useState(-1);
+	const activeRef = useRef<HTMLDivElement | null>(null);
+
 	const [filters, setFilters] = useState<FilterState>(() => {
 		if (typeof window === "undefined") return DEFAULT_FILTERS;
 		try {
@@ -103,6 +106,36 @@ export function StoriesFeed() {
 	const visible = filtered.slice(0, page * PAGE_SIZE);
 	const hasMore = visible.length < filtered.length;
 
+	useEffect(() => {
+		const onKey = (e: KeyboardEvent) => {
+			const tag = (e.target as HTMLElement).tagName;
+			if (tag === "INPUT" || tag === "TEXTAREA") return;
+
+			if (e.key === "j" || e.key === "ArrowDown") {
+				e.preventDefault();
+				setActiveIndex((i) => Math.min(i + 1, visible.length - 1));
+			} else if (e.key === "k" || e.key === "ArrowUp") {
+				e.preventDefault();
+				setActiveIndex((i) => Math.max(i - 1, 0));
+			} else if ((e.key === "o" || e.key === "Enter") && activeIndex >= 0) {
+				const story = visible[activeIndex];
+				if (story?.url) window.open(story.url, "_blank", "noopener,noreferrer");
+			} else if (e.key === "c" && activeIndex >= 0) {
+				const story = visible[activeIndex];
+				if (story) window.location.href = `/story/${story.id}`;
+			} else if (e.key === "?") {
+				setShowFilters((v) => !v);
+			}
+		};
+		window.addEventListener("keydown", onKey);
+		return () => window.removeEventListener("keydown", onKey);
+	}, [activeIndex, visible]);
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: activeIndex is needed to trigger scroll on navigation
+	useEffect(() => {
+		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+	}, [activeIndex]);
+
 	return (
 		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
 			<div className="flex min-h-dvh flex-col">
@@ -157,7 +190,13 @@ export function StoriesFeed() {
 					{!isLoading && visible.length > 0 && (
 						<div className="space-y-3">
 							{visible.map((story, i) => (
-								<StoryCard key={story.id} story={story} rank={i + 1} />
+								<div key={story.id} ref={i === activeIndex ? activeRef : null}>
+									<StoryCard
+										story={story}
+										rank={i + 1}
+										isActive={i === activeIndex}
+									/>
+								</div>
 							))}
 						</div>
 					)}

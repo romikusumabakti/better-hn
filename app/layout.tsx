@@ -18,6 +18,18 @@ export const metadata: Metadata = {
 	description:
 		"A modern Hacker News reader with a customizable time-decay scoring algorithm. Sort stories by relevance, not just recency.",
 	keywords: ["hacker news", "hn", "tech news", "programming", "startup"],
+	openGraph: {
+		title: "Better HN — Hacker News, reimagined",
+		description:
+			"A modern Hacker News reader with a customizable time-decay scoring algorithm. Sort stories by relevance, not just recency.",
+		type: "website",
+	},
+	twitter: {
+		card: "summary",
+		title: "Better HN — Hacker News, reimagined",
+		description:
+			"A modern Hacker News reader with a customizable time-decay scoring algorithm.",
+	},
 };
 
 export default function RootLayout({

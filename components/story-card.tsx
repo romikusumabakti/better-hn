@@ -9,6 +9,7 @@ import { cn, formatTime } from "@/lib/utils";
 interface StoryCardProps {
 	story: ScoredStory;
 	rank: number;
+	isActive?: boolean;
 }
 
 function getTypeLabel(story: ScoredStory): string | null {
@@ -42,11 +43,16 @@ function ScoreBadge({ score }: { score: number }) {
 	);
 }
 
-export function StoryCard({ story, rank }: StoryCardProps) {
+export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
 
 	return (
-		<article className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:border-border/80 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in">
+		<article
+			className={cn(
+				"group relative rounded-xl border bg-card transition-all duration-200 hover:border-border hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in",
+				isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border",
+			)}
+		>
 			{/* Stretched link — covers the whole card */}
 			<Link
 				href={`/story/${story.id}`}

@@ -16,9 +16,17 @@ import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
 import { formatTime } from "@/lib/utils";
 
-async function StoryComments({ kids }: { kids: number[] }) {
+const TOP_COMMENTS_LIMIT = 20;
+
+async function StoryComments({
+	kids,
+	storyId,
+}: {
+	kids: number[];
+	storyId: number;
+}) {
 	const results = await Promise.all(
-		kids.slice(0, 20).map((id) => fetchCommentTree(id)),
+		kids.slice(0, TOP_COMMENTS_LIMIT).map((id) => fetchCommentTree(id)),
 	);
 	const comments = results.filter(Boolean) as HNComment[];
 
@@ -35,6 +43,19 @@ async function StoryComments({ kids }: { kids: number[] }) {
 			{comments.map((comment) => (
 				<Comment key={comment.id} comment={comment} depth={0} />
 			))}
+			{kids.length > TOP_COMMENTS_LIMIT && (
+				<p className="pt-6 text-center text-xs text-muted-foreground/60">
+					Showing top {TOP_COMMENTS_LIMIT} of {kids.length} comments.{" "}
+					<a
+						href={`https://news.ycombinator.com/item?id=${storyId}`}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="underline underline-offset-2 hover:text-muted-foreground transition-colors"
+					>
+						View all on HN →
+					</a>
+				</p>
+			)}
 		</div>
 	);
 }
@@ -192,7 +213,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 						{story.descendants ?? 0} Comments
 					</h2>
 					<Suspense fallback={<CommentsSkeleton />}>
-						<StoryComments kids={story.kids ?? []} />
+						<StoryComments kids={story.kids ?? []} storyId={storyId} />
 					</Suspense>
 				</section>
 			</main>
