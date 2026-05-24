@@ -20,11 +20,13 @@ export function Comment({ comment, depth }: CommentProps) {
 	return (
 		<div
 			className={cn(
-				depth > 0 && "ml-3 sm:ml-5 border-l border-border/40 pl-3 sm:pl-4",
+				depth > 0 && "border-l border-border/40 pl-3 sm:pl-4",
+				depth > 0 && depth <= 4 && "ml-3 sm:ml-5",
 			)}
 		>
 			<div className="flex items-center gap-1.5 py-1.5">
 				<button
+					type="button"
 					onClick={() => setCollapsed(!collapsed)}
 					className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors select-none"
 					aria-label={collapsed ? "Expand comment" : "Collapse comment"}

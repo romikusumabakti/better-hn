@@ -33,7 +33,6 @@ export function FilterPanel({
 	totalCount,
 	visibleCount,
 }: FilterPanelProps) {
-	const exampleScore = (100 + 50) / (6 + 2) ** filters.alpha;
 	const isModified =
 		filters.alpha !== DEFAULTS.alpha ||
 		filters.minScore !== DEFAULTS.minScore ||
@@ -167,12 +166,6 @@ export function FilterPanel({
 							onChange={(e) => onChange({ ...filters, query: e.target.value })}
 							className="h-9 text-sm"
 						/>
-						<p className="text-[10px] text-muted-foreground">
-							Example score (100pts, 50cmt, 6h ago):{" "}
-							<span className="font-mono font-medium text-foreground">
-								{exampleScore.toFixed(2)}
-							</span>
-						</p>
 					</div>
 				</div>
 			</div>

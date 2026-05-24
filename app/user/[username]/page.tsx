@@ -6,7 +6,6 @@ import {
 	Clock,
 	ExternalLink,
 	FileText,
-	User,
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -15,6 +14,25 @@ import { Header } from "@/components/header";
 import { Badge } from "@/components/ui/badge";
 import { fetchStoriesBatch, fetchUser } from "@/lib/hn-api";
 import { formatTime } from "@/lib/utils";
+
+const AVATAR_PALETTES = [
+	"bg-blue-500/15 text-blue-600 dark:text-blue-400",
+	"bg-emerald-500/15 text-emerald-600 dark:text-emerald-400",
+	"bg-amber-500/15 text-amber-600 dark:text-amber-400",
+	"bg-orange-500/15 text-orange-600 dark:text-orange-400",
+	"bg-violet-500/15 text-violet-600 dark:text-violet-400",
+	"bg-pink-500/15 text-pink-600 dark:text-pink-400",
+	"bg-cyan-500/15 text-cyan-600 dark:text-cyan-400",
+	"bg-indigo-500/15 text-indigo-600 dark:text-indigo-400",
+] as const;
+
+function avatarPalette(username: string): string {
+	let hash = 0;
+	for (let i = 0; i < username.length; i++) {
+		hash = (hash * 31 + username.charCodeAt(i)) | 0;
+	}
+	return AVATAR_PALETTES[Math.abs(hash) % AVATAR_PALETTES.length];
+}
 
 function formatDate(unixTime: number): string {
 	return new Date(unixTime * 1000).toLocaleDateString("en-US", {
@@ -136,8 +154,10 @@ export default async function UserPage({
 				{/* User profile card */}
 				<div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6">
 					<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
-						<div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-full border border-border bg-muted">
-							<User className="h-8 w-8 text-muted-foreground" />
+						<div
+							className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold select-none ${avatarPalette(user.id)}`}
+						>
+							{user.id[0].toUpperCase()}
 						</div>
 
 						<div className="flex-1 min-w-0">

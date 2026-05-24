@@ -1,17 +1,10 @@
 "use client";
 
-import {
-	ArrowUpRight,
-	Clock,
-	MessageSquare,
-	Sparkles,
-	Triangle,
-	User,
-} from "lucide-react";
+import { ArrowUpRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
-import { formatTime } from "@/lib/utils";
+import { cn, formatTime } from "@/lib/utils";
 
 interface StoryCardProps {
 	story: ScoredStory;
@@ -25,10 +18,32 @@ function getTypeLabel(story: ScoredStory): string | null {
 	return null;
 }
 
+function ScoreBadge({ score }: { score: number }) {
+	const cls =
+		score >= 100
+			? "bg-rose-500/15 text-rose-600 dark:text-rose-400"
+			: score >= 50
+				? "bg-orange-500/15 text-orange-600 dark:text-orange-400"
+				: score >= 20
+					? "bg-amber-500/15 text-amber-600 dark:text-amber-400"
+					: score >= 5
+						? "bg-green-500/15 text-green-600 dark:text-green-400"
+						: "bg-blue-500/15 text-blue-600 dark:text-blue-400";
+	return (
+		<span
+			className={cn(
+				"inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-xs font-semibold",
+				cls,
+			)}
+		>
+			<Sparkles className="h-2.5 w-2.5" />
+			{score.toFixed(1)}
+		</span>
+	);
+}
+
 export function StoryCard({ story, rank }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
-
-	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
 
 	return (
 		<article className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:border-border/80 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in">
@@ -78,41 +93,25 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 					</h2>
 
 					{/* Meta row */}
-					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
-						<span className="flex items-center gap-1">
-							<Sparkles className="h-3 w-3" />
-							<span className="font-mono font-medium">
-								{story.computedScore.toFixed(1)}
-							</span>
-						</span>
-						<span className="flex items-center gap-1">
-							<Triangle className="h-3 w-3 fill-current" />
-							<span className="font-mono font-medium">{story.score}</span>
-							<span>pts</span>
-						</span>
-
+					<div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+						<ScoreBadge score={story.computedScore} />
+						<span className="text-border select-none">·</span>
+						<span className="font-mono">{story.score} pts</span>
+						<span className="text-border select-none">·</span>
 						<Link
 							href={`/story/${story.id}`}
-							className="relative z-10 flex items-center gap-1 hover:text-foreground transition-colors"
+							className="relative z-10 hover:text-foreground transition-colors"
 						>
-							<MessageSquare className="h-3 w-3" />
-							<span className="font-mono font-medium">
-								{story.descendants ?? 0}
-							</span>
-							<span>comments</span>
+							{story.descendants ?? 0} comments
 						</Link>
-
-						<span className="flex items-center gap-1">
-							<Clock className="h-3 w-3" />
-							<span>{formatTime(story.hoursAgo)}</span>
-						</span>
-
+						<span className="text-border select-none">·</span>
+						<span>{formatTime(story.hoursAgo)}</span>
+						<span className="text-border select-none">·</span>
 						<Link
 							href={`/user/${story.by}`}
-							className="relative z-10 flex items-center gap-1 hover:text-foreground transition-colors"
+							className="relative z-10 hover:text-foreground transition-colors"
 						>
-							<User className="h-3 w-3" />
-							<span>{story.by}</span>
+							{story.by}
 						</Link>
 					</div>
 				</div>
