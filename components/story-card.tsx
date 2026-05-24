@@ -29,7 +29,7 @@ function ScoreBadge({ score }: { score: number }) {
 					? "text-primary/65"
 					: score >= 5
 						? "text-muted-foreground"
-						: "text-muted-foreground/55";
+						: "text-muted-foreground/80";
 
 	return (
 		<span

@@ -279,8 +279,40 @@ kbd {
 	rotate: -90deg;
 }
 
+/* ─── Navigation progress bar ─── */
+.nav-progress {
+	background: var(--primary);
+	transform-origin: left;
+	transform: scaleX(0);
+}
+
+.nav-progress[data-state="active"] {
+	animation: nav-fill 8s cubic-bezier(0.05, 0.5, 0.1, 1) forwards;
+}
+
+.nav-progress[data-state="complete"] {
+	transform: scaleX(1);
+	opacity: 0;
+	transition:
+		transform 0.15s ease,
+		opacity 0.35s ease 0.1s;
+}
+
+@keyframes nav-fill {
+	from {
+		transform: scaleX(0);
+	}
+	to {
+		transform: scaleX(0.9);
+	}
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
+	.nav-progress {
+		display: none;
+	}
+
 	::view-transition-old(*),
 	::view-transition-new(*),
 	::view-transition-group(*) {

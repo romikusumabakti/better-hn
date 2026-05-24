@@ -161,7 +161,13 @@ export function FilterPanel({
 								</span>
 								<Tooltip>
 									<TooltipTrigger asChild>
-										<Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" />
+										<button
+											type="button"
+											className="cursor-help rounded text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+										>
+											<Info className="h-3.5 w-3.5" aria-hidden />
+											<span className="sr-only">About decay rate formula</span>
+										</button>
 									</TooltipTrigger>
 									<TooltipContent side="top" className="max-w-60">
 										<p className="text-xs">
@@ -207,7 +213,15 @@ export function FilterPanel({
 								</span>
 								<Tooltip>
 									<TooltipTrigger asChild>
-										<Info className="h-3.5 w-3.5 cursor-help text-muted-foreground" />
+										<button
+											type="button"
+											className="cursor-help rounded text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+										>
+											<Info className="h-3.5 w-3.5" aria-hidden />
+											<span className="sr-only">
+												About minimum score filter
+											</span>
+										</button>
 									</TooltipTrigger>
 									<TooltipContent side="top">
 										<p className="text-xs">
