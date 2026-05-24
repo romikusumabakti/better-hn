@@ -115,7 +115,7 @@ export function StoriesFeed() {
 				filterActive={isFilterActive}
 			/>
 
-			<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-6">
+			<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6">
 				{showFilters && (
 					<FilterPanel
 						filters={filters}
@@ -133,7 +133,7 @@ export function StoriesFeed() {
 				)}
 
 				{isLoading && (
-					<div className="space-y-2">
+					<div className="space-y-3">
 						{Array.from({ length: 12 }).map((_, i) => (
 							// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
 							<StorySkeleton key={i} />
@@ -153,7 +153,7 @@ export function StoriesFeed() {
 				)}
 
 				{!isLoading && visible.length > 0 && (
-					<div className="space-y-2">
+					<div className="space-y-3">
 						{visible.map((story, i) => (
 							<StoryCard key={story.id} story={story} rank={i + 1} />
 						))}

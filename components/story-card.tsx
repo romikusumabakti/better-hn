@@ -54,11 +54,11 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 
 				{/* Content */}
 				<div className="min-w-0 flex-1">
-					<div className="mb-1.5 flex flex-wrap items-start gap-1.5">
+					<div className="mb-2 flex flex-wrap items-start gap-1.5">
 						{typeLabel && (
 							<Badge
 								variant="secondary"
-								className="shrink-0 px-1.5 py-0 text-[10px] font-semibold uppercase tracking-wide"
+								className="shrink-0 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide"
 							>
 								{typeLabel}
 							</Badge>
@@ -69,7 +69,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 								target="_blank"
 								rel="noopener noreferrer"
 								onClick={(e) => e.stopPropagation()}
-								className="shrink-0 rounded pr-1.5 py-0 font-mono text-[10px] text-muted-foreground hover:text-primary transition-colors"
+								className="shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
 							>
 								{story.domain}
 							</a>
@@ -82,7 +82,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 						rel="noopener noreferrer"
 						className="group/title inline"
 					>
-						<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover/title:text-primary sm:text-[15px]">
+						<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover/title:text-primary sm:text-base">
 							{story.title}
 							{story.url && (
 								<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover/title:text-primary group-hover/title:translate-x-0.5 group-hover/title:-translate-y-0.5" />

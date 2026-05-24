@@ -34,7 +34,7 @@ export function FilterPanel({
 	return (
 		<TooltipProvider>
 			<div className="rounded-xl border border-border bg-card p-4 shadow-sm">
-				<div className="grid gap-5 sm:grid-cols-3">
+				<div className="grid gap-4 sm:grid-cols-3">
 					{/* Alpha */}
 					<div className="space-y-2.5">
 						<div className="flex items-center justify-between">
