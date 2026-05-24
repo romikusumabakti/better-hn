@@ -6,6 +6,7 @@ import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
+import { ScrollToTop } from "@/components/scroll-to-top";
 import { StoryCard } from "@/components/story-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
@@ -149,7 +150,8 @@ export function StoriesFeed() {
 
 	return (
 		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
-			<div className="flex min-h-dvh flex-col">
+			<div className="relative flex min-h-dvh flex-col">
+				<ScrollToTop />
 				<Header
 					isRefreshing={isValidating}
 					onRefresh={() => mutate()}
@@ -249,10 +251,18 @@ export function StoriesFeed() {
 								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
 								aria-hidden
 							>
-								<span><kbd>j</kbd> / <kbd>k</kbd> navigate</span>
-								<span><kbd>o</kbd> open link</span>
-								<span><kbd>c</kbd> comments</span>
-								<span><kbd>?</kbd> filters</span>
+								<span>
+									<kbd>j</kbd> / <kbd>k</kbd> navigate
+								</span>
+								<span>
+									<kbd>o</kbd> open link
+								</span>
+								<span>
+									<kbd>c</kbd> comments
+								</span>
+								<span>
+									<kbd>?</kbd> filters
+								</span>
 							</div>
 						</>
 					)}

@@ -1,9 +1,16 @@
 "use client";
 
-import { Monitor, Moon, RefreshCw, SlidersHorizontal, Sun, Zap } from "lucide-react";
+import {
+	Monitor,
+	Moon,
+	RefreshCw,
+	SlidersHorizontal,
+	Sun,
+	Zap,
+} from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -33,8 +40,13 @@ export function Header({
 		setTheme(next[theme as keyof typeof next] ?? "system");
 	};
 
-	const ThemeIcon =
-		!mounted ? Sun : theme === "dark" ? Moon : theme === "system" ? Monitor : Sun;
+	const ThemeIcon = !mounted
+		? Sun
+		: theme === "dark"
+			? Moon
+			: theme === "system"
+				? Monitor
+				: Sun;
 
 	return (
 		<header

@@ -50,7 +50,7 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 	return (
 		<article
 			className={cn(
-				"group relative rounded-xl border bg-card card-enter @container hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
+				"group relative rounded-xl border bg-card card-enter @container transition-transform hover:-translate-y-px hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
 				isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border",
 			)}
 		>
@@ -93,7 +93,7 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 						)}
 					</div>
 
-					<h2 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary @sm:text-lg">
+					<h2 className="text-base font-semibold leading-snug text-pretty text-foreground transition-colors group-hover:text-primary @sm:text-lg">
 						{story.title}
 						{story.url && (
 							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-primary" />

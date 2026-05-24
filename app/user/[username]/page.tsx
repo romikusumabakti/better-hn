@@ -12,7 +12,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, ViewTransition } from "react";
 import { Header } from "@/components/header";
+import { Skeleton } from "@/components/ui/skeleton";
 import { fetchStoriesBatch, fetchUser } from "@/lib/hn-api";
+import { sanitize } from "@/lib/sanitize";
 import { formatTime } from "@/lib/utils";
 
 export async function generateMetadata({
@@ -133,9 +135,9 @@ function SubmissionsSkeleton() {
 		<div className="divide-y divide-border">
 			{Array.from({ length: 5 }).map((_, i) => (
 				// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
-				<div key={i} className="animate-pulse py-3.5">
-					<div className="mb-2 h-4 w-4/5 rounded bg-muted" />
-					<div className="h-3 w-1/3 rounded bg-muted" />
+				<div key={i} className="py-3.5">
+					<Skeleton className="mb-2 h-4 w-4/5 rounded" />
+					<Skeleton className="h-3 w-1/3 rounded" />
 				</div>
 			))}
 		</div>
@@ -160,103 +162,103 @@ export default async function UserPage({
 			exit={{ "nav-back": "nav-back", default: "none" }}
 			default="none"
 		>
-		<div className="min-h-dvh bg-background">
-			<Header />
-			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
-				<Link
-					href="/"
-					transitionTypes={["nav-back"]}
-					className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
-				>
-					<ArrowLeft className="h-4 w-4" />
-					Back to feed
-				</Link>
+			<div className="min-h-dvh bg-background">
+				<Header />
+				<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
+					<Link
+						href="/"
+						transitionTypes={["nav-back"]}
+						className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+					>
+						<ArrowLeft className="h-4 w-4" />
+						Back to feed
+					</Link>
 
-				{/* User profile card */}
-				<div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6">
-					<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
-						<div
-							className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold select-none ${avatarPalette(user.id)}`}
-						>
-							{user.id[0].toUpperCase()}
-						</div>
-
-						<div className="flex-1 min-w-0">
-							<div className="mb-3">
-								<h1 className="text-2xl font-bold text-foreground">
-									{user.id}
-								</h1>
+					{/* User profile card */}
+					<div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6">
+						<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
+							<div
+								className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold select-none ${avatarPalette(user.id)}`}
+							>
+								{user.id[0].toUpperCase()}
 							</div>
 
-							<div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
-								<span className="flex items-center gap-1.5">
-									<Award className="h-4 w-4" />
-									<span className="font-mono font-semibold text-foreground">
-										{user.karma.toLocaleString()}
-									</span>
-									<span>karma</span>
-								</span>
-								<span className="flex items-center gap-1.5">
-									<Calendar className="h-4 w-4" />
-									<span>Joined {formatDate(user.created)}</span>
-								</span>
-								<span className="flex items-center gap-1.5">
-									<Clock className="h-4 w-4" />
-									<span>{accountAge(user.created)} on HN</span>
-								</span>
-								{user.submitted && (
+							<div className="flex-1 min-w-0">
+								<div className="mb-3">
+									<h1 className="text-2xl font-bold text-balance text-foreground">
+										{user.id}
+									</h1>
+								</div>
+
+								<div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">
 									<span className="flex items-center gap-1.5">
-										<FileText className="h-4 w-4" />
+										<Award className="h-4 w-4" />
 										<span className="font-mono font-semibold text-foreground">
-											{user.submitted.length.toLocaleString()}
+											{user.karma.toLocaleString()}
 										</span>
-										<span>submissions</span>
+										<span>karma</span>
 									</span>
-								)}
-							</div>
+									<span className="flex items-center gap-1.5">
+										<Calendar className="h-4 w-4" />
+										<span>Joined {formatDate(user.created)}</span>
+									</span>
+									<span className="flex items-center gap-1.5">
+										<Clock className="h-4 w-4" />
+										<span>{accountAge(user.created)} on HN</span>
+									</span>
+									{user.submitted && (
+										<span className="flex items-center gap-1.5">
+											<FileText className="h-4 w-4" />
+											<span className="font-mono font-semibold text-foreground">
+												{user.submitted.length.toLocaleString()}
+											</span>
+											<span>submissions</span>
+										</span>
+									)}
+								</div>
 
-							<div className="mt-4">
-								<a
-									href={hnUrl}
-									target="_blank"
-									rel="noopener noreferrer"
-									className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
-								>
-									<ExternalLink className="h-3.5 w-3.5" />
-									View on Hacker News
-								</a>
+								<div className="mt-4">
+									<a
+										href={hnUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
+									>
+										<ExternalLink className="h-3.5 w-3.5" />
+										View on Hacker News
+									</a>
+								</div>
 							</div>
 						</div>
+
+						{user.about && (
+							<div className="mt-5 border-t border-border pt-5">
+								<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+									About
+								</p>
+								<div
+									className="max-w-none text-sm text-foreground/90 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_p]:mb-2 [&_p:last-child]:mb-0 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs"
+									dangerouslySetInnerHTML={{ __html: sanitize(user.about) }}
+								/>
+							</div>
+						)}
 					</div>
 
-					{user.about && (
-						<div className="mt-5 border-t border-border pt-5">
-							<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-								About
-							</p>
-							<div
-								className="prose prose-sm dark:prose-invert max-w-none text-sm text-foreground/90 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_p]:mb-2 [&_p:last-child]:mb-0 [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs"
-								dangerouslySetInnerHTML={{ __html: user.about }}
-							/>
-						</div>
+					{/* Recent submissions */}
+					{user.submitted && user.submitted.length > 0 && (
+						<section>
+							<h2 className="mb-4 text-base font-semibold text-foreground">
+								Recent Submissions
+							</h2>
+							<div className="rounded-xl border border-border bg-card px-5 sm:px-6">
+								<Suspense fallback={<SubmissionsSkeleton />}>
+									<UserSubmissions ids={user.submitted} />
+								</Suspense>
+							</div>
+						</section>
 					)}
-				</div>
-
-				{/* Recent submissions */}
-				{user.submitted && user.submitted.length > 0 && (
-					<section>
-						<h2 className="mb-4 text-base font-semibold text-foreground">
-							Recent Submissions
-						</h2>
-						<div className="rounded-xl border border-border bg-card px-5 sm:px-6">
-							<Suspense fallback={<SubmissionsSkeleton />}>
-								<UserSubmissions ids={user.submitted} />
-							</Suspense>
-						</div>
-					</section>
-				)}
-			</main>
-		</div>
+				</main>
+			</div>
 		</ViewTransition>
 	);
 }
