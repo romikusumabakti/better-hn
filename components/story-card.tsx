@@ -44,6 +44,13 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 
 	return (
 		<article className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:border-border/80 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in">
+			{/* Stretched link — covers the whole card */}
+			<Link
+				href={`/story/${story.id}`}
+				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				aria-label={story.title}
+			/>
+
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
 				<div className="flex shrink-0">
@@ -58,7 +65,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 						{typeLabel && (
 							<Badge
 								variant="secondary"
-								className="shrink-0 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide"
+								className="relative z-10 shrink-0 px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide"
 							>
 								{typeLabel}
 							</Badge>
@@ -68,25 +75,19 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 								href={`https://${story.domain}`}
 								target="_blank"
 								rel="noopener noreferrer"
-								onClick={(e) => e.stopPropagation()}
-								className="shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
+								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground hover:text-primary transition-colors"
 							>
 								{story.domain}
 							</a>
 						)}
 					</div>
 
-					<Link
-						href={`/story/${story.id}`}
-						className="group/title inline"
-					>
-						<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover/title:text-primary sm:text-base">
-							{story.title}
-							{story.url && (
-								<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover/title:text-primary group-hover/title:translate-x-0.5 group-hover/title:-translate-y-0.5" />
-							)}
-						</h2>
-					</Link>
+					<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base">
+						{story.title}
+						{story.url && (
+							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+						)}
+					</h2>
 
 					{/* Meta row */}
 					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
@@ -100,18 +101,16 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 							<span>pts</span>
 						</span>
 
-						<a
-							href={hnUrl}
-							target="_blank"
-							rel="noopener noreferrer"
-							className="flex items-center gap-1 hover:text-foreground transition-colors"
+						<Link
+							href={`/story/${story.id}`}
+							className="relative z-10 flex items-center gap-1 hover:text-foreground transition-colors"
 						>
 							<MessageSquare className="h-3 w-3" />
 							<span className="font-mono font-medium">
 								{story.descendants ?? 0}
 							</span>
 							<span>comments</span>
-						</a>
+						</Link>
 
 						<span className="flex items-center gap-1">
 							<Clock className="h-3 w-3" />
@@ -122,7 +121,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 							href={`https://news.ycombinator.com/user?id=${story.by}`}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center gap-1 hover:text-foreground transition-colors"
+							className="relative z-10 flex items-center gap-1 hover:text-foreground transition-colors"
 						>
 							<User className="h-3 w-3" />
 							<span>{story.by}</span>
