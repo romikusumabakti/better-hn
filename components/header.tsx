@@ -1,7 +1,8 @@
 "use client";
 
-import { Moon, RefreshCw, SlidersHorizontal, Sun, Zap } from "lucide-react";
+import { Monitor, Moon, RefreshCw, SlidersHorizontal, Sun, Zap } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,16 @@ export function Header({
 	filterActive,
 }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
+	const [mounted, setMounted] = useState(false);
+	useEffect(() => setMounted(true), []);
+
+	const cycleTheme = () => {
+		const next = { light: "dark", dark: "system", system: "light" } as const;
+		setTheme(next[theme as keyof typeof next] ?? "system");
+	};
+
+	const ThemeIcon =
+		!mounted ? Sun : theme === "dark" ? Moon : theme === "system" ? Monitor : Sun;
 
 	return (
 		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
@@ -88,12 +99,13 @@ export function Header({
 					<Button
 						variant="ghost"
 						size="icon"
-						onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+						onClick={cycleTheme}
 						className="h-8 w-8 text-muted-foreground hover:text-foreground"
 					>
-						<Sun className="h-4 w-4 scale-100 rotate-0 transition-all dark:scale-0 dark:-rotate-90" />
-						<Moon className="absolute h-4 w-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" />
-						<span className="sr-only">Toggle theme</span>
+						<ThemeIcon className="h-4 w-4 transition-all" />
+						<span className="sr-only">
+							{!mounted ? "Toggle theme" : `Theme: ${theme} (click to cycle)`}
+						</span>
 					</Button>
 				</div>
 			</div>
