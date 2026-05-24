@@ -1,6 +1,3 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import {
 	ArrowLeft,
 	ArrowUpRight,
@@ -9,23 +6,15 @@ import {
 	Triangle,
 	User,
 } from "lucide-react";
-import { fetchStory, fetchCommentTree } from "@/lib/hn-api";
-import type { HNComment } from "@/lib/hn-api";
-import { Header } from "@/components/header";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Comment } from "@/components/comment";
+import { Header } from "@/components/header";
 import { Badge } from "@/components/ui/badge";
-
-function formatTime(hoursAgo: number): string {
-	if (hoursAgo < 1) {
-		const mins = Math.round(hoursAgo * 60);
-		return `${mins}m ago`;
-	}
-	if (hoursAgo < 24) {
-		return `${Math.round(hoursAgo)}h ago`;
-	}
-	const days = Math.round(hoursAgo / 24);
-	return `${days}d ago`;
-}
+import type { HNComment } from "@/lib/hn-api";
+import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
+import { formatTime } from "@/lib/utils";
 
 async function StoryComments({ kids }: { kids: number[] }) {
 	const results = await Promise.all(

@@ -23,7 +23,9 @@ export function PullToRefresh({
 	const startY = useRef(0);
 	const pulling = useRef(false);
 	const onRefreshRef = useRef(onRefresh);
-	useEffect(() => { onRefreshRef.current = onRefresh; }, [onRefresh]);
+	useEffect(() => {
+		onRefreshRef.current = onRefresh;
+	}, [onRefresh]);
 
 	useEffect(() => {
 		function onTouchStart(e: TouchEvent) {
@@ -103,7 +105,11 @@ export function PullToRefresh({
 			>
 				<RefreshCw
 					className={cn("h-4 w-4 text-primary", triggered && "animate-spin")}
-					style={!triggered ? { transform: `rotate(${progress * 300}deg)` } : undefined}
+					style={
+						!triggered
+							? { transform: `rotate(${progress * 300}deg)` }
+							: undefined
+					}
 				/>
 			</div>
 			{children}

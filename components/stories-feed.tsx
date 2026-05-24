@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle } from "lucide-react";
+import { AlertCircle, SearchX } from "lucide-react";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
@@ -105,80 +105,82 @@ export function StoriesFeed() {
 
 	return (
 		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
-		<div className="flex min-h-dvh flex-col">
-			<Header
-				isRefreshing={isValidating}
-				onRefresh={() => mutate()}
-				storyCount={filtered.length}
-				filterOpen={showFilters}
-				onToggleFilter={() => setShowFilters((v) => !v)}
-				filterActive={isFilterActive}
-			/>
+			<div className="flex min-h-dvh flex-col">
+				<Header
+					isRefreshing={isValidating}
+					onRefresh={() => mutate()}
+					storyCount={filtered.length}
+					filterOpen={showFilters}
+					onToggleFilter={() => setShowFilters((v) => !v)}
+					filterActive={isFilterActive}
+				/>
 
-			<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6">
-				{showFilters && (
-					<FilterPanel
-						filters={filters}
-						onChange={handleFiltersChange}
-						totalCount={scored.length}
-						visibleCount={filtered.length}
-					/>
-				)}
+				<main className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6">
+					{showFilters && (
+						<FilterPanel
+							filters={filters}
+							onChange={handleFiltersChange}
+							onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
+							totalCount={scored.length}
+							visibleCount={filtered.length}
+						/>
+					)}
 
-				{error && (
-					<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-						<AlertCircle className="h-4 w-4 shrink-0" />
-						Failed to load stories. Check your connection and try refreshing.
-					</div>
-				)}
+					{error && (
+						<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+							<AlertCircle className="h-4 w-4 shrink-0" />
+							Failed to load stories. Check your connection and try refreshing.
+						</div>
+					)}
 
-				{isLoading && (
-					<div className="space-y-3">
-						{Array.from({ length: 12 }).map((_, i) => (
-							// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
-							<StorySkeleton key={i} />
-						))}
-					</div>
-				)}
+					{isLoading && (
+						<div className="space-y-3">
+							{Array.from({ length: 12 }).map((_, i) => (
+								// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
+								<StorySkeleton key={i} />
+							))}
+						</div>
+					)}
 
-				{!isLoading && filtered.length === 0 && !error && (
-					<div className="flex flex-col items-center justify-center gap-2 py-20 text-center">
-						<p className="text-base font-medium text-muted-foreground">
-							No stories match your filters.
+					{!isLoading && filtered.length === 0 && !error && (
+						<div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+							<SearchX className="h-8 w-8 text-muted-foreground/40" />
+							<p className="text-base font-medium text-muted-foreground">
+								No stories match your filters.
+							</p>
+							<p className="text-sm text-muted-foreground/60">
+								Try lowering the minimum score or clearing the keyword.
+							</p>
+						</div>
+					)}
+
+					{!isLoading && visible.length > 0 && (
+						<div className="space-y-3">
+							{visible.map((story, i) => (
+								<StoryCard key={story.id} story={story} rank={i + 1} />
+							))}
+						</div>
+					)}
+
+					{hasMore && (
+						<div className="flex justify-center pb-8 pt-2">
+							<Button
+								variant="outline"
+								onClick={() => setPage((p) => p + 1)}
+								className="px-8"
+							>
+								Load more ({filtered.length - visible.length} remaining)
+							</Button>
+						</div>
+					)}
+
+					{!hasMore && visible.length > 0 && (
+						<p className="pb-8 pt-2 text-center text-xs text-muted-foreground">
+							Showing all {filtered.length} stories
 						</p>
-						<p className="text-sm text-muted-foreground/60">
-							Try lowering the minimum score or clearing the keyword.
-						</p>
-					</div>
-				)}
-
-				{!isLoading && visible.length > 0 && (
-					<div className="space-y-3">
-						{visible.map((story, i) => (
-							<StoryCard key={story.id} story={story} rank={i + 1} />
-						))}
-					</div>
-				)}
-
-				{hasMore && (
-					<div className="flex justify-center pb-8 pt-2">
-						<Button
-							variant="outline"
-							onClick={() => setPage((p) => p + 1)}
-							className="px-8"
-						>
-							Load more ({filtered.length - visible.length} remaining)
-						</Button>
-					</div>
-				)}
-
-				{!hasMore && visible.length > 0 && (
-					<p className="pb-8 pt-2 text-center text-xs text-muted-foreground">
-						Showing all {filtered.length} stories
-					</p>
-				)}
-			</main>
-		</div>
+					)}
+				</main>
+			</div>
 		</PullToRefresh>
 	);
 }

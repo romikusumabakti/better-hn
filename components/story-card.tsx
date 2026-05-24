@@ -11,24 +11,12 @@ import {
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
+import { formatTime } from "@/lib/utils";
 
 interface StoryCardProps {
 	story: ScoredStory;
 	rank: number;
 }
-
-function formatTime(hoursAgo: number): string {
-	if (hoursAgo < 1) {
-		const mins = Math.round(hoursAgo * 60);
-		return `${mins}m ago`;
-	}
-	if (hoursAgo < 24) {
-		return `${Math.round(hoursAgo)}h ago`;
-	}
-	const days = Math.round(hoursAgo / 24);
-	return `${days}d ago`;
-}
-
 
 function getTypeLabel(story: ScoredStory): string | null {
 	if (story.title.startsWith("Ask HN:")) return "Ask";
@@ -93,7 +81,9 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
 						<span className="flex items-center gap-1">
 							<Sparkles className="h-3 w-3" />
-							<span className="font-mono font-medium">{story.computedScore.toFixed(1)}</span>
+							<span className="font-mono font-medium">
+								{story.computedScore.toFixed(1)}
+							</span>
 						</span>
 						<span className="flex items-center gap-1">
 							<Triangle className="h-3 w-3 fill-current" />

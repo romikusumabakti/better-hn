@@ -1,6 +1,3 @@
-import { Suspense } from "react";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 import {
 	ArrowLeft,
 	ArrowUpRight,
@@ -11,9 +8,13 @@ import {
 	FileText,
 	User,
 } from "lucide-react";
-import { fetchUser, fetchStoriesBatch } from "@/lib/hn-api";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { Header } from "@/components/header";
 import { Badge } from "@/components/ui/badge";
+import { fetchStoriesBatch, fetchUser } from "@/lib/hn-api";
+import { formatTime } from "@/lib/utils";
 
 function formatDate(unixTime: number): string {
 	return new Date(unixTime * 1000).toLocaleDateString("en-US", {
@@ -21,18 +22,6 @@ function formatDate(unixTime: number): string {
 		month: "long",
 		day: "numeric",
 	});
-}
-
-function formatTime(hoursAgo: number): string {
-	if (hoursAgo < 1) {
-		const mins = Math.round(hoursAgo * 60);
-		return `${mins}m ago`;
-	}
-	if (hoursAgo < 24) {
-		return `${Math.round(hoursAgo)}h ago`;
-	}
-	const days = Math.round(hoursAgo / 24);
-	return `${days}d ago`;
 }
 
 function accountAge(createdUnix: number): string {
@@ -153,7 +142,9 @@ export default async function UserPage({
 
 						<div className="flex-1 min-w-0">
 							<div className="mb-3 flex flex-wrap items-center gap-2">
-								<h1 className="text-2xl font-bold text-foreground">{user.id}</h1>
+								<h1 className="text-2xl font-bold text-foreground">
+									{user.id}
+								</h1>
 								<Badge
 									variant="secondary"
 									className="px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide"

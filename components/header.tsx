@@ -1,6 +1,7 @@
 "use client";
 
 import { Moon, RefreshCw, SlidersHorizontal, Sun, Zap } from "lucide-react";
+import Link from "next/link";
 import { useTheme } from "next-themes";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,13 +15,23 @@ interface HeaderProps {
 	filterActive?: boolean;
 }
 
-export function Header({ isRefreshing, onRefresh, storyCount, filterOpen, onToggleFilter, filterActive }: HeaderProps) {
+export function Header({
+	isRefreshing,
+	onRefresh,
+	storyCount,
+	filterOpen,
+	onToggleFilter,
+	filterActive,
+}: HeaderProps) {
 	const { theme, setTheme } = useTheme();
 
 	return (
 		<header className="sticky top-0 z-50 border-b border-border/60 bg-background/80 backdrop-blur-xl">
 			<div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
-				<div className="flex items-center gap-2.5">
+				<Link
+					href="/"
+					className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+				>
 					<div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
 						<Zap
 							className="h-4 w-4 text-primary-foreground"
@@ -37,7 +48,7 @@ export function Header({ isRefreshing, onRefresh, storyCount, filterOpen, onTogg
 							</span>
 						)}
 					</div>
-				</div>
+				</Link>
 
 				<div className="flex items-center gap-1">
 					{onToggleFilter && (

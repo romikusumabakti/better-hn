@@ -1,6 +1,6 @@
 "use client";
 
-import { Info } from "lucide-react";
+import { Info, RotateCcw } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -16,9 +16,12 @@ export interface FilterState {
 	query: string;
 }
 
+const DEFAULTS: FilterState = { alpha: 0.8, minScore: 0, query: "" };
+
 interface FilterPanelProps {
 	filters: FilterState;
 	onChange: (filters: FilterState) => void;
+	onReset: () => void;
 	totalCount: number;
 	visibleCount: number;
 }
@@ -26,14 +29,35 @@ interface FilterPanelProps {
 export function FilterPanel({
 	filters,
 	onChange,
+	onReset,
 	totalCount,
 	visibleCount,
 }: FilterPanelProps) {
 	const exampleScore = (100 + 50) / (6 + 2) ** filters.alpha;
+	const isModified =
+		filters.alpha !== DEFAULTS.alpha ||
+		filters.minScore !== DEFAULTS.minScore ||
+		filters.query !== DEFAULTS.query;
 
 	return (
 		<TooltipProvider>
-			<div className="rounded-xl border border-border bg-card p-4 shadow-sm">
+			<div className="animate-slide-down rounded-xl border border-border bg-card p-4 shadow-sm">
+				<div className="mb-3 flex items-center justify-between">
+					<span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+						Filters
+					</span>
+					{isModified && (
+						<button
+							type="button"
+							onClick={onReset}
+							className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+						>
+							<RotateCcw className="h-3 w-3" />
+							Reset
+						</button>
+					)}
+				</div>
+
 				<div className="grid gap-4 sm:grid-cols-3">
 					{/* Alpha */}
 					<div className="space-y-2.5">

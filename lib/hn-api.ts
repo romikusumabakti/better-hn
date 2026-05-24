@@ -146,9 +146,9 @@ export async function fetchCommentTree(
 	if (depth < maxDepth && comment.kids?.length) {
 		const limit = DEPTH_LIMITS[depth] ?? 3;
 		const children = await Promise.all(
-			comment.kids.slice(0, limit).map((kid) =>
-				fetchCommentTree(kid, depth + 1, maxDepth),
-			),
+			comment.kids
+				.slice(0, limit)
+				.map((kid) => fetchCommentTree(kid, depth + 1, maxDepth)),
 		);
 		comment.children = children.filter(Boolean) as HNComment[];
 	}
