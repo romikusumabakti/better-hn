@@ -113,6 +113,28 @@ export async function fetchComment(id: number): Promise<HNComment | null> {
 
 const DEPTH_LIMITS = [20, 8, 5, 3];
 
+export interface HNUser {
+	id: string;
+	created: number;
+	karma: number;
+	about?: string;
+	submitted?: number[];
+	delay?: number;
+}
+
+export async function fetchUser(id: string): Promise<HNUser | null> {
+	try {
+		const res = await fetch(`${HN_BASE}/user/${id}.json`, {
+			next: { revalidate: 300 },
+		});
+		const user = await res.json();
+		if (!user) return null;
+		return user as HNUser;
+	} catch {
+		return null;
+	}
+}
+
 export async function fetchCommentTree(
 	id: number,
 	depth = 0,

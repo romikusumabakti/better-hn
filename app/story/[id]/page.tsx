@@ -176,15 +176,13 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							<Clock className="h-3.5 w-3.5" />
 							<span>{formatTime(hoursAgo)}</span>
 						</span>
-						<a
-							href={`https://news.ycombinator.com/user?id=${story.by}`}
-							target="_blank"
-							rel="noopener noreferrer"
+						<Link
+							href={`/user/${story.by}`}
 							className="flex items-center gap-1.5 transition-colors hover:text-foreground"
 						>
 							<User className="h-3.5 w-3.5" />
 							<span>{story.by}</span>
-						</a>
+						</Link>
 						<a
 							href={hnUrl}
 							target="_blank"

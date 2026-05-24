@@ -117,15 +117,13 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 							<span>{formatTime(story.hoursAgo)}</span>
 						</span>
 
-						<a
-							href={`https://news.ycombinator.com/user?id=${story.by}`}
-							target="_blank"
-							rel="noopener noreferrer"
+						<Link
+							href={`/user/${story.by}`}
 							className="relative z-10 flex items-center gap-1 hover:text-foreground transition-colors"
 						>
 							<User className="h-3 w-3" />
 							<span>{story.by}</span>
-						</a>
+						</Link>
 					</div>
 				</div>
 			</div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ChevronDown, ChevronRight, Clock, User } from "lucide-react";
 import type { HNComment } from "@/lib/hn-api";
 import { cn } from "@/lib/utils";
@@ -42,16 +43,14 @@ export function Comment({ comment, depth }: CommentProps) {
 						<ChevronDown className="h-3 w-3 shrink-0" />
 					)}
 				</button>
-				<a
-					href={`https://news.ycombinator.com/user?id=${comment.by}`}
-					target="_blank"
-					rel="noopener noreferrer"
+				<Link
+					href={`/user/${comment.by}`}
 					className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors font-medium"
 					onClick={(e) => e.stopPropagation()}
 				>
 					<User className="h-3 w-3" />
 					{comment.by}
-				</a>
+				</Link>
 				<span className="flex items-center gap-1 text-xs text-muted-foreground/60">
 					<Clock className="h-3 w-3" />
 					{formatTime(hoursAgo)}
