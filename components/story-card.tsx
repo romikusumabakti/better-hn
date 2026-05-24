@@ -85,28 +85,26 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 						)}
 					</div>
 
-					<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-base">
+					<h2 className="text-base font-semibold leading-snug text-foreground transition-colors group-hover:text-primary sm:text-lg">
 						{story.title}
 						{story.url && (
-							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:opacity-100 group-hover:text-primary group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
 						)}
 					</h2>
 
 					{/* Meta row */}
-					<div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
 						<ScoreBadge score={story.computedScore} />
-						<span className="text-border select-none">·</span>
 						<span className="font-mono">{story.score} pts</span>
-						<span className="text-border select-none">·</span>
 						<Link
 							href={`/story/${story.id}`}
 							className="relative z-10 hover:text-foreground transition-colors"
 						>
 							{story.descendants ?? 0} comments
 						</Link>
-						<span className="text-border select-none">·</span>
-						<span>{formatTime(story.hoursAgo)}</span>
-						<span className="text-border select-none">·</span>
+						<time dateTime={new Date(story.time * 1000).toISOString()}>
+							{formatTime(story.hoursAgo)}
+						</time>
 						<Link
 							href={`/user/${story.by}`}
 							className="relative z-10 hover:text-foreground transition-colors"

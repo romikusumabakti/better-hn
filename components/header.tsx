@@ -38,14 +38,17 @@ export function Header({
 							strokeWidth={2.5}
 						/>
 					</div>
-					<div className="flex items-baseline gap-1.5">
+					<div className="flex items-center gap-2">
 						<span className="font-semibold tracking-tight text-foreground">
 							Better HN
 						</span>
 						{storyCount !== undefined && (
-							<span className="font-mono text-xs text-muted-foreground">
-								{storyCount} stories
-							</span>
+							<>
+								<span className="h-3.5 w-px bg-border" aria-hidden />
+								<span className="font-mono text-xs text-muted-foreground tabular-nums">
+									{storyCount}
+								</span>
+							</>
 						)}
 					</div>
 				</Link>

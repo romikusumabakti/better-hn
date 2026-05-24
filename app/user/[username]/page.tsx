@@ -11,7 +11,6 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { Header } from "@/components/header";
-import { Badge } from "@/components/ui/badge";
 import { fetchStoriesBatch, fetchUser } from "@/lib/hn-api";
 import { formatTime } from "@/lib/utils";
 
@@ -118,6 +117,7 @@ function SubmissionsSkeleton() {
 	return (
 		<div className="divide-y divide-border">
 			{Array.from({ length: 5 }).map((_, i) => (
+				// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
 				<div key={i} className="animate-pulse py-3.5">
 					<div className="mb-2 h-4 w-4/5 rounded bg-muted" />
 					<div className="h-3 w-1/3 rounded bg-muted" />
@@ -161,16 +161,10 @@ export default async function UserPage({
 						</div>
 
 						<div className="flex-1 min-w-0">
-							<div className="mb-3 flex flex-wrap items-center gap-2">
+							<div className="mb-3">
 								<h1 className="text-2xl font-bold text-foreground">
 									{user.id}
 								</h1>
-								<Badge
-									variant="secondary"
-									className="px-1.5 py-0.5 text-xs font-semibold uppercase tracking-wide"
-								>
-									HN Member
-								</Badge>
 							</div>
 
 							<div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-muted-foreground">

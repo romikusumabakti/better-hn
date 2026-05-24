@@ -43,6 +43,7 @@ function CommentsSkeleton() {
 	return (
 		<div className="space-y-5">
 			{Array.from({ length: 6 }).map((_, i) => (
+				// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
 				<div key={i} className="animate-pulse">
 					<div className="mb-2 flex items-center gap-2">
 						<div className="h-3 w-3 rounded bg-muted" />
@@ -64,7 +65,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 	const { id } = await props.params;
 	const storyId = parseInt(id, 10);
 
-	if (isNaN(storyId)) notFound();
+	if (Number.isNaN(storyId)) notFound();
 
 	const story = await fetchStory(storyId);
 	if (!story) notFound();
@@ -163,7 +164,9 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 						</span>
 						<span className="flex items-center gap-1.5">
 							<Clock className="h-3.5 w-3.5" />
-							<span>{formatTime(hoursAgo)}</span>
+							<time dateTime={new Date(story.time * 1000).toISOString()}>
+								{formatTime(hoursAgo)}
+							</time>
 						</span>
 						<Link
 							href={`/user/${story.by}`}

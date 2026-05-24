@@ -22,6 +22,7 @@ export default function Loading() {
 				<div className="mb-4 h-5 w-28 animate-pulse rounded bg-muted" />
 				<div className="space-y-5">
 					{Array.from({ length: 6 }).map((_, i) => (
+						// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
 						<div key={i} className="animate-pulse">
 							<div className="mb-2 flex items-center gap-2">
 								<div className="h-3 w-3 rounded bg-muted" />

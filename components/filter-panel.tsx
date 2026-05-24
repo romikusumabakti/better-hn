@@ -42,7 +42,7 @@ export function FilterPanel({
 		<TooltipProvider>
 			<div className="animate-slide-down rounded-xl border border-border bg-card p-4 shadow-sm">
 				<div className="mb-3 flex items-center justify-between">
-					<span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+					<span className="text-sm font-medium text-muted-foreground">
 						Filters
 					</span>
 					{isModified && (

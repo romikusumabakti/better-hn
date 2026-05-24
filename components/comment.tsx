@@ -45,10 +45,13 @@ export function Comment({ comment, depth }: CommentProps) {
 					<User className="h-3 w-3" />
 					{comment.by}
 				</Link>
-				<span className="flex items-center gap-1 text-xs text-muted-foreground/60">
+				<time
+					dateTime={new Date(comment.time * 1000).toISOString()}
+					className="flex items-center gap-1 text-xs text-muted-foreground/60"
+				>
 					<Clock className="h-3 w-3" />
 					{formatTime(hoursAgo)}
-				</span>
+				</time>
 				{collapsed && comment.children.length > 0 && (
 					<span className="text-xs text-muted-foreground/50">
 						[{comment.children.length}{" "}
