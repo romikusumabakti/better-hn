@@ -3,8 +3,6 @@ import { fetchStoriesBatch, fetchTopStoryIds } from "@/lib/hn-api";
 const STORY_LIMIT = 200;
 const BATCH_SIZE = 25;
 
-export const revalidate = 90;
-
 export async function GET() {
 	try {
 		const ids = await fetchTopStoryIds(STORY_LIMIT);
@@ -26,7 +24,7 @@ export async function GET() {
 
 		return Response.json(stories, {
 			headers: {
-				"Cache-Control": "public, s-maxage=90, stale-while-revalidate=180",
+				"Cache-Control": "no-store",
 			},
 		});
 	} catch (error) {
