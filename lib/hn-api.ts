@@ -84,3 +84,52 @@ export function scoreStories(stories: HNStory[], alpha: number): ScoredStory[] {
 		domain: extractDomain(s.url),
 	}));
 }
+
+export interface HNComment {
+	id: number;
+	type: "comment";
+	by: string;
+	time: number;
+	text?: string;
+	parent: number;
+	kids?: number[];
+	deleted?: boolean;
+	dead?: boolean;
+	children: HNComment[];
+}
+
+export async function fetchComment(id: number): Promise<HNComment | null> {
+	try {
+		const res = await fetch(`${HN_BASE}/item/${id}.json`, {
+			next: { revalidate: 60 },
+		});
+		const item = await res.json();
+		if (!item || item.deleted || item.dead) return null;
+		return { ...item, children: [] };
+	} catch {
+		return null;
+	}
+}
+
+const DEPTH_LIMITS = [20, 8, 5, 3];
+
+export async function fetchCommentTree(
+	id: number,
+	depth = 0,
+	maxDepth = 3,
+): Promise<HNComment | null> {
+	const comment = await fetchComment(id);
+	if (!comment) return null;
+
+	if (depth < maxDepth && comment.kids?.length) {
+		const limit = DEPTH_LIMITS[depth] ?? 3;
+		const children = await Promise.all(
+			comment.kids.slice(0, limit).map((kid) =>
+				fetchCommentTree(kid, depth + 1, maxDepth),
+			),
+		);
+		comment.children = children.filter(Boolean) as HNComment[];
+	}
+
+	return comment;
+}

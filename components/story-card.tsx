@@ -8,6 +8,7 @@ import {
 	Triangle,
 	User,
 } from "lucide-react";
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
 
@@ -40,7 +41,6 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
 
 	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
-	const storyUrl = story.url ?? hnUrl;
 
 	return (
 		<article className="group relative rounded-xl border border-border bg-card transition-all duration-200 hover:border-border/80 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20 animate-fade-in">
@@ -76,10 +76,8 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 						)}
 					</div>
 
-					<a
-						href={storyUrl}
-						target="_blank"
-						rel="noopener noreferrer"
+					<Link
+						href={`/story/${story.id}`}
 						className="group/title inline"
 					>
 						<h2 className="text-sm font-semibold leading-snug text-foreground transition-colors group-hover/title:text-primary sm:text-base">
@@ -88,7 +86,7 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 								<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50 transition-all group-hover/title:text-primary group-hover/title:translate-x-0.5 group-hover/title:-translate-y-0.5" />
 							)}
 						</h2>
-					</a>
+					</Link>
 
 					{/* Meta row */}
 					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
