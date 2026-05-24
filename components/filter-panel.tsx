@@ -1,6 +1,7 @@
 "use client";
 
 import { Info, RotateCcw, X } from "lucide-react";
+import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -35,6 +36,51 @@ export function FilterPanel({
 	visibleCount,
 	onClose,
 }: FilterPanelProps) {
+	const panelRef = useRef<HTMLDivElement>(null);
+	const onCloseRef = useRef(onClose);
+	onCloseRef.current = onClose;
+
+	useEffect(() => {
+		const panel = panelRef.current;
+		if (!panel) return;
+
+		panel.focus();
+
+		const FOCUSABLE =
+			'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") {
+				e.preventDefault();
+				onCloseRef.current?.();
+				return;
+			}
+			if (e.key !== "Tab") return;
+
+			const focusable = Array.from(
+				panel.querySelectorAll<HTMLElement>(FOCUSABLE),
+			);
+			if (focusable.length === 0) return;
+
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+
+			if (e.shiftKey && document.activeElement === first) {
+				e.preventDefault();
+				last.focus();
+			} else if (!e.shiftKey && document.activeElement === last) {
+				e.preventDefault();
+				first.focus();
+			}
+		};
+
+		panel.addEventListener("keydown", handleKeyDown);
+		return () => {
+			panel.removeEventListener("keydown", handleKeyDown);
+			document.getElementById("filter-toggle")?.focus();
+		};
+	}, []);
+
 	const isModified =
 		filters.alpha !== DEFAULTS.alpha ||
 		filters.minScore !== DEFAULTS.minScore ||
@@ -42,7 +88,15 @@ export function FilterPanel({
 
 	return (
 		<TooltipProvider>
-			<div className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm">
+			<div
+				id="filter-panel"
+				ref={panelRef}
+				role="dialog"
+				aria-label="Filters"
+				aria-modal="true"
+				tabIndex={-1}
+				className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up outline-none sm:static sm:max-h-none sm:overflow-y-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-sm"
+			>
 				{/* Mobile drag handle */}
 				<div className="mx-auto mb-4 h-1 w-8 rounded-full bg-border sm:hidden" />
 

@@ -7,12 +7,27 @@ import {
 	ExternalLink,
 	FileText,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, ViewTransition } from "react";
 import { Header } from "@/components/header";
 import { fetchStoriesBatch, fetchUser } from "@/lib/hn-api";
 import { formatTime } from "@/lib/utils";
+
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ username: string }>;
+}): Promise<Metadata> {
+	const { username } = await params;
+	const user = await fetchUser(username);
+	if (!user) return {};
+	return {
+		title: `${user.id} — Better HN`,
+		description: `${user.karma.toLocaleString()} karma · Hacker News profile`,
+	};
+}
 
 const AVATAR_PALETTES = [
 	"bg-blue-500/15 text-blue-600 dark:text-blue-400",
@@ -145,7 +160,7 @@ export default async function UserPage({
 			exit={{ "nav-back": "nav-back", default: "none" }}
 			default="none"
 		>
-		<div className="min-h-screen bg-background">
+		<div className="min-h-dvh bg-background">
 			<Header />
 			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
 				<Link

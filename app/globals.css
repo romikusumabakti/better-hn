@@ -92,6 +92,16 @@ body {
 	background: oklch(0.72 0.19 32 / 0.25);
 }
 
+kbd {
+	font-family: var(--font-geist-mono, monospace);
+	font-size: 0.75em;
+	background: var(--muted);
+	border: 1px solid var(--border);
+	border-radius: 3px;
+	padding: 0.1em 0.4em;
+	line-height: 1;
+}
+
 /* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
 .card-enter {
 	transition:

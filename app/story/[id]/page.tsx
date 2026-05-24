@@ -7,6 +7,7 @@ import {
 	Triangle,
 	User,
 } from "lucide-react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense, ViewTransition } from "react";
@@ -16,6 +17,23 @@ import { Badge } from "@/components/ui/badge";
 import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
 import { formatTime } from "@/lib/utils";
+
+export async function generateMetadata(
+	props: PageProps<"/story/[id]">,
+): Promise<Metadata> {
+	const { id } = await props.params;
+	const storyId = parseInt(id, 10);
+	if (Number.isNaN(storyId)) return {};
+	const story = await fetchStory(storyId);
+	if (!story) return {};
+	const desc = `${story.score} pts · ${story.descendants ?? 0} comments · by ${story.by}`;
+	return {
+		title: `${story.title} — Better HN`,
+		description: desc,
+		openGraph: { title: story.title, description: desc },
+		twitter: { card: "summary", title: story.title, description: desc },
+	};
+}
 
 const TOP_COMMENTS_LIMIT = 20;
 
@@ -119,7 +137,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 			exit={{ "nav-back": "nav-back", default: "none" }}
 			default="none"
 		>
-		<div className="min-h-screen bg-background">
+		<div className="min-h-dvh bg-background">
 			<Header />
 			<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
 				<Link

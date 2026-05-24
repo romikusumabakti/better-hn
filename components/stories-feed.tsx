@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, SearchX } from "lucide-react";
+import { AlertCircle, Loader2, SearchX } from "lucide-react";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
@@ -231,13 +231,30 @@ export function StoriesFeed() {
 					)}
 
 					{hasMore && (
-						<div ref={sentinelRef} className="h-1" aria-hidden />
+						<div
+							ref={sentinelRef}
+							className="flex justify-center py-8 text-muted-foreground/30"
+							aria-hidden
+						>
+							<Loader2 className="h-4 w-4 animate-spin" />
+						</div>
 					)}
 
 					{!hasMore && visible.length > 0 && (
-						<p className="pb-8 pt-2 text-center text-xs text-muted-foreground/50">
-							{filtered.length} stories
-						</p>
+						<>
+							<p className="pt-2 text-center text-xs text-muted-foreground/50">
+								{filtered.length} stories
+							</p>
+							<div
+								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
+								aria-hidden
+							>
+								<span><kbd>j</kbd> / <kbd>k</kbd> navigate</span>
+								<span><kbd>o</kbd> open link</span>
+								<span><kbd>c</kbd> comments</span>
+								<span><kbd>?</kbd> filters</span>
+							</div>
+						</>
 					)}
 				</main>
 			</div>
