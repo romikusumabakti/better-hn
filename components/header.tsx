@@ -63,7 +63,7 @@ export function Header({ isRefreshing, onRefresh, storyCount, filterOpen, onTogg
 							size="icon"
 							onClick={onRefresh}
 							disabled={isRefreshing}
-							className="h-8 w-8 text-muted-foreground hover:text-foreground"
+							className="hidden sm:inline-flex h-8 w-8 text-muted-foreground hover:text-foreground"
 						>
 							<RefreshCw
 								className={cn("h-4 w-4", isRefreshing && "animate-spin")}

@@ -5,6 +5,7 @@ import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
+import { PullToRefresh } from "@/components/pull-to-refresh";
 import { StoryCard } from "@/components/story-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -103,6 +104,7 @@ export function StoriesFeed() {
 	const hasMore = visible.length < filtered.length;
 
 	return (
+		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
 		<div className="flex min-h-dvh flex-col">
 			<Header
 				isRefreshing={isValidating}
@@ -177,5 +179,6 @@ export function StoriesFeed() {
 				)}
 			</main>
 		</div>
+		</PullToRefresh>
 	);
 }
