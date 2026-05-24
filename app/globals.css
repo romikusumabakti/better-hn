@@ -31,6 +31,7 @@
 }
 
 :root {
+	interpolate-size: allow-keywords;
 	--radius: 0.625rem;
 
 	--background: oklch(0.955 0.002 264);
@@ -204,6 +205,64 @@ kbd {
 	animation:
 		200ms ease-out 150ms both vt-fade,
 		350ms ease-in-out both vt-slide-x;
+}
+
+/* ─── Backdrop overlay (CSS-native, replaces framer) ─── */
+.backdrop-overlay {
+	display: block;
+	opacity: 1;
+	transition: opacity 0.2s ease, display 0.2s allow-discrete;
+}
+.backdrop-overlay[hidden] {
+	display: none;
+	opacity: 0;
+}
+@starting-style {
+	.backdrop-overlay:not([hidden]) {
+		opacity: 0;
+	}
+}
+
+/* ─── Toast pill (CSS-native, replaces framer) ─── */
+.toast-pill {
+	display: block;
+	opacity: 1;
+	transform: translateY(0) scale(1);
+	transition:
+		opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+		display 0.18s allow-discrete;
+}
+.toast-pill[hidden] {
+	display: none;
+	opacity: 0;
+	transform: translateY(8px) scale(0.96);
+}
+@starting-style {
+	.toast-pill:not([hidden]) {
+		opacity: 0;
+		transform: translateY(8px) scale(0.96);
+	}
+}
+
+/* ─── Comment collapse (CSS-native, replaces framer) ─── */
+.comment-body {
+	height: auto;
+	overflow: hidden;
+	opacity: 1;
+	transition:
+		height 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+		opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+}
+[data-collapsed] .comment-body {
+	height: 0;
+	opacity: 0;
+}
+.comment-chevron {
+	transition: rotate 0.15s ease;
+}
+[data-collapsed] .comment-chevron {
+	rotate: -90deg;
 }
 
 /* ─── Reduced motion ─── */

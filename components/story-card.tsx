@@ -65,7 +65,7 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
 				<div className="flex shrink-0">
-					<span className="mt-0.5 w-5 text-right font-mono text-xs font-medium text-muted-foreground/50">
+					<span className="mt-0.5 w-5 text-right font-mono text-xs font-medium text-muted-foreground/70">
 						{rank}
 					</span>
 				</div>
