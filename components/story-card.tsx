@@ -4,12 +4,12 @@ import {
 	ArrowUpRight,
 	Clock,
 	MessageSquare,
+	Sparkles,
 	Triangle,
 	User,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
-import { cn } from "@/lib/utils";
 
 interface StoryCardProps {
 	story: ScoredStory;
@@ -28,25 +28,6 @@ function formatTime(hoursAgo: number): string {
 	return `${days}d ago`;
 }
 
-function getScoreColor(score: number): string {
-	if (score >= 200) return "text-rose-500 dark:text-rose-400";
-	if (score >= 80) return "text-orange-500 dark:text-orange-400";
-	if (score >= 30) return "text-amber-500 dark:text-amber-400";
-	if (score >= 10) return "text-emerald-500 dark:text-emerald-400";
-	return "text-blue-500 dark:text-blue-400";
-}
-
-function getScoreBg(score: number): string {
-	if (score >= 200)
-		return "bg-rose-500/10 border-rose-500/20 dark:bg-rose-500/15";
-	if (score >= 80)
-		return "bg-orange-500/10 border-orange-500/20 dark:bg-orange-500/15";
-	if (score >= 30)
-		return "bg-amber-500/10 border-amber-500/20 dark:bg-amber-500/15";
-	if (score >= 10)
-		return "bg-emerald-500/10 border-emerald-500/20 dark:bg-emerald-500/15";
-	return "bg-blue-500/10 border-blue-500/20 dark:bg-blue-500/15";
-}
 
 function getTypeLabel(story: ScoredStory): string | null {
 	if (story.title.startsWith("Ask HN:")) return "Ask";
@@ -57,7 +38,6 @@ function getTypeLabel(story: ScoredStory): string | null {
 
 export function StoryCard({ story, rank }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
-	const scoreStr = story.computedScore.toFixed(1);
 
 	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
 	const storyUrl = story.url ?? hnUrl;
@@ -70,28 +50,6 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 					<span className="mt-0.5 font-mono text-xs font-medium text-muted-foreground/60 w-5 text-right">
 						{rank}
 					</span>
-				</div>
-
-				{/* Score badge */}
-				<div className="flex shrink-0 flex-col items-center gap-0.5">
-					<div
-						className={cn(
-							"flex min-w-[3.25rem] flex-col items-center justify-center rounded-lg border px-2 py-1.5",
-							getScoreBg(story.computedScore),
-						)}
-					>
-						<span
-							className={cn(
-								"font-mono text-sm font-bold leading-none",
-								getScoreColor(story.computedScore),
-							)}
-						>
-							{scoreStr}
-						</span>
-						<span className="mt-0.5 text-[9px] uppercase tracking-wide text-muted-foreground">
-							score
-						</span>
-					</div>
 				</div>
 
 				{/* Content */}
@@ -134,6 +92,10 @@ export function StoryCard({ story, rank }: StoryCardProps) {
 
 					{/* Meta row */}
 					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+						<span className="flex items-center gap-1">
+							<Sparkles className="h-3 w-3" />
+							<span className="font-mono font-medium">{story.computedScore.toFixed(1)}</span>
+						</span>
 						<span className="flex items-center gap-1">
 							<Triangle className="h-3 w-3 fill-current" />
 							<span className="font-mono font-medium">{story.score}</span>

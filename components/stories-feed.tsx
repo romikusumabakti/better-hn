@@ -26,7 +26,6 @@ function StorySkeleton() {
 		<div className="rounded-xl border border-border bg-card p-4">
 			<div className="flex gap-3">
 				<div className="hidden shrink-0 sm:block w-5" />
-				<Skeleton className="mt-0.5 h-[52px] w-[52px] shrink-0 rounded-lg" />
 				<div className="min-w-0 flex-1 space-y-2">
 					<div className="flex gap-1.5">
 						<Skeleton className="h-4 w-10 rounded" />
@@ -35,6 +34,7 @@ function StorySkeleton() {
 					<Skeleton className="h-4 w-4/5 rounded" />
 					<Skeleton className="h-4 w-2/5 rounded" />
 					<div className="flex gap-3">
+						<Skeleton className="h-3 w-8 rounded" />
 						<Skeleton className="h-3 w-12 rounded" />
 						<Skeleton className="h-3 w-16 rounded" />
 						<Skeleton className="h-3 w-10 rounded" />
