@@ -19,9 +19,7 @@ interface HeaderProps {
 	onRefresh?: () => void;
 	storyCount?: number;
 	filterOpen?: boolean;
-	onToggleFilter?: () => void;
 	filterActive?: boolean;
-	filterPanel?: React.ReactNode;
 }
 
 export function Header({
@@ -29,9 +27,7 @@ export function Header({
 	onRefresh,
 	storyCount,
 	filterOpen,
-	onToggleFilter,
 	filterActive,
-	filterPanel,
 }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
@@ -82,28 +78,27 @@ export function Header({
 				</Link>
 
 				<div className="flex items-center gap-1">
-					{onToggleFilter && (
-						<div className="relative">
-							<Button
-								id="filter-toggle"
-								variant="ghost"
-								size="icon"
-								onClick={onToggleFilter}
-								aria-expanded={filterOpen}
-								aria-haspopup="dialog"
-								className={cn(
-									"relative h-8 w-8 text-muted-foreground hover:text-foreground",
-									filterOpen && "text-foreground bg-accent",
-								)}
-							>
-								<SlidersHorizontal className="h-4 w-4" />
-								{filterActive && (
-									<span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
-								)}
-								<span className="sr-only">Toggle filters (press ?)</span>
-							</Button>
-							<div className="hidden sm:block">{filterPanel}</div>
-						</div>
+					{filterActive !== undefined && (
+						<Button
+							id="filter-toggle"
+							variant="ghost"
+							size="icon"
+							aria-expanded={filterOpen}
+							aria-haspopup="dialog"
+							aria-controls="filter-panel"
+							popovertarget="filter-panel"
+							popovertargetaction="toggle"
+							className={cn(
+								"relative h-8 w-8 text-muted-foreground hover:text-foreground",
+								filterOpen && "text-foreground bg-accent",
+							)}
+						>
+							<SlidersHorizontal className="h-4 w-4" />
+							{filterActive && (
+								<span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+							)}
+							<span className="sr-only">Toggle filters (press ?)</span>
+						</Button>
 					)}
 					{onRefresh && (
 						<Button

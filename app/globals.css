@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@utility text-fluid-card-title {
+  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  line-height: 1.35;
+}
+
+@utility text-fluid-page-title {
+  font-size: clamp(1.375rem, 1.15rem + 1.125vw, 1.875rem);
+  line-height: 1.2;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -307,6 +317,104 @@ kbd {
 	}
 }
 
+/* ─── Filter panel (popover) ─── */
+@keyframes panel-up {
+	from { opacity: 0; transform: translateY(40%); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes panel-drop {
+	from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+	to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+#filter-panel {
+	/* Override UA popover centering — mobile: bottom sheet */
+	position: fixed;
+	inset: auto 0 0 0;
+	margin: 0;
+	border: none;
+	border-top: 1px solid var(--border);
+	border-radius: 1rem 1rem 0 0;
+	padding: 1.25rem;
+	padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+	max-height: 85dvh;
+	overflow-y: auto;
+	width: 100%;
+	box-shadow: 0 -8px 30px oklch(0 0 0 / 0.12);
+
+	/* Exit target (mobile) */
+	opacity: 0;
+	transform: translateY(40%);
+	transition:
+		opacity 0.2s ease,
+		transform 0.2s ease,
+		overlay 0.22s allow-discrete,
+		display 0.22s allow-discrete;
+}
+
+#filter-panel:popover-open {
+	opacity: 1;
+	transform: translateY(0);
+	animation: panel-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+}
+
+#filter-panel::backdrop {
+	background: oklch(0 0 0 / 0.4);
+	opacity: 0;
+	transition: opacity 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+}
+
+#filter-panel:popover-open::backdrop {
+	opacity: 1;
+}
+
+@media (min-width: 640px) {
+	#filter-panel {
+		inset: auto;
+		border: 1px solid var(--border);
+		border-radius: 0.75rem;
+		padding: 1rem;
+		max-height: none;
+		overflow: visible;
+		width: 24rem;
+		box-shadow:
+			0 10px 38px oklch(0 0 0 / 0.1),
+			0 4px 12px oklch(0 0 0 / 0.08);
+		transform-origin: top right;
+		/* Exit target (desktop) */
+		transform: scale(0.95) translateY(-6px);
+	}
+
+	#filter-panel:popover-open {
+		animation: panel-drop 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
+	}
+
+	/* CSS Anchor Positioning (Baseline 2024, widely supported in 2026) */
+	@supports (anchor-name: --test) {
+		#filter-toggle {
+			anchor-name: --filter-btn;
+		}
+		#filter-panel {
+			position-anchor: --filter-btn;
+			top: calc(anchor(bottom) + 0.5rem);
+			right: anchor(right);
+		}
+	}
+
+	/* Fallback: fixed position near top-right of page (header is 56px tall) */
+	@supports not (anchor-name: --test) {
+		#filter-panel {
+			top: 3.875rem;
+			right: 0.5rem;
+		}
+	}
+
+	#filter-panel::backdrop {
+		display: none;
+	}
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
 	.nav-progress {
@@ -329,5 +437,11 @@ kbd {
 			opacity: 1;
 			transform: none;
 		}
+	}
+
+	#filter-panel,
+	#filter-panel:popover-open {
+		animation: none;
+		transition: display 0s allow-discrete, overlay 0s allow-discrete;
 	}
 }

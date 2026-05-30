@@ -124,7 +124,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 					<Link
 						href="/"
 						transitionTypes={["nav-back"]}
-						className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+						className="mb-6 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground -ml-2.5"
 					>
 						<ArrowLeft className="h-4 w-4" />
 						Back to feed
@@ -153,7 +153,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							)}
 						</div>
 
-						<h1 className="mb-4 text-2xl font-bold leading-snug text-balance text-foreground sm:text-3xl">
+						<h1 className="mb-4 text-fluid-page-title font-bold text-balance text-foreground">
 							{story.url ? (
 								<a
 									href={story.url}

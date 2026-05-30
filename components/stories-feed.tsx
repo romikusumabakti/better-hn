@@ -90,7 +90,7 @@ export function StoriesFeed() {
 		} catch {}
 	}, []);
 
-	const [showFilters, setShowFilters] = useState(false);
+	const [filterOpen, setFilterOpen] = useState(false);
 	const [page, setPage] = useState(1);
 	const [liveMsg, setLiveMsg] = useState("");
 
@@ -213,7 +213,17 @@ export function StoriesFeed() {
 				const story = visible[activeIndex];
 				if (story) window.location.href = `/story/${story.id}`;
 			} else if (e.key === "?") {
-				setShowFilters((v) => !v);
+				const panel = document.getElementById("filter-panel") as
+					| (HTMLElement & {
+							showPopover(): void;
+							hidePopover(): void;
+					  })
+					| null;
+				if (panel?.matches(":popover-open")) {
+					panel.hidePopover();
+				} else {
+					panel?.showPopover();
+				}
 			}
 		};
 		window.addEventListener("keydown", onKey);
@@ -247,161 +257,149 @@ export function StoriesFeed() {
 	}, [hasMore, isLoading]);
 
 	return (
-		<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
-			<div className="relative flex min-h-dvh flex-col">
-				<ScrollToTop />
-				<Header
-					isRefreshing={isValidating}
-					onRefresh={() => mutate()}
-					storyCount={filtered.length}
-					filterOpen={showFilters}
-					onToggleFilter={() => setShowFilters((v) => !v)}
-					filterActive={isFilterActive}
-					filterPanel={
-						showFilters ? (
-							<FilterPanel
-								filters={filters}
-								onChange={handleFiltersChange}
-								onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
-								totalCount={scored.length}
-								visibleCount={filtered.length}
-								onClose={() => setShowFilters(false)}
-							/>
-						) : undefined
-					}
-				/>
+		<>
+			{/* Blocks clicks through ::backdrop on mobile (popover is non-modal by spec) */}
+			<div
+				hidden={!filterOpen}
+				className="fixed inset-0 z-30 sm:hidden"
+				aria-hidden="true"
+			/>
+			<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
+				<div className="relative flex min-h-dvh flex-col">
+					<ScrollToTop />
+					<Header
+						isRefreshing={isValidating}
+						onRefresh={() => mutate()}
+						storyCount={filtered.length}
+						filterOpen={filterOpen}
+						filterActive={isFilterActive}
+					/>
 
-				{/* Mobile backdrop + bottom sheet (outside header to avoid backdrop-filter containing block) */}
-				<div
-					hidden={!showFilters}
-					className="backdrop-overlay fixed inset-0 z-30 bg-black/40 sm:hidden"
-					onClick={() => setShowFilters(false)}
-					aria-hidden
-				/>
-				{showFilters && (
-					<div className="sm:hidden">
-						<FilterPanel
-							id="filter-panel-mobile"
-							filters={filters}
-							onChange={handleFiltersChange}
-							onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
-							totalCount={scored.length}
-							visibleCount={filtered.length}
-							onClose={() => setShowFilters(false)}
-						/>
-					</div>
-				)}
+					<main
+						id="main-content"
+						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
+					>
+						{error && (
+							<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+								<AlertCircle className="h-4 w-4 shrink-0" />
+								Failed to load stories. Check your connection and try
+								refreshing.
+							</div>
+						)}
 
-				<main
-					id="main-content"
-					className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
-				>
-					{error && (
-						<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-							<AlertCircle className="h-4 w-4 shrink-0" />
-							Failed to load stories. Check your connection and try refreshing.
-						</div>
-					)}
+						{isLoading && (
+							<div className="space-y-3">
+								{Array.from({ length: 12 }).map((_, i) => (
+									// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
+									<StorySkeleton key={i} />
+								))}
+							</div>
+						)}
 
-					{isLoading && (
-						<div className="space-y-3">
-							{Array.from({ length: 12 }).map((_, i) => (
-								// biome-ignore lint/suspicious/noArrayIndexKey: skeletons have no identity
-								<StorySkeleton key={i} />
-							))}
-						</div>
-					)}
+						{!isLoading && filtered.length === 0 && !error && (
+							<div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
+								<SearchX className="h-8 w-8 text-muted-foreground/40" />
+								<p className="text-base font-medium text-muted-foreground">
+									No stories match your filters.
+								</p>
+								<p className="text-sm text-muted-foreground/60">
+									Try lowering the minimum score or clearing the keyword.
+								</p>
+							</div>
+						)}
 
-					{!isLoading && filtered.length === 0 && !error && (
-						<div className="flex flex-col items-center justify-center gap-3 py-20 text-center">
-							<SearchX className="h-8 w-8 text-muted-foreground/40" />
-							<p className="text-base font-medium text-muted-foreground">
-								No stories match your filters.
-							</p>
-							<p className="text-sm text-muted-foreground/60">
-								Try lowering the minimum score or clearing the keyword.
-							</p>
-						</div>
-					)}
+						{!isLoading && visible.length > 0 && (
+							<div className="space-y-3">
+								{visible.map((story, i) => (
+									<div
+										key={story.id}
+										ref={i === activeIndex ? activeRef : null}
+										style={
+											{
+												"--card-index": Math.min(i, 8),
+												contentVisibility: "auto",
+												containIntrinsicSize: "auto 88px",
+											} as React.CSSProperties
+										}
+									>
+										<StoryCard
+											story={story}
+											rank={i + 1}
+											isActive={i === activeIndex}
+										/>
+									</div>
+								))}
+							</div>
+						)}
 
-					{!isLoading && visible.length > 0 && (
-						<div className="space-y-3">
-							{visible.map((story, i) => (
-								<div
-									key={story.id}
-									ref={i === activeIndex ? activeRef : null}
-									style={
-										{ "--card-index": Math.min(i, 8) } as React.CSSProperties
-									}
-								>
-									<StoryCard
-										story={story}
-										rank={i + 1}
-										isActive={i === activeIndex}
-									/>
-								</div>
-							))}
-						</div>
-					)}
-
-					{hasMore && (
-						<div
-							ref={sentinelRef}
-							className="flex justify-center py-8 text-muted-foreground/30"
-							aria-hidden
-						>
-							<Loader2 className="h-4 w-4 animate-spin" />
-						</div>
-					)}
-
-					{!hasMore && visible.length > 0 && (
-						<>
-							<p className="pt-2 text-center text-xs text-muted-foreground/50">
-								{filtered.length} stories
-							</p>
+						{hasMore && (
 							<div
-								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
+								ref={sentinelRef}
+								className="flex justify-center py-8 text-muted-foreground/30"
 								aria-hidden
 							>
-								<span>
-									<kbd>j</kbd> / <kbd>k</kbd> navigate
-								</span>
-								<span>
-									<kbd>o</kbd> open link
-								</span>
-								<span>
-									<kbd>c</kbd> comments
-								</span>
-								<span>
-									<kbd>?</kbd> filters
-								</span>
+								<Loader2 className="h-4 w-4 animate-spin" />
 							</div>
-						</>
-					)}
-				</main>
+						)}
 
-				{/* Screen-reader announcements (always in DOM for aria-live to work) */}
-				<div role="status" aria-live="polite" className="sr-only">
-					{toastMsg}
-				</div>
-				<div
-					role="status"
-					aria-live="polite"
-					aria-atomic="true"
-					className="sr-only"
-				>
-					{liveMsg}
-				</div>
+						{!hasMore && visible.length > 0 && (
+							<>
+								<p className="pt-2 text-center text-xs text-muted-foreground/50">
+									{filtered.length} stories
+								</p>
+								<div
+									className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
+									aria-hidden
+								>
+									<span>
+										<kbd>j</kbd> / <kbd>k</kbd> navigate
+									</span>
+									<span>
+										<kbd>o</kbd> open link
+									</span>
+									<span>
+										<kbd>c</kbd> comments
+									</span>
+									<span>
+										<kbd>?</kbd> filters
+									</span>
+								</div>
+							</>
+						)}
+					</main>
 
-				{/* Visual toast (aria-hidden — announcement handled above) */}
-				<div
-					hidden={!toastMsg}
-					aria-hidden="true"
-					className="toast-pill fixed bottom-20 left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
-				>
-					{toastMsg}
+					{/* Screen-reader announcements (always in DOM for aria-live to work) */}
+					<div role="status" aria-live="polite" className="sr-only">
+						{toastMsg}
+					</div>
+					<div
+						role="status"
+						aria-live="polite"
+						aria-atomic="true"
+						className="sr-only"
+					>
+						{liveMsg}
+					</div>
+
+					{/* Visual toast (aria-hidden — announcement handled above) */}
+					<div
+						hidden={!toastMsg}
+						aria-hidden="true"
+						className="toast-pill fixed bottom-20 left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
+					>
+						{toastMsg}
+					</div>
 				</div>
-			</div>
-		</PullToRefresh>
+			</PullToRefresh>
+			<FilterPanel
+				id="filter-panel"
+				filters={filters}
+				onChange={handleFiltersChange}
+				onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
+				totalCount={scored.length}
+				visibleCount={filtered.length}
+				onOpenChange={setFilterOpen}
+			/>
+		</>
 	);
 }

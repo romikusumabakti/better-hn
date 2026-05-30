@@ -11,7 +11,9 @@ interface NavigateEvent extends Event {
 
 export function NavigationProgress() {
 	const [state, setState] = useState<State>("idle");
-	const doneTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+	const doneTimer = useRef<ReturnType<typeof setTimeout> | undefined>(
+		undefined,
+	);
 
 	useEffect(() => {
 		if (typeof window === "undefined" || !("navigation" in window)) return;

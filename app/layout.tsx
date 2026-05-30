@@ -15,6 +15,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+	metadataBase: new URL(
+		process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
+	),
 	title: "Better HN — Hacker News, reimagined",
 	description:
 		"A modern Hacker News reader with a customizable time-decay scoring algorithm. Sort stories by relevance, not just recency.",

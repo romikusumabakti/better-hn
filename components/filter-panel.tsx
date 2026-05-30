@@ -25,7 +25,7 @@ interface FilterPanelProps {
 	onReset: () => void;
 	totalCount: number;
 	visibleCount: number;
-	onClose?: () => void;
+	onOpenChange?: (open: boolean) => void;
 	id?: string;
 }
 
@@ -35,41 +35,38 @@ export function FilterPanel({
 	onReset,
 	totalCount,
 	visibleCount,
-	onClose,
+	onOpenChange,
 	id = "filter-panel",
 }: FilterPanelProps) {
 	const panelRef = useRef<HTMLDivElement>(null);
-	const onCloseRef = useRef(onClose);
-	onCloseRef.current = onClose;
+	const onOpenChangeRef = useRef(onOpenChange);
+	onOpenChangeRef.current = onOpenChange;
 
 	useEffect(() => {
 		const panel = panelRef.current;
 		if (!panel) return;
 
-		panel.focus();
-
 		const FOCUSABLE =
 			'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
 
-		let closedByKeyboard = false;
+		const handleToggle = (e: Event) => {
+			const te = e as ToggleEvent;
+			onOpenChangeRef.current?.(te.newState === "open");
+			if (te.newState === "open") {
+				panel.focus();
+			} else {
+				document.getElementById("filter-toggle")?.focus();
+			}
+		};
 
 		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key === "Escape") {
-				e.preventDefault();
-				closedByKeyboard = true;
-				onCloseRef.current?.();
-				return;
-			}
 			if (e.key !== "Tab") return;
-
 			const focusable = Array.from(
 				panel.querySelectorAll<HTMLElement>(FOCUSABLE),
 			);
 			if (focusable.length === 0) return;
-
 			const first = focusable[0];
 			const last = focusable[focusable.length - 1];
-
 			if (e.shiftKey && document.activeElement === first) {
 				e.preventDefault();
 				last.focus();
@@ -79,25 +76,11 @@ export function FilterPanel({
 			}
 		};
 
-		const handleClickOutside = (e: MouseEvent) => {
-			if (window.innerWidth < 640) return;
-			const toggle = document.getElementById("filter-toggle");
-			if (
-				!panel.contains(e.target as Node) &&
-				!toggle?.contains(e.target as Node)
-			) {
-				onCloseRef.current?.();
-			}
-		};
-
+		panel.addEventListener("toggle", handleToggle);
 		panel.addEventListener("keydown", handleKeyDown);
-		document.addEventListener("mousedown", handleClickOutside);
 		return () => {
+			panel.removeEventListener("toggle", handleToggle);
 			panel.removeEventListener("keydown", handleKeyDown);
-			document.removeEventListener("mousedown", handleClickOutside);
-			if (closedByKeyboard) {
-				document.getElementById("filter-toggle")?.focus();
-			}
 		};
 	}, []);
 
@@ -115,7 +98,8 @@ export function FilterPanel({
 				aria-label="Filters"
 				aria-modal="true"
 				tabIndex={-1}
-				className="@container fixed bottom-0 left-0 right-0 z-40 max-h-[85dvh] overflow-y-auto rounded-t-2xl border-t border-border bg-card p-5 pb-[calc(1.25rem+env(safe-area-inset-bottom,0px))] shadow-xl animate-sheet-up outline-none sm:absolute sm:bottom-auto sm:left-auto sm:right-0 sm:top-full sm:mt-2 sm:z-50 sm:max-h-none sm:overflow-visible sm:rounded-xl sm:border sm:p-4 sm:pb-4 sm:shadow-xl sm:w-80 sm:animate-slide-down"
+				popover="auto"
+				className="@container bg-card text-foreground outline-none"
 			>
 				{/* Mobile drag handle */}
 				<div className="mx-auto mb-4 h-1 w-8 rounded-full bg-border sm:hidden" />
@@ -135,16 +119,20 @@ export function FilterPanel({
 								Reset
 							</button>
 						)}
-						{onClose && (
-							<button
-								type="button"
-								onClick={onClose}
-								className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground sm:hidden"
-								aria-label="Close filters"
-							>
-								<X className="h-4 w-4" />
-							</button>
-						)}
+						<button
+							type="button"
+							onClick={() => {
+								(
+									panelRef.current as HTMLElement & {
+										hidePopover(): void;
+									}
+								)?.hidePopover();
+							}}
+							className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground sm:hidden"
+							aria-label="Close filters"
+						>
+							<X className="h-4 w-4" />
+						</button>
 					</div>
 				</div>
 
