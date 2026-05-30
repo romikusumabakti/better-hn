@@ -168,7 +168,7 @@ export default async function UserPage({
 					<Link
 						href="/"
 						transitionTypes={["nav-back"]}
-						className="mb-6 inline-flex items-center gap-1.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+						className="mb-6 -ml-2.5 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
 					>
 						<ArrowLeft className="h-4 w-4" />
 						Back to feed
@@ -178,6 +178,7 @@ export default async function UserPage({
 					<div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6">
 						<div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:gap-6">
 							<div
+								aria-hidden="true"
 								className={`flex h-16 w-16 shrink-0 items-center justify-center rounded-full text-2xl font-bold select-none ${avatarPalette(user.id)}`}
 							>
 								{user.id[0].toUpperCase()}

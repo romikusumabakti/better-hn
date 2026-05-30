@@ -17,6 +17,8 @@ const DEPTH_BORDER_COLORS = [
 	"border-border/50",
 	"border-border/38",
 	"border-border/28",
+	"border-border/20",
+	"border-border/14",
 ] as const;
 
 export function Comment({ comment, depth }: CommentProps) {

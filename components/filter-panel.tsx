@@ -128,7 +128,7 @@ export function FilterPanel({
 									}
 								)?.hidePopover();
 							}}
-							className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground sm:hidden"
+							className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 							aria-label="Close filters"
 						>
 							<X className="h-4 w-4" />

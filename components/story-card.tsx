@@ -4,7 +4,7 @@ import { ArrowUpRight, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
-import { cn, formatTime } from "@/lib/utils";
+import { cn, formatTime, getTypeLabel } from "@/lib/utils";
 
 interface StoryCardProps {
 	story: ScoredStory;
@@ -12,12 +12,6 @@ interface StoryCardProps {
 	isActive?: boolean;
 }
 
-function getTypeLabel(story: ScoredStory): string | null {
-	if (story.title.startsWith("Ask HN:")) return "Ask";
-	if (story.title.startsWith("Show HN:")) return "Show";
-	if (story.type === "job") return "Job";
-	return null;
-}
 
 function ScoreBadge({ score }: { score: number }) {
 	const cls =

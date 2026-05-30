@@ -18,7 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
 import { sanitize } from "@/lib/sanitize";
-import { formatTime } from "@/lib/utils";
+import { formatTime, getTypeLabel } from "@/lib/utils";
 
 export async function generateMetadata(
 	props: PageProps<"/story/[id]">,
@@ -94,13 +94,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 	const hoursAgo = (Date.now() / 1000 - story.time) / 3600;
 	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
 
-	const typeLabel = story.title.startsWith("Ask HN:")
-		? "Ask"
-		: story.title.startsWith("Show HN:")
-			? "Show"
-			: story.type === "job"
-				? "Job"
-				: null;
+	const typeLabel = getTypeLabel(story);
 
 	const domain = story.url
 		? (() => {

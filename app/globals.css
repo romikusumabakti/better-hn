@@ -255,6 +255,28 @@ kbd {
 	}
 }
 
+/* ─── Scroll-to-top button ─── */
+.scroll-to-top-btn {
+	display: flex;
+	opacity: 1;
+	transform: scale(1) translateY(0);
+	transition:
+		opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+		display 0.18s allow-discrete;
+}
+.scroll-to-top-btn[hidden] {
+	display: none;
+	opacity: 0;
+	transform: scale(0.85) translateY(6px);
+}
+@starting-style {
+	.scroll-to-top-btn:not([hidden]) {
+		opacity: 0;
+		transform: scale(0.85) translateY(6px);
+	}
+}
+
 /* ─── Comment collapse (CSS-native, replaces framer) ─── */
 .comment-body {
 	height: auto;
@@ -443,5 +465,15 @@ kbd {
 	#filter-panel:popover-open {
 		animation: none;
 		transition: display 0s allow-discrete, overlay 0s allow-discrete;
+	}
+
+	.scroll-to-top-btn {
+		transition: display 0s allow-discrete;
+	}
+	@starting-style {
+		.scroll-to-top-btn:not([hidden]) {
+			opacity: 1;
+			transform: none;
+		}
 	}
 }
