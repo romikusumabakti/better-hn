@@ -91,26 +91,42 @@ export function PullToRefresh({
 		<>
 			<div
 				aria-hidden
-				className="pointer-events-none fixed left-1/2 z-40 flex items-center justify-center rounded-full border border-border bg-background shadow-md sm:hidden"
+				className="pointer-events-none fixed left-1/2 z-40 flex flex-col items-center gap-1.5 sm:hidden"
 				style={{
 					top: HEADER_HEIGHT + 10 + pullY * 0.35,
-					width: 36,
-					height: 36,
 					opacity: visible ? Math.min(progress * 1.8, 1) : 0,
-					transform: `translateX(-50%) scale(${0.5 + progress * 0.5})`,
+					transform: "translateX(-50%)",
 					transition: dragging
 						? undefined
-						: "top 0.3s ease, opacity 0.3s ease, transform 0.3s ease",
+						: "top 0.3s ease, opacity 0.3s ease",
 				}}
 			>
-				<RefreshCw
-					className={cn("h-4 w-4 text-primary", triggered && "animate-spin")}
-					style={
-						!triggered
-							? { transform: `rotate(${progress * 300}deg)` }
-							: undefined
-					}
-				/>
+				<div
+					className="flex items-center justify-center rounded-full border border-border bg-background shadow-md"
+					style={{
+						width: 36,
+						height: 36,
+						transform: `scale(${0.5 + progress * 0.5})`,
+						transition: dragging ? undefined : "transform 0.3s ease",
+					}}
+				>
+					<RefreshCw
+						className={cn("h-4 w-4 text-primary", triggered && "animate-spin")}
+						style={
+							!triggered
+								? { transform: `rotate(${progress * 300}deg)` }
+								: undefined
+						}
+					/>
+				</div>
+				{dragging && (
+					<span
+						className="rounded-full bg-background/90 px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground shadow-sm"
+						style={{ transform: `scale(${0.7 + progress * 0.3})` }}
+					>
+						{progress >= 1 ? "Release to refresh" : "Pull to refresh"}
+					</span>
+				)}
 			</div>
 			{children}
 		</>

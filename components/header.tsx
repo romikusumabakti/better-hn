@@ -19,7 +19,7 @@ interface HeaderProps {
 	onRefresh?: () => void;
 	storyCount?: number;
 	filterOpen?: boolean;
-	filterActive?: boolean;
+	activeFilterCount?: number;
 }
 
 export function Header({
@@ -27,7 +27,7 @@ export function Header({
 	onRefresh,
 	storyCount,
 	filterOpen,
-	filterActive,
+	activeFilterCount,
 }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
 	const [mounted, setMounted] = useState(false);
@@ -65,7 +65,7 @@ export function Header({
 				</Link>
 
 				<div className="flex items-center gap-1">
-					{filterActive !== undefined && (
+					{activeFilterCount !== undefined && (
 						<Button
 							id="filter-toggle"
 							variant="ghost"
@@ -81,10 +81,14 @@ export function Header({
 							)}
 						>
 							<SlidersHorizontal className="h-4 w-4" />
-							{filterActive && (
-								<span className="absolute top-1.5 right-1.5 h-1.5 w-1.5 rounded-full bg-primary" />
+							{activeFilterCount > 0 && (
+								<span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[9px] font-bold leading-none text-primary-foreground">
+									{activeFilterCount}
+								</span>
 							)}
-							<span className="sr-only">Toggle filters (press ?)</span>
+							<span className="sr-only">
+								Toggle filters (press ?){activeFilterCount > 0 ? ` — ${activeFilterCount} active` : ""}
+							</span>
 						</Button>
 					)}
 					{onRefresh && (

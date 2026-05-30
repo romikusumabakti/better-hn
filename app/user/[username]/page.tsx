@@ -256,6 +256,19 @@ export default async function UserPage({
 									<UserSubmissions ids={user.submitted} />
 								</Suspense>
 							</div>
+							{user.submitted.length > 10 && (
+								<p className="mt-3 text-center text-xs text-muted-foreground/60">
+									Showing 10 of {user.submitted.length.toLocaleString()} submissions —{" "}
+									<a
+										href={hnUrl}
+										target="_blank"
+										rel="noopener noreferrer"
+										className="underline underline-offset-2 transition-colors hover:text-muted-foreground"
+									>
+										view all on HN
+									</a>
+								</p>
+							)}
 						</section>
 					)}
 				</main>

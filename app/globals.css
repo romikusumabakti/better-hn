@@ -79,7 +79,7 @@
 	--secondary: oklch(0.22 0.008 264);
 	--secondary-foreground: oklch(0.94 0.007 264);
 	--muted: oklch(0.22 0.008 264);
-	--muted-foreground: oklch(0.6 0.01 264);
+	--muted-foreground: oklch(0.64 0.01 264);
 	--accent: oklch(0.22 0.008 264);
 	--accent-foreground: oklch(0.94 0.007 264);
 	--destructive: oklch(0.704 0.191 22.216);
@@ -94,7 +94,6 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-geist-sans, system-ui, sans-serif);
 	min-height: 100dvh;
-	text-rendering: optimizeLegibility;
 }
 
 * {

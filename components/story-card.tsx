@@ -11,6 +11,29 @@ interface StoryCardProps {
 	rank: number;
 	isActive?: boolean;
 	onVisit?: () => void;
+	query?: string;
+}
+
+function HighlightedText({ text, query }: { text: string; query: string }) {
+	if (!query.trim()) return <>{text}</>;
+	const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+	const parts = text.split(new RegExp(`(${escaped})`, "gi"));
+	return (
+		<>
+			{parts.map((part, i) =>
+				i % 2 === 1 ? (
+					<mark
+						key={i}
+						className="rounded-sm bg-primary/20 px-0.5 text-foreground not-italic"
+					>
+						{part}
+					</mark>
+				) : (
+					part
+				),
+			)}
+		</>
+	);
 }
 
 function ScoreBadge({ score }: { score: number }) {
@@ -38,7 +61,7 @@ function ScoreBadge({ score }: { score: number }) {
 	);
 }
 
-export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
+export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
 
 	return (
@@ -89,7 +112,7 @@ export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
 					</div>
 
 					<h2 id={`story-title-${story.id}`} className="text-fluid-card-title font-semibold text-pretty text-foreground transition-colors group-hover:text-primary">
-						{story.title}
+						<HighlightedText text={story.title} query={query} />
 						{story.url && (
 							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-primary" />
 						)}
@@ -112,7 +135,7 @@ export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
 						<Link
 							href={`/user/${story.by}`}
 							transitionTypes={["nav-forward"]}
-							className="relative z-10 hidden transition-colors hover:text-foreground @sm:inline"
+							className="relative z-10 transition-colors hover:text-foreground"
 						>
 							{story.by}
 						</Link>

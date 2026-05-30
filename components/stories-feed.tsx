@@ -192,10 +192,10 @@ export function StoriesFeed() {
 		[router],
 	);
 
-	const isFilterActive =
-		filters.alpha !== DEFAULT_FILTERS.alpha ||
-		filters.minScore !== DEFAULT_FILTERS.minScore ||
-		filters.query !== DEFAULT_FILTERS.query;
+	const activeFilterCount =
+		(filters.alpha !== DEFAULT_FILTERS.alpha ? 1 : 0) +
+		(filters.minScore !== DEFAULT_FILTERS.minScore ? 1 : 0) +
+		(filters.query !== DEFAULT_FILTERS.query ? 1 : 0);
 
 	const scored: ScoredStory[] = useMemo(() => {
 		if (!data) return [];
@@ -297,7 +297,7 @@ export function StoriesFeed() {
 						onRefresh={() => mutate()}
 						storyCount={filtered.length}
 						filterOpen={filterOpen}
-						filterActive={isFilterActive}
+						activeFilterCount={activeFilterCount}
 					/>
 
 					<main
@@ -344,7 +344,7 @@ export function StoriesFeed() {
 											{
 												"--card-index": Math.min(i, 8),
 												contentVisibility: "auto",
-												containIntrinsicSize: "auto 88px",
+												containIntrinsicSize: "auto 100px",
 											} as React.CSSProperties
 										}
 									>
@@ -353,6 +353,7 @@ export function StoriesFeed() {
 											rank={i + 1}
 											isActive={i === activeIndex}
 											onVisit={() => markVisited(story.id)}
+											query={filters.query}
 										/>
 									</div>
 								))}

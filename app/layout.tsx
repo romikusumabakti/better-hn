@@ -31,7 +31,7 @@ export const metadata: Metadata = {
 		"A modern Hacker News reader with a customizable time-decay scoring algorithm. Sort stories by relevance, not just recency.",
 	keywords: ["hacker news", "hn", "tech news", "programming", "startup"],
 	manifest: "/manifest.json",
-	icons: { icon: "/icon.svg", apple: "/icon.svg" },
+	icons: { icon: "/icon.svg" },
 	openGraph: {
 		title: "Better HN — Hacker News, reimagined",
 		description:
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
 		type: "website",
 	},
 	twitter: {
-		card: "summary",
+		card: "summary_large_image",
 		title: "Better HN — Hacker News, reimagined",
 		description:
 			"A modern Hacker News reader with a customizable time-decay scoring algorithm.",
