@@ -304,13 +304,21 @@ kbd {
 /* Fallback: browsers without interpolate-size use max-height animation */
 @supports not (interpolate-size: allow-keywords) {
 	.comment-body {
-		max-height: 2000px;
+		max-height: 9999px;
 		transition:
 			max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
 			opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 	}
 	[data-collapsed] .comment-body {
 		max-height: 0;
+	}
+}
+
+/* Expand slider thumb hit area on touch devices */
+@media (pointer: coarse) {
+	[data-radix-slider-thumb] {
+		min-width: 2.75rem;
+		min-height: 2.75rem;
 	}
 }
 
@@ -370,7 +378,7 @@ kbd {
 	border-radius: 1rem 1rem 0 0;
 	padding: 1.25rem;
 	padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
-	max-height: 85dvh;
+	max-height: min(85dvh, calc(100dvh - env(safe-area-inset-bottom, 0px) - 3rem));
 	overflow-y: auto;
 	overscroll-behavior: contain;
 	width: 100%;
@@ -451,7 +459,8 @@ kbd {
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
 	.nav-progress {
-		display: none;
+		animation: none;
+		opacity: 0.6;
 	}
 
 	::view-transition-old(*),

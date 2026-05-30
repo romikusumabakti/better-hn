@@ -65,7 +65,7 @@ export function StoriesFeed() {
 	const searchParams = useSearchParams();
 
 	const [activeIndex, setActiveIndex] = useState(-1);
-	const activeRef = useRef<HTMLDivElement | null>(null);
+	const activeRef = useRef<HTMLLIElement | null>(null);
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
 	const urlUpdateTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -303,7 +303,7 @@ export function StoriesFeed() {
 					<main
 						id="main-content"
 						aria-busy={isLoading}
-						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
+						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 pt-4 pb-24 sm:pt-6 sm:pb-8"
 					>
 						{error && (
 							<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">

@@ -31,7 +31,7 @@ export function ScrollToTop() {
 				onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
 				aria-label="Scroll to top"
 				style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1.5rem)" }}
-				className="scroll-to-top-btn fixed right-4 z-50 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card shadow-md text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-6"
+				className="scroll-to-top-btn fixed right-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-border bg-card shadow-md text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:right-6"
 			>
 				<ArrowUp className="h-4 w-4" />
 			</button>

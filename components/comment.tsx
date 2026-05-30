@@ -39,13 +39,13 @@ export function Comment({ comment, depth }: CommentProps) {
 			)}
 		>
 			{/* Full-row toggle — invisible button overlay (same pattern as StoryCard) */}
-			<div className="relative flex w-full select-none items-center gap-1.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground">
+			<div className="relative flex w-full select-none items-center gap-1.5 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-within:text-foreground">
 				<button
 					type="button"
 					aria-expanded={!collapsed}
 					aria-label={`${collapsed ? "Expand" : "Collapse"} comment by ${comment.by}`}
 					onClick={() => setCollapsed(!collapsed)}
-					className="absolute inset-0 cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					className="absolute inset-0 cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
 				/>
 				<ChevronDown className="comment-chevron relative h-3 w-3 shrink-0" />
 				<Link

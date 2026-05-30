@@ -60,6 +60,7 @@ export function PullToRefresh({
 			setPullY((current) => {
 				if (current >= THRESHOLD) {
 					setTriggered(true);
+					navigator.vibrate?.(10);
 					onRefreshRef.current();
 					return THRESHOLD * 0.55;
 				}

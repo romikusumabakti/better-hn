@@ -24,7 +24,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 				i % 2 === 1 ? (
 					<mark
 						key={i}
-						className="rounded-sm bg-primary/20 px-0.5 text-foreground not-italic"
+						className="rounded-sm bg-amber-200/80 px-0.5 text-foreground not-italic dark:bg-amber-500/35"
 					>
 						{part}
 					</mark>
@@ -68,7 +68,7 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 		<article
 			aria-labelledby={`story-title-${story.id}`}
 			className={cn(
-				"group relative rounded-xl border bg-card card-enter @container transition-transform hover:-translate-y-px hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
+				"group relative rounded-xl border bg-card card-enter @container transition-transform motion-safe:hover:-translate-y-px hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
 				isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border",
 			)}
 		>

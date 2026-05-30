@@ -79,7 +79,7 @@ export function Header({
 							popoverTarget="filter-panel"
 							popoverTargetAction="toggle"
 							className={cn(
-								"relative h-8 w-8 text-muted-foreground hover:text-foreground",
+								"relative h-10 w-10 text-muted-foreground hover:text-foreground",
 								filterOpen && "text-foreground bg-accent",
 							)}
 						>
@@ -100,7 +100,7 @@ export function Header({
 							size="icon"
 							onClick={onRefresh}
 							disabled={isRefreshing}
-							className="hidden sm:inline-flex h-8 w-8 text-muted-foreground hover:text-foreground"
+							className="hidden sm:inline-flex h-10 w-10 text-muted-foreground hover:text-foreground"
 						>
 							<RefreshCw
 								className={cn("h-4 w-4", isRefreshing && "animate-spin")}
@@ -124,7 +124,7 @@ export function Header({
 								aria-label={label}
 								aria-pressed={mounted && theme === value}
 								className={cn(
-									"h-7 w-7 text-muted-foreground hover:text-foreground",
+									"h-8 w-8 text-muted-foreground hover:text-foreground",
 									mounted &&
 										theme === value &&
 										"bg-background text-foreground shadow-sm",
