@@ -210,8 +210,8 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 					</article>
 
 					{/* Comments */}
-					<section>
-						<h2 className="mb-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+					<section aria-labelledby="comments-heading">
+						<h2 id="comments-heading" className="mb-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
 							{story.descendants ?? 0} comments
 						</h2>
 						<Suspense fallback={<CommentsSkeleton />}>

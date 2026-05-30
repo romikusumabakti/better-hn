@@ -106,6 +106,7 @@ export function FilterPanel({
 				ref={panelRef}
 				role="dialog"
 				aria-label="Filters"
+				aria-modal="true"
 				tabIndex={-1}
 				popover="auto"
 				className="@container bg-card text-foreground outline-none"
@@ -137,7 +138,7 @@ export function FilterPanel({
 									}
 								)?.hidePopover();
 							}}
-							className="flex h-6 w-6 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+							className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 							aria-label="Close filters"
 						>
 							<X className="h-4 w-4" />
@@ -192,7 +193,7 @@ export function FilterPanel({
 							}
 							className="w-full"
 						/>
-						<div className="flex justify-between text-[10px] text-muted-foreground">
+						<div className="flex justify-between text-xs text-muted-foreground">
 							<span>0.1 (slow decay)</span>
 							<span>2.0 (fast decay)</span>
 						</div>
@@ -242,7 +243,7 @@ export function FilterPanel({
 							}
 							className="w-full"
 						/>
-						<div className="flex justify-between text-[10px] text-muted-foreground">
+						<div className="flex justify-between text-xs text-muted-foreground">
 							<span>0 (show all)</span>
 							<span>100 (high bar)</span>
 						</div>

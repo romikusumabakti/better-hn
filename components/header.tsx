@@ -39,30 +39,33 @@ export function Header({
 			style={{ viewTransitionName: "site-header" }}
 		>
 			<div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
-				<Link
-					href="/"
-					className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
-				>
-					<div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
-						<Zap
-							className="h-4 w-4 text-primary-foreground"
-							strokeWidth={2.5}
-						/>
-					</div>
-					<div className="flex items-center gap-2">
-						<span className="font-semibold tracking-tight text-foreground">
-							Better HN
-						</span>
-						{storyCount !== undefined && (
-							<>
-								<span className="h-3.5 w-px bg-border" aria-hidden />
-								<span className="font-mono text-xs text-muted-foreground tabular-nums">
-									{storyCount}
-								</span>
-							</>
-						)}
-					</div>
-				</Link>
+				<nav aria-label="Main">
+					<Link
+						href="/"
+						className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
+					>
+						<div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">
+							<Zap
+								className="h-4 w-4 text-primary-foreground"
+								strokeWidth={2.5}
+							/>
+						</div>
+						<div className="flex items-center gap-2">
+							<span className="font-semibold tracking-tight text-foreground">
+								Better HN
+							</span>
+							{storyCount !== undefined && (
+								<>
+									<span className="h-3.5 w-px bg-border" aria-hidden />
+									<span className="font-mono text-xs text-muted-foreground tabular-nums">
+										<span className="sr-only">Stories: </span>
+										{storyCount}
+									</span>
+								</>
+							)}
+						</div>
+					</Link>
+				</nav>
 
 				<div className="flex items-center gap-1">
 					{activeFilterCount !== undefined && (

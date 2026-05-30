@@ -302,6 +302,7 @@ export function StoriesFeed() {
 
 					<main
 						id="main-content"
+						aria-busy={isLoading}
 						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 py-4 sm:py-6"
 					>
 						{error && (
@@ -334,9 +335,9 @@ export function StoriesFeed() {
 						)}
 
 						{!isLoading && visible.length > 0 && (
-							<div className="space-y-3">
+							<ol className="space-y-3 list-none" aria-label="Stories">
 								{visible.map((story, i) => (
-									<div
+									<li
 										key={story.id}
 										ref={i === activeIndex ? activeRef : null}
 										data-visited={visitedIds.has(story.id) ? "" : undefined}
@@ -344,7 +345,7 @@ export function StoriesFeed() {
 											{
 												"--card-index": Math.min(i, 8),
 												contentVisibility: "auto",
-												containIntrinsicSize: "auto 100px",
+												containIntrinsicSize: "auto 120px",
 											} as React.CSSProperties
 										}
 									>
@@ -355,9 +356,9 @@ export function StoriesFeed() {
 											onVisit={() => markVisited(story.id)}
 											query={filters.query}
 										/>
-									</div>
+									</li>
 								))}
-							</div>
+							</ol>
 						)}
 
 						{hasMore && (
