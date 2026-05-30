@@ -75,8 +75,8 @@ export function Comment({ comment, depth }: CommentProps) {
 			<div className="comment-body">
 				{comment.text && (
 					<div
-						className="mb-1.5 max-w-[72ch] text-sm leading-7 text-foreground/90 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_b]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_i]:italic [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre]:my-2 [&_pre]:overflow-x-auto [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:text-xs"
-						dangerouslySetInnerHTML={{ __html: sanitize(comment.text) }}
+						className="mb-1.5 max-w-[72ch] text-sm leading-relaxed text-foreground/90 [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_b]:font-semibold [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:py-0.5 [&_code]:text-xs [&_i]:italic [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre:not(.shiki)]:my-2 [&_pre:not(.shiki)]:overflow-x-auto [&_pre:not(.shiki)]:rounded-md [&_pre:not(.shiki)]:bg-muted [&_pre:not(.shiki)]:p-3 [&_pre:not(.shiki)]:text-xs"
+						dangerouslySetInnerHTML={{ __html: comment._html ?? sanitize(comment.text) }}
 					/>
 				)}
 				{comment.children.length > 0 && (

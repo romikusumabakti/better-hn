@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { fetchCommentTree } from "@/lib/hn-api";
+import { processComment } from "@/lib/highlight";
 
 export async function GET(
 	_: Request,
@@ -9,5 +10,7 @@ export async function GET(
 	const commentId = parseInt(id, 10);
 	if (Number.isNaN(commentId)) return NextResponse.json(null, { status: 400 });
 	const comment = await fetchCommentTree(commentId);
-	return NextResponse.json(comment);
+	if (!comment) return NextResponse.json(null);
+	const processed = await processComment(comment);
+	return NextResponse.json(processed);
 }

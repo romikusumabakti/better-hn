@@ -108,21 +108,22 @@ export function Header({
 							<span className="sr-only">Refresh stories</span>
 						</Button>
 					)}
-					<div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5">
+					<div role="radiogroup" aria-label="Color theme" className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5">
 						{(
 							[
-								{ value: "light", Icon: Sun, label: "Light theme" },
-								{ value: "system", Icon: Monitor, label: "System theme" },
-								{ value: "dark", Icon: Moon, label: "Dark theme" },
+								{ value: "light", Icon: Sun, label: "Light" },
+								{ value: "system", Icon: Monitor, label: "System" },
+								{ value: "dark", Icon: Moon, label: "Dark" },
 							] as const
 						).map(({ value, Icon, label }) => (
 							<Button
 								key={value}
 								variant="ghost"
 								size="icon"
+								role="radio"
 								onClick={() => setTheme(value)}
 								aria-label={label}
-								aria-pressed={mounted && theme === value}
+								aria-checked={mounted && theme === value}
 								className={cn(
 									"h-8 w-8 text-muted-foreground hover:text-foreground",
 									mounted &&

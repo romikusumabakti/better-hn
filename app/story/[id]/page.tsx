@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { VisitedMarker } from "@/components/visited-marker";
 import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
+import { highlightHtml, processComment } from "@/lib/highlight";
 import { sanitize } from "@/lib/sanitize";
 import { formatTime, getTypeLabel } from "@/lib/utils";
 
@@ -50,7 +51,8 @@ async function StoryComments({
 	const results = await Promise.all(
 		kids.slice(0, INITIAL_COMMENTS).map((id) => fetchCommentTree(id)),
 	);
-	const initialComments = results.filter(Boolean) as HNComment[];
+	const rawComments = results.filter(Boolean) as HNComment[];
+	const initialComments = await Promise.all(rawComments.map(processComment));
 
 	return (
 		<LoadMoreComments
@@ -94,6 +96,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 
 	const hoursAgo = (Date.now() / 1000 - story.time) / 3600;
 	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
+	const storyHtml = story.text ? await highlightHtml(sanitize(story.text)) : null;
 
 	const typeLabel = getTypeLabel(story);
 
@@ -164,10 +167,10 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							)}
 						</h1>
 
-						{story.text && (
+						{storyHtml && (
 							<div
-								className="mb-5 max-w-none text-muted-foreground [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre]:rounded-md [&_pre]:bg-muted [&_pre]:p-3 [&_pre]:text-xs [&_pre]:overflow-x-auto"
-								dangerouslySetInnerHTML={{ __html: sanitize(story.text) }}
+								className="mb-5 max-w-none text-muted-foreground [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre:not(.shiki)]:rounded-md [&_pre:not(.shiki)]:bg-muted [&_pre:not(.shiki)]:p-3 [&_pre:not(.shiki)]:text-xs [&_pre:not(.shiki)]:overflow-x-auto"
+								dangerouslySetInnerHTML={{ __html: storyHtml }}
 							/>
 						)}
 

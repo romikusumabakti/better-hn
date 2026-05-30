@@ -96,6 +96,7 @@ export interface HNComment {
 	deleted?: boolean;
 	dead?: boolean;
 	children: HNComment[];
+	_html?: string;
 }
 
 export async function fetchComment(id: number): Promise<HNComment | null> {

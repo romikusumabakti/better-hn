@@ -84,7 +84,7 @@ async function UserSubmissions({ ids }: { ids: number[] }) {
 	}
 
 	return (
-		<div className="divide-y divide-border">
+		<ul className="divide-y divide-border list-none p-0 m-0">
 			{stories.map((story) => {
 				const hoursAgo = (Date.now() / 1000 - story.time) / 3600;
 				const domain = story.url
@@ -98,7 +98,7 @@ async function UserSubmissions({ ids }: { ids: number[] }) {
 					: undefined;
 
 				return (
-					<div key={story.id} className="py-3.5">
+					<li key={story.id} className="py-3.5">
 						<div className="mb-1 flex flex-wrap items-center gap-1.5">
 							{domain && (
 								<span className="font-mono text-xs text-muted-foreground">
@@ -123,10 +123,10 @@ async function UserSubmissions({ ids }: { ids: number[] }) {
 								{formatTime(hoursAgo)}
 							</span>
 						</div>
-					</div>
+					</li>
 				);
 			})}
-		</div>
+		</ul>
 	);
 }
 

@@ -456,6 +456,34 @@ kbd {
 	}
 }
 
+/* ─── Shiki syntax highlighting (dual-theme via CSS custom props) ─── */
+.shiki {
+	overflow-x: auto;
+	overscroll-behavior-x: contain;
+	border-radius: var(--radius-md);
+	font-size: 0.75rem;
+	line-height: 1.6;
+	margin: 0.5rem 0;
+	padding: 0.75rem;
+	background-color: var(--shiki-light-bg);
+}
+.dark .shiki {
+	background-color: var(--shiki-dark-bg);
+}
+.shiki span {
+	color: var(--shiki-light);
+}
+.dark .shiki span {
+	color: var(--shiki-dark);
+}
+/* Prevent inline-code prose styles leaking into Shiki blocks */
+.shiki code {
+	background: transparent !important;
+	padding: 0 !important;
+	border-radius: 0 !important;
+	font-size: inherit !important;
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
 	.nav-progress {
