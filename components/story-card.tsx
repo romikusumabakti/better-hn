@@ -53,7 +53,7 @@ export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
 				href={`/story/${story.id}`}
 				transitionTypes={["nav-forward"]}
 				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				aria-label={story.title}
+				aria-labelledby={`story-title-${story.id}`}
 				onClick={onVisit}
 			/>
 
@@ -88,7 +88,7 @@ export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
 						)}
 					</div>
 
-					<h2 className="text-fluid-card-title font-semibold text-pretty text-foreground transition-colors group-hover:text-primary">
+					<h2 id={`story-title-${story.id}`} className="text-fluid-card-title font-semibold text-pretty text-foreground transition-colors group-hover:text-primary">
 						{story.title}
 						{story.url && (
 							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-primary" />

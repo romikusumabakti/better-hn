@@ -46,9 +46,6 @@ export function FilterPanel({
 		const panel = panelRef.current;
 		if (!panel) return;
 
-		const FOCUSABLE =
-			'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-
 		const handleToggle = (e: Event) => {
 			const te = e as ToggleEvent;
 			onOpenChangeRef.current?.(te.newState === "open");
@@ -60,28 +57,9 @@ export function FilterPanel({
 			}
 		};
 
-		const handleKeyDown = (e: KeyboardEvent) => {
-			if (e.key !== "Tab") return;
-			const focusable = Array.from(
-				panel.querySelectorAll<HTMLElement>(FOCUSABLE),
-			);
-			if (focusable.length === 0) return;
-			const first = focusable[0];
-			const last = focusable[focusable.length - 1];
-			if (e.shiftKey && document.activeElement === first) {
-				e.preventDefault();
-				last.focus();
-			} else if (!e.shiftKey && document.activeElement === last) {
-				e.preventDefault();
-				first.focus();
-			}
-		};
-
 		panel.addEventListener("toggle", handleToggle);
-		panel.addEventListener("keydown", handleKeyDown);
 		return () => {
 			panel.removeEventListener("toggle", handleToggle);
-			panel.removeEventListener("keydown", handleKeyDown);
 		};
 	}, []);
 

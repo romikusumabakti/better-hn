@@ -236,7 +236,7 @@ export function StoriesFeed() {
 				if (story?.url) window.open(story.url, "_blank", "noopener,noreferrer");
 			} else if (e.key === "c" && activeIndex >= 0) {
 				const story = visible[activeIndex];
-				if (story) window.location.href = `/story/${story.id}`;
+				if (story) router.push(`/story/${story.id}`);
 			} else if (e.key === "?") {
 				const panel = document.getElementById("filter-panel") as
 					| (HTMLElement & {

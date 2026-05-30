@@ -120,6 +120,10 @@ kbd {
 	color: var(--muted-foreground);
 }
 
+[data-visited]:not(:hover) article {
+	opacity: 0.6;
+}
+
 /* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
 .card-enter {
 	transition:
