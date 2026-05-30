@@ -1,6 +1,7 @@
 "use client";
 
 import { AlertCircle } from "lucide-react";
+import Link from "next/link";
 
 export default function RootError({
 	reset,
@@ -14,13 +15,21 @@ export default function RootError({
 			<p className="text-base font-medium text-muted-foreground">
 				Something went wrong.
 			</p>
-			<button
-				type="button"
-				onClick={reset}
-				className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-			>
-				Try again
-			</button>
+			<div className="flex items-center gap-2">
+				<button
+					type="button"
+					onClick={reset}
+					className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				>
+					Try again
+				</button>
+				<Link
+					href="/"
+					className="rounded-lg border border-border px-4 py-2 text-sm text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				>
+					Back to feed
+				</Link>
+			</div>
 		</div>
 	);
 }

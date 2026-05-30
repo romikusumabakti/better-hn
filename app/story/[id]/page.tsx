@@ -15,6 +15,7 @@ import { Header } from "@/components/header";
 import { LoadMoreComments } from "@/components/load-more-comments";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { VisitedMarker } from "@/components/visited-marker";
 import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
 import { sanitize } from "@/lib/sanitize";
@@ -217,6 +218,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							<StoryComments kids={story.kids ?? []} storyId={storyId} />
 						</Suspense>
 					</section>
+					<VisitedMarker id={storyId} />
 				</main>
 			</div>
 		</ViewTransition>

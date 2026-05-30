@@ -53,7 +53,8 @@ export function FilterPanel({
 			const te = e as ToggleEvent;
 			onOpenChangeRef.current?.(te.newState === "open");
 			if (te.newState === "open") {
-				panel.focus();
+				const first = panel.querySelector<HTMLInputElement>("#keyword-search");
+				(first ?? panel).focus();
 			} else {
 				document.getElementById("filter-toggle")?.focus();
 			}
@@ -96,7 +97,6 @@ export function FilterPanel({
 				ref={panelRef}
 				role="dialog"
 				aria-label="Filters"
-				aria-modal="true"
 				tabIndex={-1}
 				popover="auto"
 				className="@container bg-card text-foreground outline-none"
@@ -259,6 +259,26 @@ export function FilterPanel({
 							onChange={(e) => onChange({ ...filters, query: e.target.value })}
 							className="h-9 text-sm"
 						/>
+					</div>
+				</div>
+
+				<div className="mt-4 border-t border-border pt-3">
+					<p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/60">
+						Keyboard shortcuts
+					</p>
+					<div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground/60">
+						<span>
+							<kbd>j</kbd> / <kbd>k</kbd> — navigate
+						</span>
+						<span>
+							<kbd>o</kbd> — open link
+						</span>
+						<span>
+							<kbd>c</kbd> — comments
+						</span>
+						<span>
+							<kbd>?</kbd> — toggle panel
+						</span>
 					</div>
 				</div>
 			</div>

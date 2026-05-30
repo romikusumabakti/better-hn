@@ -10,8 +10,8 @@ interface StoryCardProps {
 	story: ScoredStory;
 	rank: number;
 	isActive?: boolean;
+	onVisit?: () => void;
 }
-
 
 function ScoreBadge({ score }: { score: number }) {
 	const cls =
@@ -38,7 +38,7 @@ function ScoreBadge({ score }: { score: number }) {
 	);
 }
 
-export function StoryCard({ story, rank, isActive }: StoryCardProps) {
+export function StoryCard({ story, rank, isActive, onVisit }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
 
 	return (
@@ -54,12 +54,13 @@ export function StoryCard({ story, rank, isActive }: StoryCardProps) {
 				transitionTypes={["nav-forward"]}
 				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 				aria-label={story.title}
+				onClick={onVisit}
 			/>
 
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
 				<div className="flex shrink-0">
-					<span className="mt-0.5 w-5 text-right font-mono text-xs font-medium text-muted-foreground/70">
+					<span className="mt-0.5 w-6 text-right font-mono text-xs font-medium text-muted-foreground/70">
 						{rank}
 					</span>
 				</div>

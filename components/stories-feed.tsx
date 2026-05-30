@@ -98,6 +98,31 @@ export function StoriesFeed() {
 	const [toastMsg, setToastMsg] = useState<string | null>(null);
 	const prevValidatingRef = useRef(false);
 
+	const [visitedIds, setVisitedIds] = useState<Set<number>>(() => {
+		try {
+			return new Set(
+				JSON.parse(localStorage.getItem("hn-visited") || "[]") as number[],
+			);
+		} catch {
+			return new Set();
+		}
+	});
+
+	const markVisited = useCallback((id: number) => {
+		setVisitedIds((prev) => {
+			if (prev.has(id)) return prev;
+			const next = new Set(prev);
+			next.add(id);
+			try {
+				localStorage.setItem(
+					"hn-visited",
+					JSON.stringify([...next].slice(-500)),
+				);
+			} catch {}
+			return next;
+		});
+	}, []);
+
 	const { data, error, isLoading, mutate, isValidating } = useSWR<HNStory[]>(
 		"/api/stories",
 		fetcher,
@@ -314,6 +339,7 @@ export function StoriesFeed() {
 									<div
 										key={story.id}
 										ref={i === activeIndex ? activeRef : null}
+										data-visited={visitedIds.has(story.id) ? "" : undefined}
 										style={
 											{
 												"--card-index": Math.min(i, 8),
@@ -326,6 +352,7 @@ export function StoriesFeed() {
 											story={story}
 											rank={i + 1}
 											isActive={i === activeIndex}
+											onVisit={() => markVisited(story.id)}
 										/>
 									</div>
 								))}
@@ -343,28 +370,28 @@ export function StoriesFeed() {
 						)}
 
 						{!hasMore && visible.length > 0 && (
-							<>
-								<p className="pt-2 text-center text-xs text-muted-foreground/50">
-									{filtered.length} stories
-								</p>
-								<div
-									className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
-									aria-hidden
-								>
-									<span>
-										<kbd>j</kbd> / <kbd>k</kbd> navigate
-									</span>
-									<span>
-										<kbd>o</kbd> open link
-									</span>
-									<span>
-										<kbd>c</kbd> comments
-									</span>
-									<span>
-										<kbd>?</kbd> filters
-									</span>
-								</div>
-							</>
+							<p className="pt-2 text-center text-xs text-muted-foreground/50">
+								{filtered.length} stories
+							</p>
+						)}
+						{visible.length > 0 && (
+							<div
+								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
+								aria-hidden
+							>
+								<span>
+									<kbd>j</kbd> / <kbd>k</kbd> navigate
+								</span>
+								<span>
+									<kbd>o</kbd> open link
+								</span>
+								<span>
+									<kbd>c</kbd> comments
+								</span>
+								<span>
+									<kbd>?</kbd> filters
+								</span>
+							</div>
 						)}
 					</main>
 

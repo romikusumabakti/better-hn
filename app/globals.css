@@ -41,6 +41,7 @@
 }
 
 :root {
+	color-scheme: light;
 	interpolate-size: allow-keywords;
 	--radius: 0.625rem;
 
@@ -66,6 +67,7 @@
 }
 
 .dark {
+	color-scheme: dark;
 	--background: oklch(0.105 0.006 264);
 	--foreground: oklch(0.94 0.007 264);
 	--card: oklch(0.158 0.008 264);
@@ -111,6 +113,11 @@ kbd {
 	border-radius: 3px;
 	padding: 0.1em 0.4em;
 	line-height: 1;
+}
+
+/* ─── Visited story dimming ─── */
+[data-visited] h2 {
+	color: var(--muted-foreground);
 }
 
 /* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
@@ -362,6 +369,7 @@ kbd {
 	padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
 	max-height: 85dvh;
 	overflow-y: auto;
+	overscroll-behavior: contain;
 	width: 100%;
 	box-shadow: 0 -8px 30px oklch(0 0 0 / 0.12);
 

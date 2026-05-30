@@ -33,19 +33,6 @@ export function Header({
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => setMounted(true), []);
 
-	const cycleTheme = () => {
-		const next = { light: "dark", dark: "system", system: "light" } as const;
-		setTheme(next[theme as keyof typeof next] ?? "system");
-	};
-
-	const ThemeIcon = !mounted
-		? Sun
-		: theme === "dark"
-			? Moon
-			: theme === "system"
-				? Monitor
-				: Sun;
-
 	return (
 		<header
 			className="sticky top-0 z-50 border-b border-border/50 bg-background/92 backdrop-blur-md"
@@ -114,17 +101,32 @@ export function Header({
 							<span className="sr-only">Refresh stories</span>
 						</Button>
 					)}
-					<Button
-						variant="ghost"
-						size="icon"
-						onClick={cycleTheme}
-						className="h-8 w-8 text-muted-foreground hover:text-foreground"
-					>
-						<ThemeIcon className="h-4 w-4 transition-all" />
-						<span className="sr-only">
-							{!mounted ? "Toggle theme" : `Theme: ${theme} (click to cycle)`}
-						</span>
-					</Button>
+					<div className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5">
+						{(
+							[
+								{ value: "light", Icon: Sun, label: "Light theme" },
+								{ value: "system", Icon: Monitor, label: "System theme" },
+								{ value: "dark", Icon: Moon, label: "Dark theme" },
+							] as const
+						).map(({ value, Icon, label }) => (
+							<Button
+								key={value}
+								variant="ghost"
+								size="icon"
+								onClick={() => setTheme(value)}
+								aria-label={label}
+								aria-pressed={mounted && theme === value}
+								className={cn(
+									"h-7 w-7 text-muted-foreground hover:text-foreground",
+									mounted &&
+										theme === value &&
+										"bg-background text-foreground shadow-sm",
+								)}
+							>
+								<Icon className="h-3.5 w-3.5" />
+							</Button>
+						))}
+					</div>
 				</div>
 			</div>
 		</header>
