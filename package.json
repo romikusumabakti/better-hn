@@ -8,14 +8,9 @@
 		"start": "next start",
 		"lint": "biome lint .",
 		"format": "biome format . --write",
-		"check": "biome check . --write",
-		"preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
-		"deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
-		"upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
-		"cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
+		"check": "biome check . --write"
 	},
 	"dependencies": {
-		"@opennextjs/cloudflare": "^1.19.11",
 		"@radix-ui/react-dropdown-menu": "^2.1.16",
 		"@radix-ui/react-select": "^2.2.6",
 		"@radix-ui/react-separator": "^1.1.8",
@@ -43,7 +38,6 @@
 		"@types/react-dom": "^19",
 		"@types/sanitize-html": "^2.16.1",
 		"tailwindcss": "^4",
-		"typescript": "^5",
-		"wrangler": "^4.94.0"
+		"typescript": "^5"
 	}
 }

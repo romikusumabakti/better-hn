@@ -86,8 +86,8 @@ export function Header({
 							aria-expanded={filterOpen}
 							aria-haspopup="dialog"
 							aria-controls="filter-panel"
-							popovertarget="filter-panel"
-							popovertargetaction="toggle"
+							popoverTarget="filter-panel"
+							popoverTargetAction="toggle"
 							className={cn(
 								"relative h-8 w-8 text-muted-foreground hover:text-foreground",
 								filterOpen && "text-foreground bg-accent",
