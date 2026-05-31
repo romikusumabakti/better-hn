@@ -175,6 +175,7 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 					<h2
 						id={`story-title-${story.id}`}
 						className="text-fluid-card-title font-semibold text-balance text-foreground transition-colors group-hover:text-primary"
+						style={{ viewTransitionName: `story-title-${story.id}` }}
 					>
 						<HighlightedText text={story.title} query={query} />
 					</h2>

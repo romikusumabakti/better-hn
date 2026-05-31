@@ -13,6 +13,7 @@ import { StoryCard } from "@/components/story-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
 import { scoreStories } from "@/lib/hn-api";
+import { isWindows } from "@/lib/utils";
 
 const DEFAULT_FILTERS: FilterState = {
 	alpha: 0.8,
@@ -402,7 +403,7 @@ export function StoriesFeed() {
 									<kbd>?</kbd> filters
 								</span>
 								<span>
-									<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !/Win/.test(navigator.platform) ? "⌘" : "Ctrl"}K</kbd> search
+									<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !isWindows() ? "⌘" : "Ctrl"}K</kbd> search
 								</span>
 							</div>
 						)}
@@ -425,7 +426,8 @@ export function StoriesFeed() {
 					<div
 						hidden={!toastMsg}
 						aria-hidden="true"
-						className="toast-pill fixed bottom-20 left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
+						className="toast-pill fixed left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
+					style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)" }}
 					>
 						{toastMsg}
 					</div>

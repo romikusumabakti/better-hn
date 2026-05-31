@@ -247,8 +247,8 @@ export default async function UserPage({
 
 					{/* Recent submissions */}
 					{user.submitted && user.submitted.length > 0 && (
-						<section>
-							<h2 className="mb-4 text-base font-semibold text-foreground">
+						<section aria-labelledby="recent-submissions-heading">
+							<h2 id="recent-submissions-heading" className="mb-4 text-base font-semibold text-foreground">
 								Recent Submissions
 							</h2>
 							<div className="rounded-xl border border-border bg-card px-5 sm:px-6">

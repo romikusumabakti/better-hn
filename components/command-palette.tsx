@@ -6,6 +6,27 @@ import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ScoredStory } from "@/lib/hn-api";
 import { cn } from "@/lib/utils";
 
+function closeWithAnimation(dialog: HTMLDialogElement) {
+	if (!dialog.open || dialog.hasAttribute("data-closing")) return;
+	const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	if (prefersReduced) {
+		dialog.close();
+		return;
+	}
+	dialog.setAttribute("data-closing", "");
+	let done = false;
+	const cleanup = () => {
+		if (done) return;
+		done = true;
+		dialog.removeAttribute("data-closing");
+		dialog.close();
+	};
+	const t = setTimeout(cleanup, 200);
+	dialog.addEventListener("transitionend", (e) => {
+		if (e.target === dialog) { clearTimeout(t); cleanup(); }
+	}, { once: true });
+}
+
 interface CommandPaletteProps {
 	open: boolean;
 	onClose: () => void;
@@ -42,8 +63,8 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 			setQuery("");
 			setSelectedIndex(0);
 			requestAnimationFrame(() => inputRef.current?.focus());
-		} else if (dialog.open) {
-			dialog.close();
+		} else {
+			closeWithAnimation(dialog);
 		}
 	}, [open]);
 
@@ -51,8 +72,16 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 		const dialog = dialogRef.current;
 		if (!dialog) return;
 		const handleClose = () => onClose();
+		const handleCancel = (e: Event) => {
+			e.preventDefault();
+			closeWithAnimation(dialog);
+		};
 		dialog.addEventListener("close", handleClose);
-		return () => dialog.removeEventListener("close", handleClose);
+		dialog.addEventListener("cancel", handleCancel);
+		return () => {
+			dialog.removeEventListener("close", handleClose);
+			dialog.removeEventListener("cancel", handleCancel);
+		};
 	}, [onClose]);
 
 	const navigate = useCallback(
@@ -88,7 +117,9 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 			ref={dialogRef}
 			className="command-palette bg-card text-foreground border border-border shadow-2xl outline-none p-0"
 			onClick={(e) => {
-				if (e.target === dialogRef.current) onClose();
+				if (e.target === dialogRef.current && dialogRef.current) {
+					closeWithAnimation(dialogRef.current);
+				}
 			}}
 		>
 			{/* Combobox — keyboard navigation stays on input, aria-activedescendant tracks selection */}

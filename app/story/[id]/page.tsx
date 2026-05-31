@@ -151,7 +151,10 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 							)}
 						</div>
 
-						<h1 className="mb-4 text-fluid-page-title font-bold text-balance text-foreground">
+						<h1
+							className="mb-4 text-fluid-page-title font-bold text-balance text-foreground"
+							style={{ viewTransitionName: `story-title-${story.id}` }}
+						>
 							{story.url ? (
 								<a
 									href={story.url}

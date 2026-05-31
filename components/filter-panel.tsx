@@ -3,6 +3,7 @@
 import { Info, RotateCcw, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
+import { isWindows } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import {
 	Tooltip,
@@ -250,7 +251,7 @@ export function FilterPanel({
 					</div>
 
 					{/* Search */}
-					<div className="space-y-2.5">
+					<search className="space-y-2.5">
 						<div className="flex items-center justify-between">
 							<label
 								htmlFor="keyword-search"
@@ -264,12 +265,13 @@ export function FilterPanel({
 						</div>
 						<Input
 							id="keyword-search"
+							type="search"
 							placeholder="title, domain, author..."
 							value={filters.query}
 							onChange={(e) => onChange({ ...filters, query: e.target.value })}
 							className="h-9 text-sm"
 						/>
-					</div>
+					</search>
 				</div>
 
 				<div className="mt-4 border-t border-border pt-3">
@@ -290,7 +292,7 @@ export function FilterPanel({
 							<kbd>?</kbd> — toggle panel
 						</span>
 						<span>
-							<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !/Win/.test(navigator.platform) ? "⌘" : "Ctrl"}K</kbd> — search
+							<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !isWindows() ? "⌘" : "Ctrl"}K</kbd> — search
 						</span>
 					</div>
 				</div>

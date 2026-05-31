@@ -532,6 +532,15 @@ kbd {
 	}
 }
 
+/* ─── Command palette exit animation ─── */
+.command-palette[data-closing] {
+	opacity: 0;
+	transform: scale(0.97) translateY(-8px);
+}
+.command-palette[data-closing]::backdrop {
+	opacity: 0;
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
 	.nav-progress {

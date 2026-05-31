@@ -36,6 +36,7 @@ export const metadata: Metadata = {
 	keywords: ["hacker news", "hn", "tech news", "programming", "startup"],
 	manifest: "/manifest.json",
 	icons: { icon: "/icon.svg" },
+	alternates: { canonical: "/" },
 	openGraph: {
 		title: "Better HN — Hacker News, reimagined",
 		description:
