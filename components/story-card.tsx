@@ -88,7 +88,7 @@ function ShareButton({ story }: { story: ScoredStory }) {
 		<button
 			type="button"
 			onClick={handleShare}
-			className="share-btn relative z-10 opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 focus-visible:opacity-100"
+			className="share-btn relative z-10 opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 group-focus-within:opacity-60 focus-visible:opacity-100"
 			aria-label={copied ? "Link copied!" : "Share story"}
 		>
 			{copied ? (

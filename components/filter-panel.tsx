@@ -3,7 +3,6 @@
 import { Info, RotateCcw, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
-import { isWindows } from "@/lib/utils";
 import { Slider } from "@/components/ui/slider";
 import {
 	Tooltip,
@@ -107,7 +106,7 @@ export function FilterPanel({
 				ref={panelRef}
 				role="dialog"
 				aria-label="Filters"
-				aria-modal="true"
+				aria-modal="false"
 				tabIndex={-1}
 				popover="auto"
 				className="@container bg-card text-foreground outline-none"
@@ -274,28 +273,6 @@ export function FilterPanel({
 					</search>
 				</div>
 
-				<div className="mt-4 border-t border-border pt-3">
-					<p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/60">
-						Keyboard shortcuts
-					</p>
-					<div className="grid grid-cols-2 gap-x-6 gap-y-1 text-xs text-muted-foreground/60">
-						<span>
-							<kbd>j</kbd> / <kbd>k</kbd> — navigate
-						</span>
-						<span>
-							<kbd>o</kbd> — open link
-						</span>
-						<span>
-							<kbd>c</kbd> — comments
-						</span>
-						<span>
-							<kbd>?</kbd> — toggle panel
-						</span>
-						<span>
-							<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !isWindows() ? "⌘" : "Ctrl"}K</kbd> — search
-						</span>
-					</div>
-				</div>
 			</div>
 		</TooltipProvider>
 	);

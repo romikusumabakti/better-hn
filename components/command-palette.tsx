@@ -27,6 +27,25 @@ function closeWithAnimation(dialog: HTMLDialogElement) {
 	}, { once: true });
 }
 
+function fuzzyScore(text: string, query: string): number {
+	const t = text.toLowerCase();
+	const q = query.toLowerCase();
+	// Exact substring wins
+	if (t.includes(q)) return q.length * 10;
+	// Fuzzy: all chars must appear in order, score by consecutive runs
+	let tIdx = 0;
+	let score = 0;
+	let consecutive = 0;
+	for (let i = 0; i < q.length; i++) {
+		const found = t.indexOf(q[i], tIdx);
+		if (found === -1) return -1;
+		consecutive = found === tIdx ? consecutive + 1 : 0;
+		score += consecutive + 1;
+		tIdx = found + 1;
+	}
+	return score;
+}
+
 interface CommandPaletteProps {
 	open: boolean;
 	onClose: () => void;
@@ -41,15 +60,23 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const listboxId = useId();
 
-	const allMatches = query.trim()
-		? stories.filter(
-				(s) =>
-					s.title.toLowerCase().includes(query.toLowerCase()) ||
-					(s.domain?.toLowerCase().includes(query.toLowerCase()) ?? false) ||
-					s.by.toLowerCase().includes(query.toLowerCase()),
-			)
-		: stories;
-	const filtered = allMatches.slice(0, 8);
+	const allMatches = (() => {
+		const q = query.trim();
+		if (!q) return stories;
+		return stories
+			.map((s) => {
+				const score = Math.max(
+					fuzzyScore(s.title, q),
+					s.domain ? fuzzyScore(s.domain, q) : -1,
+					fuzzyScore(s.by, q),
+				);
+				return { s, score };
+			})
+			.filter(({ score }) => score >= 0)
+			.sort((a, b) => b.score - a.score)
+			.map(({ s }) => s);
+	})();
+	const filtered = allMatches.slice(0, 15);
 	const totalMatches = allMatches.length;
 
 	const activeDescendantId =
@@ -115,6 +142,7 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 		// biome-ignore lint/a11y/useKeyWithClickEvents: clicking the dialog backdrop (outside content) closes it; Escape key is natively handled by showModal()
 		<dialog
 			ref={dialogRef}
+			aria-label="Search stories"
 			className="command-palette bg-card text-foreground border border-border shadow-2xl outline-none p-0"
 			onClick={(e) => {
 				if (e.target === dialogRef.current && dialogRef.current) {

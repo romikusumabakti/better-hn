@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NavigationProgress } from "@/components/navigation-progress";
+import { RegisterSW } from "@/components/register-sw";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -21,8 +22,8 @@ export const viewport: Viewport = {
 	userScalable: true,
 	colorScheme: "dark light",
 	themeColor: [
-		{ media: "(prefers-color-scheme: light)", color: "#f4f3f7" },
-		{ media: "(prefers-color-scheme: dark)", color: "#1a1929" },
+		{ media: "(prefers-color-scheme: light)", color: "#f1f0f5" },
+		{ media: "(prefers-color-scheme: dark)", color: "#0d0c14" },
 	],
 };
 
@@ -70,6 +71,7 @@ export default function RootLayout({
 					Skip to content
 				</a>
 				<NavigationProgress />
+				<RegisterSW />
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="system"

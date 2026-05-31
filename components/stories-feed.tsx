@@ -266,7 +266,7 @@ export function StoriesFeed() {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: activeIndex is needed to trigger scroll on navigation
 	useEffect(() => {
-		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "instant" });
 	}, [activeIndex]);
 
 	// Announce new stories to screen readers when infinite scroll loads more
