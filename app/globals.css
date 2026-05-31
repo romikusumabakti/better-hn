@@ -94,6 +94,7 @@ body {
 	color: var(--foreground);
 	font-family: var(--font-geist-sans, system-ui, sans-serif);
 	min-height: 100dvh;
+	scrollbar-gutter: stable;
 }
 
 * {
@@ -314,11 +315,15 @@ kbd {
 	}
 }
 
-/* Expand slider thumb hit area on touch devices */
+/* Expand slider thumb hit area + reveal share button on touch devices */
 @media (pointer: coarse) {
 	[data-radix-slider-thumb] {
 		min-width: 2.75rem;
 		min-height: 2.75rem;
+	}
+
+	.share-btn {
+		opacity: 0.6;
 	}
 }
 

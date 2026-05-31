@@ -2,7 +2,7 @@
 
 import { ArrowRight, ExternalLink, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useRef, useState } from "react";
 import type { ScoredStory } from "@/lib/hn-api";
 import { cn } from "@/lib/utils";
 
@@ -18,6 +18,7 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 	const [selectedIndex, setSelectedIndex] = useState(0);
 	const inputRef = useRef<HTMLInputElement>(null);
 	const dialogRef = useRef<HTMLDialogElement>(null);
+	const listboxId = useId();
 
 	const filtered = query.trim()
 		? stories
@@ -29,6 +30,9 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 				)
 				.slice(0, 8)
 		: stories.slice(0, 8);
+
+	const activeDescendantId =
+		filtered.length > 0 ? `${listboxId}-option-${selectedIndex}` : undefined;
 
 	useEffect(() => {
 		const dialog = dialogRef.current;
@@ -87,17 +91,22 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 				if (e.target === dialogRef.current) onClose();
 			}}
 		>
-			{/* Search input */}
+			{/* Combobox — keyboard navigation stays on input, aria-activedescendant tracks selection */}
 			<div className="flex items-center gap-3 border-b border-border px-4 py-3">
 				<Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
 				<input
 					ref={inputRef}
+					role="combobox"
+					aria-expanded={filtered.length > 0}
+					aria-controls={listboxId}
+					aria-activedescendant={activeDescendantId}
+					aria-autocomplete="list"
+					aria-label="Search stories"
 					value={query}
 					onChange={handleQueryChange}
 					onKeyDown={handleKeyDown}
 					placeholder="Search stories..."
 					className="flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/50"
-					aria-label="Search stories"
 					autoComplete="off"
 					spellCheck={false}
 				/>
@@ -107,56 +116,60 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 			{/* Results */}
 			{filtered.length > 0 ? (
 				<ul
+					role="listbox"
+					id={listboxId}
 					aria-label="Story results"
 					className="max-h-[min(50dvh,380px)] overflow-y-auto py-1.5"
 				>
 					{filtered.map((story, i) => (
-						<li key={story.id}>
-							<button
-								type="button"
-								onClick={() => navigate(story)}
-								onMouseEnter={() => setSelectedIndex(i)}
-								aria-current={i === selectedIndex ? true : undefined}
-								className={cn(
-									"flex w-full items-start gap-3 px-4 py-2.5 text-left transition-colors",
-									i === selectedIndex ? "bg-accent" : "",
-								)}
-							>
-								<div className="min-w-0 flex-1">
-									<p className="line-clamp-1 text-sm font-medium text-foreground">
-										{story.title}
-									</p>
-									<p className="mt-0.5 text-xs text-muted-foreground">
-										{story.domain && (
-											<span className="font-mono">{story.domain} · </span>
-										)}
-										{story.score} pts · {story.by}
-									</p>
-								</div>
-								{story.url && (
-									<button
-										type="button"
-										onClick={(e) => {
-											e.stopPropagation();
-											window.open(story.url, "_blank", "noopener,noreferrer");
-											onClose();
-										}}
-										className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
-										aria-label={`Open ${story.domain ?? "link"} in new tab`}
-									>
-										<ExternalLink className="h-3.5 w-3.5" />
-									</button>
-								)}
-								<ArrowRight
-									className={cn(
-										"mt-1 h-3 w-3 shrink-0 transition-opacity",
-										i === selectedIndex
-											? "text-muted-foreground opacity-60"
-											: "opacity-0",
+						// biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled by combobox input via aria-activedescendant + Enter
+						<li
+							key={story.id}
+							role="option"
+							id={`${listboxId}-option-${i}`}
+							aria-selected={i === selectedIndex}
+							onClick={() => navigate(story)}
+							onMouseEnter={() => setSelectedIndex(i)}
+							className={cn(
+								"flex w-full cursor-pointer items-start gap-3 px-4 py-2.5 transition-colors",
+								i === selectedIndex ? "bg-accent" : "",
+							)}
+						>
+							<div className="min-w-0 flex-1">
+								<p className="line-clamp-1 text-sm font-medium text-foreground">
+									{story.title}
+								</p>
+								<p className="mt-0.5 text-xs text-muted-foreground">
+									{story.domain && (
+										<span className="font-mono">{story.domain} · </span>
 									)}
-									aria-hidden
-								/>
-							</button>
+									{story.score} pts · {story.by}
+								</p>
+							</div>
+							{story.url && (
+								<button
+									type="button"
+									tabIndex={-1}
+									onClick={(e) => {
+										e.stopPropagation();
+										window.open(story.url, "_blank", "noopener,noreferrer");
+										onClose();
+									}}
+									className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
+									aria-label={`Open ${story.domain ?? "link"} in new tab`}
+								>
+									<ExternalLink className="h-3.5 w-3.5" />
+								</button>
+							)}
+							<ArrowRight
+								className={cn(
+									"mt-1 h-3 w-3 shrink-0 transition-opacity",
+									i === selectedIndex
+										? "text-muted-foreground opacity-60"
+										: "opacity-0",
+								)}
+								aria-hidden
+							/>
 						</li>
 					))}
 				</ul>
