@@ -35,7 +35,7 @@ export function Header({
 
 	return (
 		<header
-			className="sticky top-0 z-50 border-b border-border/50 bg-background/92 backdrop-blur-md"
+			className="sticky top-0 z-50 border-b border-border/50 bg-background/95 backdrop-blur-lg"
 			style={{ viewTransitionName: "site-header" }}
 		>
 			<div className="mx-auto flex h-14 max-w-4xl items-center justify-between px-4">
@@ -108,33 +108,30 @@ export function Header({
 							<span className="sr-only">Refresh stories</span>
 						</Button>
 					)}
-					<div role="radiogroup" aria-label="Color theme" className="flex items-center gap-0.5 rounded-lg border border-border bg-muted/40 p-0.5">
-						{(
-							[
-								{ value: "light", Icon: Sun, label: "Light" },
-								{ value: "system", Icon: Monitor, label: "System" },
-								{ value: "dark", Icon: Moon, label: "Dark" },
-							] as const
-						).map(({ value, Icon, label }) => (
-							<Button
-								key={value}
-								variant="ghost"
-								size="icon"
-								role="radio"
-								onClick={() => setTheme(value)}
-								aria-label={label}
-								aria-checked={mounted && theme === value}
-								className={cn(
-									"h-8 w-8 text-muted-foreground hover:text-foreground",
-									mounted &&
-										theme === value &&
-										"bg-background text-foreground shadow-sm",
-								)}
-							>
-								<Icon className="h-3.5 w-3.5" />
-							</Button>
-						))}
-					</div>
+					<Button
+						variant="ghost"
+						size="icon"
+						onClick={() => {
+							if (!mounted) return;
+							setTheme(
+								theme === "light" ? "dark" : theme === "dark" ? "system" : "light",
+							);
+						}}
+						aria-label={
+							mounted
+								? `Theme: ${theme ?? "system"} — click to cycle`
+								: "Toggle theme"
+						}
+						className="h-10 w-10 text-muted-foreground hover:text-foreground"
+					>
+						{mounted && theme === "light" ? (
+							<Sun className="h-4 w-4" />
+						) : mounted && theme === "dark" ? (
+							<Moon className="h-4 w-4" />
+						) : (
+							<Monitor className="h-4 w-4" />
+						)}
+					</Button>
 				</div>
 			</div>
 		</header>

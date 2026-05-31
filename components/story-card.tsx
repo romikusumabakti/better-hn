@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Sparkles } from "lucide-react";
+import { ArrowUpRight, Share2, Sparkles } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
@@ -17,23 +17,25 @@ interface StoryCardProps {
 function HighlightedText({ text, query }: { text: string; query: string }) {
 	if (!query.trim()) return <>{text}</>;
 	const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	const parts = text.split(new RegExp(`(${escaped})`, "gi"));
-	return (
-		<>
-			{parts.map((part, i) =>
-				i % 2 === 1 ? (
-					<mark
-						key={i}
-						className="rounded-sm bg-amber-200/80 px-0.5 text-foreground not-italic dark:bg-amber-500/35"
-					>
-						{part}
-					</mark>
-				) : (
-					part
-				),
-			)}
-		</>
-	);
+	const regex = new RegExp(escaped, "gi");
+	const nodes: React.ReactNode[] = [];
+	let last = 0;
+	let m: RegExpExecArray | null;
+	// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop pattern
+	while ((m = regex.exec(text)) !== null) {
+		if (m.index > last) nodes.push(text.slice(last, m.index));
+		nodes.push(
+			<mark
+				key={m.index}
+				className="rounded-sm bg-amber-200/80 px-0.5 text-foreground not-italic dark:bg-amber-500/35"
+			>
+				{m[0]}
+			</mark>,
+		);
+		last = m.index + m[0].length;
+	}
+	if (last < text.length) nodes.push(text.slice(last));
+	return <>{nodes}</>;
 }
 
 function ScoreBadge({ score }: { score: number }) {
@@ -61,6 +63,35 @@ function ScoreBadge({ score }: { score: number }) {
 	);
 }
 
+function ShareButton({ story }: { story: ScoredStory }) {
+	const url = story.url ?? `https://news.ycombinator.com/item?id=${story.id}`;
+
+	const handleShare = async (e: React.MouseEvent) => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (typeof navigator.share === "function") {
+			try {
+				await navigator.share({ title: story.title, url });
+			} catch {}
+		} else if (navigator.clipboard) {
+			try {
+				await navigator.clipboard.writeText(url);
+			} catch {}
+		}
+	};
+
+	return (
+		<button
+			type="button"
+			onClick={handleShare}
+			className="relative z-10 opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 focus-visible:opacity-100"
+			aria-label="Share story"
+		>
+			<Share2 className="h-3 w-3" />
+		</button>
+	);
+}
+
 export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryCardProps) {
 	const typeLabel = getTypeLabel(story);
 
@@ -68,8 +99,8 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 		<article
 			aria-labelledby={`story-title-${story.id}`}
 			className={cn(
-				"group relative rounded-xl border bg-card card-enter @container transition-transform motion-safe:hover:-translate-y-px hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
-				isActive ? "border-primary/50 ring-1 ring-primary/20" : "border-border",
+				"group relative rounded-xl border bg-card card-enter transition-transform motion-safe:hover:-translate-y-px hover:border-primary/30 hover:shadow-md hover:shadow-black/5 dark:hover:shadow-black/20",
+				isActive ? "border-primary/50 ring-2 ring-primary/40" : "border-border",
 			)}
 		>
 			{/* Stretched link — covers the whole card */}
@@ -80,6 +111,16 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 				aria-labelledby={`story-title-${story.id}`}
 				onClick={onVisit}
 			/>
+
+			{/* External link indicator */}
+			{story.url && (
+				<div
+					className="pointer-events-none absolute right-3 top-3 opacity-0 transition-opacity group-hover:opacity-100"
+					aria-hidden
+				>
+					<ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground" />
+				</div>
+			)}
 
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
@@ -112,17 +153,17 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 						)}
 					</div>
 
-					<h2 id={`story-title-${story.id}`} className="text-fluid-card-title font-semibold text-balance text-foreground transition-colors group-hover:text-primary">
+					<h2
+						id={`story-title-${story.id}`}
+						className="text-fluid-card-title font-semibold text-balance text-foreground transition-colors group-hover:text-primary"
+					>
 						<HighlightedText text={story.title} query={query} />
-						{story.url && (
-							<ArrowUpRight className="mb-0.5 ml-1 inline h-3.5 w-3.5 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100 group-hover:text-primary" />
-						)}
 					</h2>
 
 					{/* Meta row */}
 					<div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
 						<ScoreBadge score={story.computedScore} />
-						<span className="font-mono">{story.score} pts</span>
+						<span className="font-mono tabular-nums">{story.score} pts</span>
 						<Link
 							href={`/story/${story.id}`}
 							transitionTypes={["nav-forward"]}
@@ -140,6 +181,7 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 						>
 							{story.by}
 						</Link>
+						<ShareButton story={story} />
 					</div>
 				</div>
 			</div>

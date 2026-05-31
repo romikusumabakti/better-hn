@@ -4,6 +4,7 @@ import { AlertCircle, Loader2, SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
+import { CommandPalette } from "@/components/command-palette";
 import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
@@ -91,6 +92,7 @@ export function StoriesFeed() {
 	}, []);
 
 	const [filterOpen, setFilterOpen] = useState(false);
+	const [paletteOpen, setPaletteOpen] = useState(false);
 	const [page, setPage] = useState(1);
 	const [liveMsg, setLiveMsg] = useState("");
 
@@ -222,6 +224,13 @@ export function StoriesFeed() {
 
 	useEffect(() => {
 		const onKey = (e: KeyboardEvent) => {
+			// ⌘K / Ctrl+K: open command palette from anywhere
+			if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+				e.preventDefault();
+				setPaletteOpen((prev) => !prev);
+				return;
+			}
+
 			const tag = (e.target as HTMLElement).tagName;
 			if (tag === "INPUT" || tag === "TEXTAREA") return;
 
@@ -253,7 +262,7 @@ export function StoriesFeed() {
 		};
 		window.addEventListener("keydown", onKey);
 		return () => window.removeEventListener("keydown", onKey);
-	}, [activeIndex, visible]);
+	}, [activeIndex, visible, router]);
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: activeIndex is needed to trigger scroll on navigation
 	useEffect(() => {
@@ -393,6 +402,9 @@ export function StoriesFeed() {
 								<span>
 									<kbd>?</kbd> filters
 								</span>
+								<span>
+									<kbd>⌘K</kbd> search
+								</span>
 							</div>
 						)}
 					</main>
@@ -428,6 +440,11 @@ export function StoriesFeed() {
 				totalCount={scored.length}
 				visibleCount={filtered.length}
 				onOpenChange={setFilterOpen}
+			/>
+			<CommandPalette
+				open={paletteOpen}
+				onClose={() => setPaletteOpen(false)}
+				stories={scored}
 			/>
 		</>
 	);

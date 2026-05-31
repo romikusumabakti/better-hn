@@ -155,7 +155,7 @@ export function FilterPanel({
 									id="alpha-label"
 									className="text-sm font-medium text-foreground"
 								>
-									Decay rate (α)
+									Freshness
 								</span>
 								<Tooltip>
 									<TooltipTrigger asChild>
@@ -164,16 +164,16 @@ export function FilterPanel({
 											className="cursor-help rounded text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 										>
 											<Info className="h-3.5 w-3.5" aria-hidden />
-											<span className="sr-only">About decay rate formula</span>
+											<span className="sr-only">About freshness setting</span>
 										</button>
 									</TooltipTrigger>
 									<TooltipContent side="top" className="max-w-60">
 										<p className="text-xs">
-											Controls how fast older posts lose score.
+											How quickly older stories lose ranking weight.
 											<br />
-											Formula: (points + comments) / (hours + 2)^α
+											Low = classic stories can resurface.
 											<br />
-											Higher α = newer stories ranked higher.
+											High = latest stories ranked first.
 										</p>
 									</TooltipContent>
 								</Tooltip>
@@ -194,8 +194,8 @@ export function FilterPanel({
 							className="w-full"
 						/>
 						<div className="flex justify-between text-xs text-muted-foreground">
-							<span>0.1 (slow decay)</span>
-							<span>2.0 (fast decay)</span>
+							<span>Timeless</span>
+							<span>Latest first</span>
 						</div>
 					</div>
 
@@ -288,6 +288,9 @@ export function FilterPanel({
 						</span>
 						<span>
 							<kbd>?</kbd> — toggle panel
+						</span>
+						<span>
+							<kbd>⌘K</kbd> — search
 						</span>
 					</div>
 				</div>

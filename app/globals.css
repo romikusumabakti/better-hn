@@ -484,6 +484,49 @@ kbd {
 	font-size: inherit !important;
 }
 
+/* ─── Command Palette (native <dialog>) ─── */
+.command-palette {
+	position: fixed;
+	inset-inline: 1rem;
+	inset-block-start: max(7rem, 10dvh);
+	inset-block-end: auto;
+	margin-inline: auto;
+	width: min(calc(100vw - 2rem), 36rem);
+	max-height: min(70dvh, 560px);
+	overflow: hidden;
+	border-radius: 0.75rem;
+	opacity: 1;
+	transform: scale(1) translateY(0);
+	transition:
+		opacity 0.15s ease,
+		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@starting-style {
+	.command-palette[open] {
+		opacity: 0;
+		transform: scale(0.97) translateY(-8px);
+	}
+}
+
+.command-palette::backdrop {
+	background: oklch(0 0 0 / 0.45);
+	backdrop-filter: blur(4px);
+	-webkit-backdrop-filter: blur(4px);
+	opacity: 0;
+	transition: opacity 0.2s ease, display 0.2s allow-discrete;
+}
+
+.command-palette[open]::backdrop {
+	opacity: 1;
+}
+
+@starting-style {
+	.command-palette[open]::backdrop {
+		opacity: 0;
+	}
+}
+
 /* ─── Reduced motion ─── */
 @media (prefers-reduced-motion: reduce) {
 	.nav-progress {
@@ -520,6 +563,19 @@ kbd {
 	}
 	@starting-style {
 		.scroll-to-top-btn:not([hidden]) {
+			opacity: 1;
+			transform: none;
+		}
+	}
+
+	.command-palette {
+		transition: none;
+	}
+	.command-palette::backdrop {
+		transition: none;
+	}
+	@starting-style {
+		.command-palette[open] {
 			opacity: 1;
 			transform: none;
 		}

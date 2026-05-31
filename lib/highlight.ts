@@ -65,7 +65,7 @@ function detectLang(code: string): string {
 	)
 		return "bash";
 	if (/^\s*<(!DOCTYPE|html|head|body|div|span|p)[^w]/.test(t)) return "html";
-	if (/^\s*[\{\[]/.test(t) && /"[\w-]+":\s/.test(t)) return "json";
+	if (/^\s*[{[]/.test(t) && /"[\w-]+":\s/.test(t)) return "json";
 	if (/\b(SELECT|INSERT|UPDATE|DELETE|CREATE TABLE|ALTER TABLE)\b/i.test(t))
 		return "sql";
 	return "text";
@@ -81,7 +81,7 @@ function decode(html: string): string {
 }
 
 export async function highlightHtml(html: string): Promise<string> {
-	if (!html || !html.includes("<pre>")) return html;
+	if (!html?.includes("<pre>")) return html;
 	const hl = await getHighlighter();
 	return html.replace(
 		/<pre><code>([\s\S]*?)<\/code><\/pre>/gi,
