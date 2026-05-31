@@ -1,7 +1,8 @@
 "use client";
 
-import { ArrowUpRight, Share2, Sparkles } from "lucide-react";
+import { ArrowUpRight, Check, Share2, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
 import { cn, formatTime, getTypeLabel } from "@/lib/utils";
@@ -65,6 +66,7 @@ function ScoreBadge({ score }: { score: number }) {
 
 function ShareButton({ story }: { story: ScoredStory }) {
 	const url = story.url ?? `https://news.ycombinator.com/item?id=${story.id}`;
+	const [copied, setCopied] = useState(false);
 
 	const handleShare = async (e: React.MouseEvent) => {
 		e.preventDefault();
@@ -76,6 +78,8 @@ function ShareButton({ story }: { story: ScoredStory }) {
 		} else if (navigator.clipboard) {
 			try {
 				await navigator.clipboard.writeText(url);
+				setCopied(true);
+				setTimeout(() => setCopied(false), 1500);
 			} catch {}
 		}
 	};
@@ -85,9 +89,13 @@ function ShareButton({ story }: { story: ScoredStory }) {
 			type="button"
 			onClick={handleShare}
 			className="share-btn relative z-10 opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 focus-visible:opacity-100"
-			aria-label="Share story"
+			aria-label={copied ? "Link copied!" : "Share story"}
 		>
-			<Share2 className="h-3 w-3" />
+			{copied ? (
+				<Check className="h-3 w-3 text-primary" />
+			) : (
+				<Share2 className="h-3 w-3" />
+			)}
 		</button>
 	);
 }
@@ -103,14 +111,25 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 				isActive ? "border-primary/50 ring-2 ring-primary/40" : "border-border",
 			)}
 		>
-			{/* Stretched link — covers the whole card */}
-			<Link
-				href={`/story/${story.id}`}
-				transitionTypes={["nav-forward"]}
-				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				aria-labelledby={`story-title-${story.id}`}
-				onClick={onVisit}
-			/>
+			{/* Stretched link — external when story has URL, internal (comments) otherwise */}
+			{story.url ? (
+				<a
+					href={story.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-labelledby={`story-title-${story.id}`}
+					onClick={onVisit}
+				/>
+			) : (
+				<Link
+					href={`/story/${story.id}`}
+					transitionTypes={["nav-forward"]}
+					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-labelledby={`story-title-${story.id}`}
+					onClick={onVisit}
+				/>
+			)}
 
 			{/* External link indicator */}
 			{story.url && (
@@ -168,6 +187,7 @@ export function StoryCard({ story, rank, isActive, onVisit, query = "" }: StoryC
 							href={`/story/${story.id}`}
 							transitionTypes={["nav-forward"]}
 							className="relative z-10 transition-colors hover:text-foreground"
+							onClick={onVisit}
 						>
 							{story.descendants ?? 0} comments
 						</Link>

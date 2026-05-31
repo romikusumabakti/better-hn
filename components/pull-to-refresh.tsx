@@ -28,18 +28,16 @@ export function PullToRefresh({
 	}, [onRefresh]);
 
 	useEffect(() => {
-		function onTouchStart(e: TouchEvent) {
-			if (window.scrollY > 2) return;
-			startY.current = e.touches[0].clientY;
-			pulling.current = true;
-		}
-
 		function onTouchMove(e: TouchEvent) {
-			if (!pulling.current) return;
+			if (!pulling.current) {
+				document.removeEventListener("touchmove", onTouchMove);
+				return;
+			}
 			if (window.scrollY > 2) {
 				pulling.current = false;
 				setDragging(false);
 				setPullY(0);
+				document.removeEventListener("touchmove", onTouchMove);
 				return;
 			}
 			const delta = e.touches[0].clientY - startY.current;
@@ -53,8 +51,16 @@ export function PullToRefresh({
 			if (y > 5) e.preventDefault();
 		}
 
+		function onTouchStart(e: TouchEvent) {
+			if (window.scrollY > 2) return;
+			startY.current = e.touches[0].clientY;
+			pulling.current = true;
+			document.addEventListener("touchmove", onTouchMove, { passive: false });
+		}
+
 		function onTouchEnd() {
 			if (!pulling.current) return;
+			document.removeEventListener("touchmove", onTouchMove);
 			pulling.current = false;
 			setDragging(false);
 			setPullY((current) => {
@@ -69,7 +75,6 @@ export function PullToRefresh({
 		}
 
 		document.addEventListener("touchstart", onTouchStart, { passive: true });
-		document.addEventListener("touchmove", onTouchMove, { passive: false });
 		document.addEventListener("touchend", onTouchEnd, { passive: true });
 		return () => {
 			document.removeEventListener("touchstart", onTouchStart);

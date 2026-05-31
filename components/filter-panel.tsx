@@ -290,7 +290,7 @@ export function FilterPanel({
 							<kbd>?</kbd> — toggle panel
 						</span>
 						<span>
-							<kbd>⌘K</kbd> — search
+							<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !/Win/.test(navigator.platform) ? "⌘" : "Ctrl"}K</kbd> — search
 						</span>
 					</div>
 				</div>

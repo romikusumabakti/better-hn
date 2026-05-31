@@ -91,6 +91,13 @@ export function StoriesFeed() {
 		} catch {}
 	}, []);
 
+	useEffect(() => {
+		try {
+			const stored = JSON.parse(localStorage.getItem("hn-visited") || "[]") as number[];
+			if (stored.length > 0) setVisitedIds(new Set(stored));
+		} catch {}
+	}, []);
+
 	const [filterOpen, setFilterOpen] = useState(false);
 	const [paletteOpen, setPaletteOpen] = useState(false);
 	const [page, setPage] = useState(1);
@@ -100,15 +107,7 @@ export function StoriesFeed() {
 	const [toastMsg, setToastMsg] = useState<string | null>(null);
 	const prevValidatingRef = useRef(false);
 
-	const [visitedIds, setVisitedIds] = useState<Set<number>>(() => {
-		try {
-			return new Set(
-				JSON.parse(localStorage.getItem("hn-visited") || "[]") as number[],
-			);
-		} catch {
-			return new Set();
-		}
-	});
+	const [visitedIds, setVisitedIds] = useState<Set<number>>(new Set());
 
 	const markVisited = useCallback((id: number) => {
 		setVisitedIds((prev) => {
@@ -354,7 +353,7 @@ export function StoriesFeed() {
 											{
 												"--card-index": Math.min(i, 8),
 												contentVisibility: "auto",
-												containIntrinsicSize: "auto 120px",
+												containIntrinsicSize: "auto 160px",
 											} as React.CSSProperties
 										}
 									>
@@ -403,7 +402,7 @@ export function StoriesFeed() {
 									<kbd>?</kbd> filters
 								</span>
 								<span>
-									<kbd>⌘K</kbd> search
+									<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !/Win/.test(navigator.platform) ? "⌘" : "Ctrl"}K</kbd> search
 								</span>
 							</div>
 						)}

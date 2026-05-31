@@ -20,16 +20,16 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const listboxId = useId();
 
-	const filtered = query.trim()
-		? stories
-				.filter(
-					(s) =>
-						s.title.toLowerCase().includes(query.toLowerCase()) ||
-						(s.domain?.toLowerCase().includes(query.toLowerCase()) ?? false) ||
-						s.by.toLowerCase().includes(query.toLowerCase()),
-				)
-				.slice(0, 8)
-		: stories.slice(0, 8);
+	const allMatches = query.trim()
+		? stories.filter(
+				(s) =>
+					s.title.toLowerCase().includes(query.toLowerCase()) ||
+					(s.domain?.toLowerCase().includes(query.toLowerCase()) ?? false) ||
+					s.by.toLowerCase().includes(query.toLowerCase()),
+			)
+		: stories;
+	const filtered = allMatches.slice(0, 8);
+	const totalMatches = allMatches.length;
 
 	const activeDescendantId =
 		filtered.length > 0 ? `${listboxId}-option-${selectedIndex}` : undefined;
@@ -190,6 +190,9 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 				<span>
 					<kbd>esc</kbd> close
 				</span>
+				{totalMatches > 8 && (
+					<span className="ml-auto">{filtered.length} of {totalMatches}</span>
+				)}
 			</div>
 		</dialog>
 	);
