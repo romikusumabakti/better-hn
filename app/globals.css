@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@property --backdrop {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: oklch(0 0 0 / 0.42);
+}
+
 @utility text-fluid-card-title {
   font-size: clamp(0.9375rem, 0.8rem + 0.7vw, 1.25rem);
   line-height: 1.35;
@@ -75,6 +81,11 @@
 @keyframes panel-drop {
   from { opacity: 0; transform: scale(0.95) translateY(-6px); }
   to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes header-elevation {
+  from { box-shadow: none; }
+  to   { box-shadow: 0 2px 16px oklch(0 0 0 / 0.09); }
 }
 
 /* ─── Base layer: resets, tokens, global element styles ─── */
@@ -545,8 +556,52 @@
     opacity: 0;
   }
 
+  /* ─── Scroll-driven header elevation ─── */
+  @supports (animation-timeline: scroll()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .site-header {
+        animation: header-elevation linear both;
+        animation-timeline: scroll(root block);
+        animation-range: 0px 80px;
+      }
+    }
+  }
+
+  /* ─── :has()-driven filter toggle active state ─── */
+  body:has(#filter-panel:popover-open) #filter-toggle {
+    color: var(--foreground);
+    background-color: var(--accent);
+  }
+
+  /* Lock body scroll on mobile when filter is open */
+  @media (max-width: 639px) {
+    body:has(#filter-panel:popover-open) {
+      overflow: hidden;
+    }
+  }
+
+  /* ─── Offline banner ─── */
+  .offline-banner {
+    display: flex;
+    opacity: 1;
+    transition: opacity 0.2s ease, display 0.2s allow-discrete;
+  }
+  .offline-banner[hidden] {
+    display: none;
+    opacity: 0;
+  }
+  @starting-style {
+    .offline-banner:not([hidden]) {
+      opacity: 0;
+    }
+  }
+
   /* ─── Reduced motion ─── */
   @media (prefers-reduced-motion: reduce) {
+    .site-header {
+      animation: none;
+    }
+
     .nav-progress {
       animation: none;
       opacity: 0.6;

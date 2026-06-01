@@ -85,6 +85,7 @@ export function StoriesFeed() {
 	// Toast
 	const [toastMsg, setToastMsg] = useState<string | null>(null);
 	const prevValidatingRef = useRef(false);
+	const prevStoryIdsRef = useRef<Set<number> | null>(null);
 
 	const [visitedIds, setVisitedIds] = useState<Set<number>>(new Set());
 
@@ -112,9 +113,22 @@ export function StoriesFeed() {
 	// Show toast when refresh completes
 	useEffect(() => {
 		if (prevValidatingRef.current && !isValidating && data) {
-			setToastMsg("Feed updated");
+			const prev = prevStoryIdsRef.current;
+			const msg = prev
+				? (() => {
+						const n = data.filter((s) => !prev.has(s.id)).length;
+						return n > 0
+							? `${n} new stor${n === 1 ? "y" : "ies"}`
+							: "Up to date";
+					})()
+				: "Feed refreshed";
+			prevStoryIdsRef.current = new Set(data.map((s) => s.id));
+			setToastMsg(msg);
 			const t = setTimeout(() => setToastMsg(null), 2500);
 			return () => clearTimeout(t);
+		}
+		if (!isValidating && data && !prevStoryIdsRef.current) {
+			prevStoryIdsRef.current = new Set(data.map((s) => s.id));
 		}
 		prevValidatingRef.current = isValidating;
 	}, [isValidating, data]);
@@ -273,12 +287,6 @@ export function StoriesFeed() {
 
 	return (
 		<>
-			{/* Blocks clicks through ::backdrop on mobile (popover is non-modal by spec) */}
-			<div
-				hidden={!filterOpen}
-				className="fixed inset-0 z-30 sm:hidden"
-				aria-hidden="true"
-			/>
 			<PullToRefresh onRefresh={() => mutate()} isRefreshing={isValidating}>
 				<div className="relative flex min-h-dvh flex-col">
 					<ScrollToTop />
@@ -335,7 +343,7 @@ export function StoriesFeed() {
 											{
 												"--card-index": Math.min(i, 8),
 												contentVisibility: "auto",
-												containIntrinsicSize: "auto 160px",
+												containIntrinsicSize: "auto 120px",
 											} as React.CSSProperties
 										}
 									>

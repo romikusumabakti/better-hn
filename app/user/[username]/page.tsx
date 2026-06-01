@@ -166,14 +166,16 @@ export default async function UserPage({
 			<div className="min-h-dvh bg-background">
 				<Header />
 				<main id="main-content" className="mx-auto max-w-4xl px-4 py-6">
-					<Link
-						href="/"
-						transitionTypes={["nav-back"]}
-						className="mb-6 -ml-2.5 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
-					>
-						<ArrowLeft className="h-4 w-4" />
-						Back to feed
-					</Link>
+					<nav aria-label="Breadcrumb" className="mb-6">
+						<Link
+							href="/"
+							transitionTypes={["nav-back"]}
+							className="-ml-2.5 inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							Back to feed
+						</Link>
+					</nav>
 
 					{/* User profile card */}
 					<div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6">
