@@ -16,9 +16,9 @@ import { LoadMoreComments } from "@/components/load-more-comments";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { VisitedMarker } from "@/components/visited-marker";
+import { highlightHtml, processComment } from "@/lib/highlight";
 import type { HNComment } from "@/lib/hn-api";
 import { fetchCommentTree, fetchStory } from "@/lib/hn-api";
-import { highlightHtml, processComment } from "@/lib/highlight";
 import { sanitize } from "@/lib/sanitize";
 import { formatTime, getTypeLabel } from "@/lib/utils";
 
@@ -96,7 +96,9 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 
 	const hoursAgo = (Date.now() / 1000 - story.time) / 3600;
 	const hnUrl = `https://news.ycombinator.com/item?id=${story.id}`;
-	const storyHtml = story.text ? await highlightHtml(sanitize(story.text)) : null;
+	const storyHtml = story.text
+		? await highlightHtml(sanitize(story.text))
+		: null;
 
 	const typeLabel = getTypeLabel(story);
 
@@ -217,7 +219,10 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 
 					{/* Comments */}
 					<section aria-labelledby="comments-heading">
-						<h2 id="comments-heading" className="mb-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+						<h2
+							id="comments-heading"
+							className="mb-5 text-sm font-semibold uppercase tracking-wide text-muted-foreground"
+						>
 							{story.descendants ?? 0} comments
 						</h2>
 						<Suspense fallback={<CommentsSkeleton />}>

@@ -8,7 +8,9 @@ import { cn } from "@/lib/utils";
 
 function closeWithAnimation(dialog: HTMLDialogElement) {
 	if (!dialog.open || dialog.hasAttribute("data-closing")) return;
-	const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	const prefersReduced = window.matchMedia(
+		"(prefers-reduced-motion: reduce)",
+	).matches;
 	if (prefersReduced) {
 		dialog.close();
 		return;
@@ -22,9 +24,16 @@ function closeWithAnimation(dialog: HTMLDialogElement) {
 		dialog.close();
 	};
 	const t = setTimeout(cleanup, 200);
-	dialog.addEventListener("transitionend", (e) => {
-		if (e.target === dialog) { clearTimeout(t); cleanup(); }
-	}, { once: true });
+	dialog.addEventListener(
+		"transitionend",
+		(e) => {
+			if (e.target === dialog) {
+				clearTimeout(t);
+				cleanup();
+			}
+		},
+		{ once: true },
+	);
 }
 
 function fuzzyScore(text: string, query: string): number {
@@ -52,7 +61,11 @@ interface CommandPaletteProps {
 	stories: ScoredStory[];
 }
 
-export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) {
+export function CommandPalette({
+	open,
+	onClose,
+	stories,
+}: CommandPaletteProps) {
 	const router = useRouter();
 	const [query, setQuery] = useState("");
 	const [selectedIndex, setSelectedIndex] = useState(0);
@@ -62,7 +75,7 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 
 	const allMatches = (() => {
 		const q = query.trim();
-		if (!q) return stories;
+		if (!q) return stories.slice(0, 5);
 		return stories
 			.map((s) => {
 				const score = Math.max(
@@ -152,7 +165,10 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 		>
 			{/* Combobox — keyboard navigation stays on input, aria-activedescendant tracks selection */}
 			<div className="flex items-center gap-3 border-b border-border px-4 py-3">
-				<Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
+				<Search
+					className="h-4 w-4 shrink-0 text-muted-foreground"
+					aria-hidden
+				/>
 				<input
 					ref={inputRef}
 					role="combobox"
@@ -169,69 +185,81 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 					autoComplete="off"
 					spellCheck={false}
 				/>
-				<kbd className="hidden text-xs text-muted-foreground/40 sm:inline">esc</kbd>
+				<kbd className="hidden text-xs text-muted-foreground/40 sm:inline">
+					esc
+				</kbd>
 			</div>
 
 			{/* Results */}
 			{filtered.length > 0 ? (
-				<ul
-					role="listbox"
-					id={listboxId}
-					aria-label="Story results"
-					className="max-h-[min(50dvh,380px)] overflow-y-auto py-1.5"
-				>
-					{filtered.map((story, i) => (
-						// biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled by combobox input via aria-activedescendant + Enter
-						<li
-							key={story.id}
-							role="option"
-							id={`${listboxId}-option-${i}`}
-							aria-selected={i === selectedIndex}
-							onClick={() => navigate(story)}
-							onMouseEnter={() => setSelectedIndex(i)}
-							className={cn(
-								"flex w-full cursor-pointer items-start gap-3 px-4 py-2.5 transition-colors",
-								i === selectedIndex ? "bg-accent" : "",
-							)}
+				<>
+					{!query.trim() && (
+						<p
+							aria-hidden
+							className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/40 select-none"
 						>
-							<div className="min-w-0 flex-1">
-								<p className="line-clamp-1 text-sm font-medium text-foreground">
-									{story.title}
-								</p>
-								<p className="mt-0.5 text-xs text-muted-foreground">
-									{story.domain && (
-										<span className="font-mono">{story.domain} · </span>
-									)}
-									{story.score} pts · {story.by}
-								</p>
-							</div>
-							{story.url && (
-								<button
-									type="button"
-									tabIndex={-1}
-									onClick={(e) => {
-										e.stopPropagation();
-										window.open(story.url, "_blank", "noopener,noreferrer");
-										onClose();
-									}}
-									className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
-									aria-label={`Open ${story.domain ?? "link"} in new tab`}
-								>
-									<ExternalLink className="h-3.5 w-3.5" />
-								</button>
-							)}
-							<ArrowRight
+							Top stories
+						</p>
+					)}
+					<ul
+						role="listbox"
+						id={listboxId}
+						aria-label="Story results"
+						className="max-h-[min(50dvh,380px)] overflow-y-auto py-1.5"
+					>
+						{filtered.map((story, i) => (
+							// biome-ignore lint/a11y/useKeyWithClickEvents: keyboard handled by combobox input via aria-activedescendant + Enter
+							<li
+								key={story.id}
+								role="option"
+								id={`${listboxId}-option-${i}`}
+								aria-selected={i === selectedIndex}
+								onClick={() => navigate(story)}
+								onMouseEnter={() => setSelectedIndex(i)}
 								className={cn(
-									"mt-1 h-3 w-3 shrink-0 transition-opacity",
-									i === selectedIndex
-										? "text-muted-foreground opacity-60"
-										: "opacity-0",
+									"flex w-full cursor-pointer items-start gap-3 px-4 py-2.5 transition-colors",
+									i === selectedIndex ? "bg-accent" : "",
 								)}
-								aria-hidden
-							/>
-						</li>
-					))}
-				</ul>
+							>
+								<div className="min-w-0 flex-1">
+									<p className="line-clamp-1 text-sm font-medium text-foreground">
+										{story.title}
+									</p>
+									<p className="mt-0.5 text-xs text-muted-foreground">
+										{story.domain && (
+											<span className="font-mono">{story.domain} · </span>
+										)}
+										{story.score} pts · {story.by}
+									</p>
+								</div>
+								{story.url && (
+									<button
+										type="button"
+										tabIndex={-1}
+										onClick={(e) => {
+											e.stopPropagation();
+											window.open(story.url, "_blank", "noopener,noreferrer");
+											onClose();
+										}}
+										className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
+										aria-label={`Open ${story.domain ?? "link"} in new tab`}
+									>
+										<ExternalLink className="h-3.5 w-3.5" />
+									</button>
+								)}
+								<ArrowRight
+									className={cn(
+										"mt-1 h-3 w-3 shrink-0 transition-opacity",
+										i === selectedIndex
+											? "text-muted-foreground opacity-60"
+											: "opacity-0",
+									)}
+									aria-hidden
+								/>
+							</li>
+						))}
+					</ul>
+				</>
 			) : query.trim() ? (
 				<div className="flex items-center justify-center py-12 text-sm text-muted-foreground">
 					No stories match &ldquo;{query}&rdquo;
@@ -244,13 +272,15 @@ export function CommandPalette({ open, onClose, stories }: CommandPaletteProps) 
 					<kbd>↑↓</kbd> navigate
 				</span>
 				<span>
-					<kbd>↵</kbd> open comments
+					<kbd>↵</kbd> open story
 				</span>
 				<span>
 					<kbd>esc</kbd> close
 				</span>
 				{totalMatches > 8 && (
-					<span className="ml-auto">{filtered.length} of {totalMatches}</span>
+					<span className="ml-auto">
+						{filtered.length} of {totalMatches}
+					</span>
 				)}
 			</div>
 		</dialog>

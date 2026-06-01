@@ -10,7 +10,7 @@ import { Header } from "@/components/header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { ScrollToTop } from "@/components/scroll-to-top";
 import { StoryCard } from "@/components/story-card";
-import { Skeleton } from "@/components/ui/skeleton";
+import { StorySkeleton } from "@/components/story-skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
 import { scoreStories } from "@/lib/hn-api";
 import { isWindows } from "@/lib/utils";
@@ -24,30 +24,6 @@ const DEFAULT_FILTERS: FilterState = {
 const PAGE_SIZE = 30;
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
-
-function StorySkeleton() {
-	return (
-		<div className="rounded-xl border border-border bg-card p-4">
-			<div className="flex gap-3">
-				<div className="shrink-0 w-6" />
-				<div className="min-w-0 flex-1 space-y-2">
-					<div className="flex gap-1.5">
-						<Skeleton className="h-4 w-10 rounded" />
-						<Skeleton className="h-4 w-20 rounded" />
-					</div>
-					<Skeleton className="h-4 w-4/5 rounded" />
-					<Skeleton className="h-4 w-2/5 rounded" />
-					<div className="flex gap-3">
-						<Skeleton className="h-3 w-8 rounded" />
-						<Skeleton className="h-3 w-12 rounded" />
-						<Skeleton className="h-3 w-16 rounded" />
-						<Skeleton className="h-3 w-10 rounded" />
-					</div>
-				</div>
-			</div>
-		</div>
-	);
-}
 
 function parseFiltersFromURL(
 	sp: ReturnType<typeof useSearchParams>,
@@ -94,7 +70,9 @@ export function StoriesFeed() {
 
 	useEffect(() => {
 		try {
-			const stored = JSON.parse(localStorage.getItem("hn-visited") || "[]") as number[];
+			const stored = JSON.parse(
+				localStorage.getItem("hn-visited") || "[]",
+			) as number[];
 			if (stored.length > 0) setVisitedIds(new Set(stored));
 		} catch {}
 	}, []);
@@ -266,7 +244,10 @@ export function StoriesFeed() {
 
 	// biome-ignore lint/correctness/useExhaustiveDependencies: activeIndex is needed to trigger scroll on navigation
 	useEffect(() => {
-		activeRef.current?.scrollIntoView({ block: "nearest", behavior: "instant" });
+		activeRef.current?.scrollIntoView({
+			block: "nearest",
+			behavior: "instant",
+		});
 	}, [activeIndex]);
 
 	// Announce new stories to screen readers when infinite scroll loads more
@@ -403,7 +384,13 @@ export function StoriesFeed() {
 									<kbd>?</kbd> filters
 								</span>
 								<span>
-									<kbd suppressHydrationWarning>{typeof navigator !== "undefined" && !isWindows() ? "⌘" : "Ctrl"}K</kbd> search
+									<kbd suppressHydrationWarning>
+										{typeof navigator !== "undefined" && !isWindows()
+											? "⌘"
+											: "Ctrl"}
+										K
+									</kbd>{" "}
+									search
 								</span>
 							</div>
 						)}
@@ -427,7 +414,9 @@ export function StoriesFeed() {
 						hidden={!toastMsg}
 						aria-hidden="true"
 						className="toast-pill fixed left-1/2 z-50 -translate-x-1/2 select-none rounded-full bg-foreground px-4 py-2 text-xs font-medium text-background shadow-lg"
-					style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)" }}
+						style={{
+							bottom: "calc(env(safe-area-inset-bottom, 0px) + 5.5rem)",
+						}}
 					>
 						{toastMsg}
 					</div>

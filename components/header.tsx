@@ -90,7 +90,8 @@ export function Header({
 								</span>
 							)}
 							<span className="sr-only">
-								Toggle filters (press ?){activeFilterCount > 0 ? ` — ${activeFilterCount} active` : ""}
+								Toggle filters (press ?)
+								{activeFilterCount > 0 ? ` — ${activeFilterCount} active` : ""}
 							</span>
 						</Button>
 					)}
@@ -114,7 +115,11 @@ export function Header({
 						onClick={() => {
 							if (!mounted) return;
 							setTheme(
-								theme === "light" ? "dark" : theme === "dark" ? "system" : "light",
+								theme === "light"
+									? "dark"
+									: theme === "dark"
+										? "system"
+										: "light",
 							);
 						}}
 						aria-label={

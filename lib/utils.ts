@@ -4,8 +4,11 @@ import { twMerge } from "tailwind-merge";
 export function isWindows(): boolean {
 	if (typeof navigator === "undefined") return false;
 	// userAgentData is Baseline 2023 but not yet in TS DOM lib
-	const uad = (navigator as Navigator & { userAgentData?: { platform?: string } }).userAgentData;
-	if (uad?.platform !== undefined) return uad.platform.toLowerCase().includes("win");
+	const uad = (
+		navigator as Navigator & { userAgentData?: { platform?: string } }
+	).userAgentData;
+	if (uad?.platform !== undefined)
+		return uad.platform.toLowerCase().includes("win");
 	return /Win/.test(navigator.userAgent);
 }
 

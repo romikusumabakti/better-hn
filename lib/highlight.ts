@@ -45,9 +45,7 @@ function detectLang(code: string): string {
 		return "rust";
 	if (/^\s*(func |package \w|import \()/.test(t) || /[a-z] := /.test(t))
 		return "go";
-	if (
-		/(:\s*\w[\w<|[]+[;,]|interface \w|type \w+ =|Promise<|: \w+\[])/.test(t)
-	)
+	if (/(:\s*\w[\w<|[]+[;,]|interface \w|type \w+ =|Promise<|: \w+\[])/.test(t))
 		return "typescript";
 	if (
 		/(^\s*(const |let |var |function |async function|class )|\.(then|catch)\(| => |\$\{)/.test(
@@ -55,9 +53,7 @@ function detectLang(code: string): string {
 		)
 	)
 		return "javascript";
-	if (
-		/^\s*(#include|int main\b|void \w+\s*\(|class \w[\w\s]*\{)/.test(t)
-	)
+	if (/^\s*(#include|int main\b|void \w+\s*\(|class \w[\w\s]*\{)/.test(t))
 		return "cpp";
 	if (
 		/^(\$\s|#!\/|% )/.test(t) ||

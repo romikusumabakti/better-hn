@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { fetchCommentTree } from "@/lib/hn-api";
 import { processComment } from "@/lib/highlight";
+import { fetchCommentTree } from "@/lib/hn-api";
 
 export async function GET(
 	_: Request,

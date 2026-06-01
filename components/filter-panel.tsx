@@ -272,7 +272,6 @@ export function FilterPanel({
 						/>
 					</search>
 				</div>
-
 			</div>
 		</TooltipProvider>
 	);

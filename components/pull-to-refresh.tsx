@@ -102,9 +102,7 @@ export function PullToRefresh({
 					top: HEADER_HEIGHT + 10 + pullY * 0.35,
 					opacity: visible ? Math.min(progress * 1.8, 1) : 0,
 					transform: "translateX(-50%)",
-					transition: dragging
-						? undefined
-						: "top 0.3s ease, opacity 0.3s ease",
+					transition: dragging ? undefined : "top 0.3s ease, opacity 0.3s ease",
 				}}
 			>
 				<div

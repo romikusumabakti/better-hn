@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @utility text-fluid-card-title {
-  font-size: clamp(1rem, 0.9rem + 0.5vw, 1.125rem);
+  font-size: clamp(0.9375rem, 0.8rem + 0.7vw, 1.25rem);
   line-height: 1.35;
 }
 
@@ -40,558 +40,563 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-:root {
-	color-scheme: light;
-	interpolate-size: allow-keywords;
-	--radius: 0.625rem;
+/* ─── Keyframes (global scope — referenced from both layers) ─── */
 
-	--background: oklch(0.955 0.002 264);
-	--foreground: oklch(0.145 0 0);
-	--card: oklch(0.99 0 0);
-	--card-foreground: oklch(0.145 0 0);
-	--popover: oklch(0.99 0 0);
-	--popover-foreground: oklch(0.145 0 0);
-	--primary: oklch(0.64 0.18 32);
-	--primary-foreground: oklch(0.985 0 0);
-	--secondary: oklch(0.93 0 0);
-	--secondary-foreground: oklch(0.2 0 0);
-	--muted: oklch(0.93 0 0);
-	--muted-foreground: oklch(0.52 0 0);
-	--accent: oklch(0.93 0 0);
-	--accent-foreground: oklch(0.2 0 0);
-	--destructive: oklch(0.577 0.245 27.325);
-	--destructive-foreground: oklch(0.985 0 0);
-	--border: oklch(0.88 0 0);
-	--input: oklch(0.88 0 0);
-	--ring: oklch(0.64 0.18 32);
-}
-
-.dark {
-	color-scheme: dark;
-	--background: oklch(0.105 0.006 264);
-	--foreground: oklch(0.94 0.007 264);
-	--card: oklch(0.158 0.008 264);
-	--card-foreground: oklch(0.94 0.007 264);
-	--popover: oklch(0.158 0.008 264);
-	--popover-foreground: oklch(0.94 0.007 264);
-	--primary: oklch(0.72 0.19 32);
-	--primary-foreground: oklch(0.12 0 0);
-	--secondary: oklch(0.22 0.008 264);
-	--secondary-foreground: oklch(0.94 0.007 264);
-	--muted: oklch(0.22 0.008 264);
-	--muted-foreground: oklch(0.64 0.01 264);
-	--accent: oklch(0.22 0.008 264);
-	--accent-foreground: oklch(0.94 0.007 264);
-	--destructive: oklch(0.704 0.191 22.216);
-	--destructive-foreground: oklch(0.12 0 0);
-	--border: oklch(0.26 0.008 264);
-	--input: oklch(0.26 0.008 264);
-	--ring: oklch(0.72 0.19 32);
-}
-
-body {
-	background: var(--background);
-	color: var(--foreground);
-	font-family: var(--font-geist-sans, system-ui, sans-serif);
-	min-height: 100dvh;
-	scrollbar-gutter: stable;
-}
-
-* {
-	border-color: var(--border);
-}
-
-::selection {
-	background: oklch(0.72 0.19 32 / 0.25);
-}
-
-kbd {
-	font-family: var(--font-geist-mono, monospace);
-	font-size: 0.75em;
-	background: var(--muted);
-	border: 1px solid var(--border);
-	border-radius: 3px;
-	padding: 0.1em 0.4em;
-	line-height: 1;
-}
-
-/* ─── Visited story dimming ─── */
-[data-visited] h2 {
-	color: var(--muted-foreground);
-}
-
-[data-visited]:not(:hover) article {
-	opacity: 0.6;
-}
-
-/* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
-.card-enter {
-	transition:
-		border-color 0.15s ease,
-		box-shadow 0.15s ease,
-		opacity 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms),
-		transform 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms);
-}
-
-@starting-style {
-	.card-enter {
-		opacity: 0;
-		transform: translateY(7px);
-	}
-}
-
-/* ─── Dropdown / panel slide ─── */
 @keyframes slide-down {
-	from {
-		opacity: 0;
-		transform: translateY(-6px);
-	}
-	to {
-		opacity: 1;
-		transform: translateY(0);
-	}
-}
-
-.animate-slide-down {
-	animation: slide-down 0.18s ease forwards;
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes sheet-up {
-	from {
-		transform: translateY(100%);
-	}
-	to {
-		transform: translateY(0);
-	}
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
 }
 
-.animate-sheet-up {
-	animation: sheet-up 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
-}
-
-@media (min-width: 640px) {
-	.animate-sheet-up {
-		animation: slide-down 0.18s ease forwards;
-	}
-}
-
-/* ─── View Transitions ─── */
-
-/* Keep header anchored during page transitions */
-::view-transition-group(site-header) {
-	animation: none;
-	z-index: 100;
-}
-::view-transition-old(site-header) {
-	display: none;
-}
-::view-transition-new(site-header) {
-	animation: none;
-}
-
-/* Shared keyframes for directional slides */
 @keyframes vt-fade {
-	from { opacity: 0; }
-	to   { opacity: 1; }
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @keyframes vt-slide-x {
-	from { translate: var(--slide-offset, 0); }
-	to   { translate: 0; }
-}
-
-/* Forward navigation: old slides left, new enters from right */
-::view-transition-old(.nav-forward) {
-	--slide-offset: -40px;
-	animation:
-		150ms ease-in both vt-fade reverse,
-		350ms ease-in-out both vt-slide-x reverse;
-}
-::view-transition-new(.nav-forward) {
-	--slide-offset: 40px;
-	animation:
-		200ms ease-out 150ms both vt-fade,
-		350ms ease-in-out both vt-slide-x;
-}
-
-/* Back navigation: old slides right, new enters from left */
-::view-transition-old(.nav-back) {
-	--slide-offset: 40px;
-	animation:
-		150ms ease-in both vt-fade reverse,
-		350ms ease-in-out both vt-slide-x reverse;
-}
-::view-transition-new(.nav-back) {
-	--slide-offset: -40px;
-	animation:
-		200ms ease-out 150ms both vt-fade,
-		350ms ease-in-out both vt-slide-x;
-}
-
-/* ─── Backdrop overlay (CSS-native, replaces framer) ─── */
-.backdrop-overlay {
-	display: block;
-	opacity: 1;
-	transition: opacity 0.2s ease, display 0.2s allow-discrete;
-}
-.backdrop-overlay[hidden] {
-	display: none;
-	opacity: 0;
-}
-@starting-style {
-	.backdrop-overlay:not([hidden]) {
-		opacity: 0;
-	}
-}
-
-/* ─── Toast pill (CSS-native, replaces framer) ─── */
-.toast-pill {
-	display: block;
-	opacity: 1;
-	transform: translateY(0) scale(1);
-	transition:
-		opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-		display 0.18s allow-discrete;
-}
-.toast-pill[hidden] {
-	display: none;
-	opacity: 0;
-	transform: translateY(8px) scale(0.96);
-}
-@starting-style {
-	.toast-pill:not([hidden]) {
-		opacity: 0;
-		transform: translateY(8px) scale(0.96);
-	}
-}
-
-/* ─── Scroll-to-top button ─── */
-.scroll-to-top-btn {
-	display: flex;
-	opacity: 1;
-	transform: scale(1) translateY(0);
-	transition:
-		opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
-		display 0.18s allow-discrete;
-}
-.scroll-to-top-btn[hidden] {
-	display: none;
-	opacity: 0;
-	transform: scale(0.85) translateY(6px);
-}
-@starting-style {
-	.scroll-to-top-btn:not([hidden]) {
-		opacity: 0;
-		transform: scale(0.85) translateY(6px);
-	}
-}
-
-/* ─── Comment collapse (CSS-native, replaces framer) ─── */
-.comment-body {
-	height: auto;
-	overflow: hidden;
-	opacity: 1;
-	transition:
-		height 0.18s cubic-bezier(0.4, 0, 0.2, 1),
-		opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-}
-[data-collapsed] .comment-body {
-	height: 0;
-	opacity: 0;
-}
-
-/* Fallback: browsers without interpolate-size use max-height animation */
-@supports not (interpolate-size: allow-keywords) {
-	.comment-body {
-		max-height: 9999px;
-		transition:
-			max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-			opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-	}
-	[data-collapsed] .comment-body {
-		max-height: 0;
-	}
-}
-
-/* Expand slider thumb hit area + reveal share button on touch devices */
-@media (pointer: coarse) {
-	[data-radix-slider-thumb] {
-		min-width: 2.75rem;
-		min-height: 2.75rem;
-	}
-
-	.share-btn {
-		opacity: 0.6;
-	}
-}
-
-.comment-chevron {
-	transition: rotate 0.15s ease;
-}
-[data-collapsed] .comment-chevron {
-	rotate: -90deg;
-}
-
-/* ─── Navigation progress bar ─── */
-.nav-progress {
-	background: var(--primary);
-	transform-origin: left;
-	transform: scaleX(0);
-}
-
-.nav-progress[data-state="active"] {
-	animation: nav-fill 8s cubic-bezier(0.05, 0.5, 0.1, 1) forwards;
-}
-
-.nav-progress[data-state="complete"] {
-	transform: scaleX(1);
-	opacity: 0;
-	transition:
-		transform 0.15s ease,
-		opacity 0.35s ease 0.1s;
+  from { translate: var(--slide-offset, 0); }
+  to   { translate: 0; }
 }
 
 @keyframes nav-fill {
-	from {
-		transform: scaleX(0);
-	}
-	to {
-		transform: scaleX(0.9);
-	}
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(0.9); }
 }
 
-/* ─── Filter panel (popover) ─── */
 @keyframes panel-up {
-	from { opacity: 0; transform: translateY(40%); }
-	to   { opacity: 1; transform: translateY(0); }
+  from { opacity: 0; transform: translateY(40%); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes panel-drop {
-	from { opacity: 0; transform: scale(0.95) translateY(-6px); }
-	to   { opacity: 1; transform: scale(1) translateY(0); }
+  from { opacity: 0; transform: scale(0.95) translateY(-6px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
 }
 
-#filter-panel {
-	/* Override UA popover centering — mobile: bottom sheet */
-	position: fixed;
-	inset: auto 0 0 0;
-	margin: 0;
-	border: none;
-	border-top: 1px solid var(--border);
-	border-radius: 1rem 1rem 0 0;
-	padding: 1.25rem;
-	padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
-	max-height: min(85dvh, calc(100dvh - env(safe-area-inset-bottom, 0px) - 3rem));
-	overflow-y: auto;
-	overscroll-behavior: contain;
-	width: 100%;
-	box-shadow: 0 -8px 30px oklch(0 0 0 / 0.12);
+/* ─── Base layer: resets, tokens, global element styles ─── */
 
-	/* Exit target (mobile) */
-	opacity: 0;
-	transform: translateY(40%);
-	transition:
-		opacity 0.2s ease,
-		transform 0.2s ease,
-		overlay 0.22s allow-discrete,
-		display 0.22s allow-discrete;
+@layer base {
+  :root {
+    color-scheme: light;
+    interpolate-size: allow-keywords;
+    --radius: 0.625rem;
+    --backdrop: oklch(0 0 0 / 0.42);
+
+    --background: oklch(0.955 0.002 264);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(0.99 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(0.99 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.64 0.18 32);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.93 0 0);
+    --secondary-foreground: oklch(0.2 0 0);
+    --muted: oklch(0.93 0 0);
+    --muted-foreground: oklch(0.52 0 0);
+    --accent: oklch(0.93 0 0);
+    --accent-foreground: oklch(0.2 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.985 0 0);
+    --border: oklch(0.88 0 0);
+    --input: oklch(0.88 0 0);
+    --ring: oklch(0.64 0.18 32);
+  }
+
+  .dark {
+    color-scheme: dark;
+    --background: oklch(0.105 0.006 264);
+    --foreground: oklch(0.94 0.007 264);
+    --card: oklch(0.158 0.008 264);
+    --card-foreground: oklch(0.94 0.007 264);
+    --popover: oklch(0.158 0.008 264);
+    --popover-foreground: oklch(0.94 0.007 264);
+    --primary: oklch(0.72 0.19 32);
+    --primary-foreground: oklch(0.12 0 0);
+    --secondary: oklch(0.22 0.008 264);
+    --secondary-foreground: oklch(0.94 0.007 264);
+    --muted: oklch(0.22 0.008 264);
+    --muted-foreground: oklch(0.64 0.01 264);
+    --accent: oklch(0.22 0.008 264);
+    --accent-foreground: oklch(0.94 0.007 264);
+    --destructive: oklch(0.704 0.191 22.216);
+    --destructive-foreground: oklch(0.12 0 0);
+    --border: oklch(0.26 0.008 264);
+    --input: oklch(0.26 0.008 264);
+    --ring: oklch(0.72 0.19 32);
+  }
+
+  /* High contrast overrides */
+  @media (prefers-contrast: more) {
+    :root {
+      --border: oklch(0.55 0 0);
+      --muted-foreground: oklch(0.32 0 0);
+      --card: oklch(1 0 0);
+    }
+
+    .dark {
+      --border: oklch(0.52 0 0);
+      --muted-foreground: oklch(0.78 0 0);
+      --card: oklch(0.12 0.006 264);
+    }
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-geist-sans, system-ui, sans-serif);
+    min-height: 100dvh;
+    scrollbar-gutter: stable;
+  }
+
+  * {
+    border-color: var(--border);
+  }
+
+  ::selection {
+    background: oklch(0.72 0.19 32 / 0.25);
+  }
+
+  kbd {
+    font-family: var(--font-geist-mono, monospace);
+    font-size: 0.75em;
+    background: var(--muted);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 0.1em 0.4em;
+    line-height: 1;
+  }
 }
 
-#filter-panel:popover-open {
-	opacity: 1;
-	transform: translateY(0);
-	animation: panel-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
-}
+/* ─── Components layer: custom UI patterns ─── */
 
-#filter-panel::backdrop {
-	background: oklch(0 0 0 / 0.4);
-	opacity: 0;
-	transition: opacity 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
-}
+@layer components {
+  /* ─── Visited story dimming ─── */
+  [data-visited] h2 {
+    color: var(--muted-foreground);
+  }
 
-#filter-panel:popover-open::backdrop {
-	opacity: 1;
-}
+  [data-visited]:not(:hover) article {
+    opacity: 0.6;
+  }
 
-@media (min-width: 640px) {
-	#filter-panel {
-		inset: auto;
-		border: 1px solid var(--border);
-		border-radius: 0.75rem;
-		padding: 1rem;
-		max-height: none;
-		overflow: visible;
-		width: 24rem;
-		box-shadow:
-			0 10px 38px oklch(0 0 0 / 0.1),
-			0 4px 12px oklch(0 0 0 / 0.08);
-		transform-origin: top right;
-		/* Exit target (desktop) */
-		transform: scale(0.95) translateY(-6px);
-	}
+  @media (prefers-contrast: more) {
+    [data-visited]:not(:hover) article {
+      opacity: 0.8;
+    }
+  }
 
-	#filter-panel:popover-open {
-		animation: panel-drop 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
-	}
+  /* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */
+  .card-enter {
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease,
+      opacity 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms),
+      transform 0.22s ease calc(min(var(--card-index, 0), 8) * 30ms);
+  }
 
-	/* CSS Anchor Positioning (Baseline 2024, widely supported in 2026) */
-	@supports (anchor-name: --test) {
-		#filter-toggle {
-			anchor-name: --filter-btn;
-		}
-		#filter-panel {
-			position-anchor: --filter-btn;
-			top: calc(anchor(bottom) + 0.5rem);
-			right: anchor(right);
-		}
-	}
+  @starting-style {
+    .card-enter {
+      opacity: 0;
+      transform: translateY(7px);
+    }
+  }
 
-	/* Fallback: fixed position near top-right of page (header is 56px tall) */
-	@supports not (anchor-name: --test) {
-		#filter-panel {
-			top: 3.875rem;
-			right: 0.5rem;
-		}
-	}
+  /* ─── Dropdown / panel slide ─── */
+  .animate-slide-down {
+    animation: slide-down 0.18s ease forwards;
+  }
 
-	#filter-panel::backdrop {
-		display: none;
-	}
-}
+  .animate-sheet-up {
+    animation: sheet-up 0.22s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  }
 
-/* ─── Shiki syntax highlighting (dual-theme via CSS custom props) ─── */
-.shiki {
-	overflow-x: auto;
-	overscroll-behavior-x: contain;
-	border-radius: var(--radius-md);
-	font-size: 0.75rem;
-	line-height: 1.6;
-	margin: 0.5rem 0;
-	padding: 0.75rem;
-	background-color: var(--shiki-light-bg);
-}
-.dark .shiki {
-	background-color: var(--shiki-dark-bg);
-}
-.shiki span {
-	color: var(--shiki-light);
-}
-.dark .shiki span {
-	color: var(--shiki-dark);
-}
-/* Prevent inline-code prose styles leaking into Shiki blocks */
-.shiki code {
-	background: transparent !important;
-	padding: 0 !important;
-	border-radius: 0 !important;
-	font-size: inherit !important;
-}
+  @media (min-width: 640px) {
+    .animate-sheet-up {
+      animation: slide-down 0.18s ease forwards;
+    }
+  }
 
-/* ─── Command Palette (native <dialog>) ─── */
-.command-palette {
-	position: fixed;
-	inset-inline: 1rem;
-	inset-block-start: max(7rem, 10dvh);
-	inset-block-end: auto;
-	margin-inline: auto;
-	width: min(calc(100vw - 2rem), 36rem);
-	max-height: min(70dvh, 560px);
-	overflow: hidden;
-	border-radius: 0.75rem;
-	opacity: 1;
-	transform: scale(1) translateY(0);
-	transition:
-		opacity 0.15s ease,
-		transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
-}
+  /* ─── View Transitions ─── */
+  ::view-transition-group(site-header) {
+    animation: none;
+    z-index: 100;
+  }
+  ::view-transition-old(site-header) {
+    display: none;
+  }
+  ::view-transition-new(site-header) {
+    animation: none;
+  }
 
-@starting-style {
-	.command-palette[open] {
-		opacity: 0;
-		transform: scale(0.97) translateY(-8px);
-	}
-}
+  ::view-transition-old(.nav-forward) {
+    --slide-offset: -40px;
+    animation:
+      150ms ease-in both vt-fade reverse,
+      350ms ease-in-out both vt-slide-x reverse;
+  }
+  ::view-transition-new(.nav-forward) {
+    --slide-offset: 40px;
+    animation:
+      200ms ease-out 150ms both vt-fade,
+      350ms ease-in-out both vt-slide-x;
+  }
 
-.command-palette::backdrop {
-	background: oklch(0 0 0 / 0.45);
-	backdrop-filter: blur(4px);
-	-webkit-backdrop-filter: blur(4px);
-	opacity: 0;
-	transition: opacity 0.2s ease, display 0.2s allow-discrete;
-}
+  ::view-transition-old(.nav-back) {
+    --slide-offset: 40px;
+    animation:
+      150ms ease-in both vt-fade reverse,
+      350ms ease-in-out both vt-slide-x reverse;
+  }
+  ::view-transition-new(.nav-back) {
+    --slide-offset: -40px;
+    animation:
+      200ms ease-out 150ms both vt-fade,
+      350ms ease-in-out both vt-slide-x;
+  }
 
-.command-palette[open]::backdrop {
-	opacity: 1;
-}
+  /* ─── Backdrop overlay (CSS-native) ─── */
+  .backdrop-overlay {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.2s ease, display 0.2s allow-discrete;
+  }
+  .backdrop-overlay[hidden] {
+    display: none;
+    opacity: 0;
+  }
+  @starting-style {
+    .backdrop-overlay:not([hidden]) {
+      opacity: 0;
+    }
+  }
 
-@starting-style {
-	.command-palette[open]::backdrop {
-		opacity: 0;
-	}
-}
+  /* ─── Toast pill (CSS-native) ─── */
+  .toast-pill {
+    display: block;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transition:
+      opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+      display 0.18s allow-discrete;
+  }
+  .toast-pill[hidden] {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  @starting-style {
+    .toast-pill:not([hidden]) {
+      opacity: 0;
+      transform: translateY(8px) scale(0.96);
+    }
+  }
 
-/* ─── Command palette exit animation ─── */
-.command-palette[data-closing] {
-	opacity: 0;
-	transform: scale(0.97) translateY(-8px);
-}
-.command-palette[data-closing]::backdrop {
-	opacity: 0;
-}
+  /* ─── Scroll-to-top button ─── */
+  .scroll-to-top-btn {
+    display: flex;
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition:
+      opacity 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1),
+      display 0.18s allow-discrete;
+  }
+  .scroll-to-top-btn[hidden] {
+    display: none;
+    opacity: 0;
+    transform: scale(0.85) translateY(6px);
+  }
+  @starting-style {
+    .scroll-to-top-btn:not([hidden]) {
+      opacity: 0;
+      transform: scale(0.85) translateY(6px);
+    }
+  }
 
-/* ─── Reduced motion ─── */
-@media (prefers-reduced-motion: reduce) {
-	.nav-progress {
-		animation: none;
-		opacity: 0.6;
-	}
+  /* ─── Comment collapse (CSS-native) ─── */
+  .comment-body {
+    height: auto;
+    overflow: hidden;
+    opacity: 1;
+    transition:
+      height 0.18s cubic-bezier(0.4, 0, 0.2, 1),
+      opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  [data-collapsed] .comment-body {
+    height: 0;
+    opacity: 0;
+  }
 
-	::view-transition-old(*),
-	::view-transition-new(*),
-	::view-transition-group(*) {
-		animation-duration: 0s !important;
-		animation-delay: 0s !important;
-	}
+  @supports not (interpolate-size: allow-keywords) {
+    .comment-body {
+      max-height: 9999px;
+      transition:
+        max-height 0.28s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    [data-collapsed] .comment-body {
+      max-height: 0;
+    }
+  }
 
-	.card-enter {
-		transition: border-color 0.15s ease, box-shadow 0.15s ease;
-	}
+  /* ─── Coarse pointer: expand hit areas, reveal share button ─── */
+  @media (pointer: coarse) {
+    [data-radix-slider-thumb] {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
 
-	@starting-style {
-		.card-enter {
-			opacity: 1;
-			transform: none;
-		}
-	}
+    .share-btn {
+      opacity: 0.6;
+    }
+  }
 
-	#filter-panel,
-	#filter-panel:popover-open {
-		animation: none;
-		transition: display 0s allow-discrete, overlay 0s allow-discrete;
-	}
+  .comment-chevron {
+    transition: rotate 0.15s ease;
+  }
+  [data-collapsed] .comment-chevron {
+    rotate: -90deg;
+  }
 
-	.scroll-to-top-btn {
-		transition: display 0s allow-discrete;
-	}
-	@starting-style {
-		.scroll-to-top-btn:not([hidden]) {
-			opacity: 1;
-			transform: none;
-		}
-	}
+  /* ─── Navigation progress bar ─── */
+  .nav-progress {
+    background: var(--primary);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
 
-	.command-palette {
-		transition: none;
-	}
-	.command-palette::backdrop {
-		transition: none;
-	}
-	@starting-style {
-		.command-palette[open] {
-			opacity: 1;
-			transform: none;
-		}
-	}
+  .nav-progress[data-state="active"] {
+    animation: nav-fill 8s cubic-bezier(0.05, 0.5, 0.1, 1) forwards;
+  }
+
+  .nav-progress[data-state="complete"] {
+    transform: scaleX(1);
+    opacity: 0;
+    transition:
+      transform 0.15s ease,
+      opacity 0.35s ease 0.1s;
+  }
+
+  /* ─── Filter panel (popover) ─── */
+  #filter-panel {
+    position: fixed;
+    inset: auto 0 0 0;
+    margin: 0;
+    border: none;
+    border-top: 1px solid var(--border);
+    border-radius: 1rem 1rem 0 0;
+    padding: 1.25rem;
+    padding-bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
+    max-height: min(85dvh, calc(100dvh - env(safe-area-inset-bottom, 0px) - 3rem));
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    width: 100%;
+    box-shadow: 0 -8px 30px oklch(0 0 0 / 0.12);
+
+    opacity: 0;
+    transform: translateY(40%);
+    transition:
+      opacity 0.2s ease,
+      transform 0.2s ease,
+      overlay 0.22s allow-discrete,
+      display 0.22s allow-discrete;
+  }
+
+  #filter-panel:popover-open {
+    opacity: 1;
+    transform: translateY(0);
+    animation: panel-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+
+  #filter-panel::backdrop {
+    background: var(--backdrop);
+    opacity: 0;
+    transition: opacity 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
+  }
+
+  #filter-panel:popover-open::backdrop {
+    opacity: 1;
+  }
+
+  @media (min-width: 640px) {
+    #filter-panel {
+      inset: auto;
+      border: 1px solid var(--border);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      max-height: none;
+      overflow: visible;
+      width: 24rem;
+      box-shadow:
+        0 10px 38px oklch(0 0 0 / 0.1),
+        0 4px 12px oklch(0 0 0 / 0.08);
+      transform-origin: top right;
+      transform: scale(0.95) translateY(-6px);
+    }
+
+    #filter-panel:popover-open {
+      animation: panel-drop 0.16s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @supports (anchor-name: --test) {
+      #filter-toggle {
+        anchor-name: --filter-btn;
+      }
+      #filter-panel {
+        position-anchor: --filter-btn;
+        top: calc(anchor(bottom) + 0.5rem);
+        right: anchor(right);
+      }
+    }
+
+    @supports not (anchor-name: --test) {
+      #filter-panel {
+        top: 3.875rem;
+        inset-inline-end: 0.5rem;
+      }
+    }
+
+    #filter-panel::backdrop {
+      display: none;
+    }
+  }
+
+  /* ─── Shiki syntax highlighting (dual-theme via CSS custom props) ─── */
+  .shiki {
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    border-radius: var(--radius-md);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    margin: 0.5rem 0;
+    padding: 0.75rem;
+    background-color: var(--shiki-light-bg);
+  }
+  .dark .shiki {
+    background-color: var(--shiki-dark-bg);
+  }
+  .shiki span {
+    color: var(--shiki-light);
+  }
+  .dark .shiki span {
+    color: var(--shiki-dark);
+  }
+  .shiki code {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    font-size: inherit !important;
+  }
+
+  /* ─── Command Palette (native <dialog>) ─── */
+  .command-palette {
+    position: fixed;
+    inset-inline: 1rem;
+    inset-block-start: max(7rem, 10dvh);
+    inset-block-end: auto;
+    margin-inline: auto;
+    width: min(calc(100vw - 2rem), 36rem);
+    max-height: min(70dvh, 560px);
+    overflow: hidden;
+    border-radius: 0.75rem;
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    transition:
+      opacity 0.15s ease,
+      transform 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @starting-style {
+    .command-palette[open] {
+      opacity: 0;
+      transform: scale(0.97) translateY(-8px);
+    }
+  }
+
+  .command-palette::backdrop {
+    background: var(--backdrop);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.2s ease, display 0.2s allow-discrete;
+  }
+
+  .command-palette[open]::backdrop {
+    opacity: 1;
+  }
+
+  @starting-style {
+    .command-palette[open]::backdrop {
+      opacity: 0;
+    }
+  }
+
+  .command-palette[data-closing] {
+    opacity: 0;
+    transform: scale(0.97) translateY(-8px);
+  }
+  .command-palette[data-closing]::backdrop {
+    opacity: 0;
+  }
+
+  /* ─── Reduced motion ─── */
+  @media (prefers-reduced-motion: reduce) {
+    .nav-progress {
+      animation: none;
+      opacity: 0.6;
+    }
+
+    ::view-transition-old(*),
+    ::view-transition-new(*),
+    ::view-transition-group(*) {
+      animation-duration: 0s !important;
+      animation-delay: 0s !important;
+    }
+
+    .card-enter {
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    @starting-style {
+      .card-enter {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    #filter-panel,
+    #filter-panel:popover-open {
+      animation: none;
+      transition: display 0s allow-discrete, overlay 0s allow-discrete;
+    }
+
+    .scroll-to-top-btn {
+      transition: display 0s allow-discrete;
+    }
+    @starting-style {
+      .scroll-to-top-btn:not([hidden]) {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    .command-palette {
+      transition: none;
+    }
+    .command-palette::backdrop {
+      transition: none;
+    }
+    @starting-style {
+      .command-palette[open] {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
 }
