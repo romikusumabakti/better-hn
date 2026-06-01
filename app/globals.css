@@ -180,12 +180,12 @@
     color: var(--muted-foreground);
   }
 
-  [data-visited]:not(:hover) article {
+  [data-visited]:not(:hover):not(:focus-within) article {
     opacity: 0.6;
   }
 
   @media (prefers-contrast: more) {
-    [data-visited]:not(:hover) article {
+    [data-visited]:not(:hover):not(:focus-within) article {
       opacity: 0.8;
     }
   }

@@ -9,6 +9,7 @@ import {
 	Zap,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -30,6 +31,7 @@ export function Header({
 	activeFilterCount,
 }: HeaderProps) {
 	const { theme, setTheme } = useTheme();
+	const pathname = usePathname();
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => setMounted(true), []);
 
@@ -42,6 +44,7 @@ export function Header({
 				<nav aria-label="Main">
 					<Link
 						href="/"
+						aria-current={pathname === "/" ? "page" : undefined}
 						className="flex items-center gap-2.5 transition-opacity hover:opacity-80"
 					>
 						<div className="flex h-7 w-7 items-center justify-center rounded-md bg-primary">

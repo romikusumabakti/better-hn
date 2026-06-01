@@ -2,7 +2,7 @@
 
 import { ArrowRight, ExternalLink, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { ScoredStory } from "@/lib/hn-api";
 import { cn } from "@/lib/utils";
 
@@ -73,7 +73,7 @@ export function CommandPalette({
 	const dialogRef = useRef<HTMLDialogElement>(null);
 	const listboxId = useId();
 
-	const allMatches = (() => {
+	const allMatches = useMemo(() => {
 		const q = query.trim();
 		if (!q) return stories.slice(0, 5);
 		return stories
@@ -88,7 +88,7 @@ export function CommandPalette({
 			.filter(({ score }) => score >= 0)
 			.sort((a, b) => b.score - a.score)
 			.map(({ s }) => s);
-	})();
+	}, [query, stories]);
 	const filtered = allMatches.slice(0, 15);
 	const totalMatches = allMatches.length;
 
@@ -277,7 +277,7 @@ export function CommandPalette({
 				<span>
 					<kbd>esc</kbd> close
 				</span>
-				{totalMatches > 8 && (
+				{totalMatches > filtered.length && (
 					<span className="ml-auto">
 						{filtered.length} of {totalMatches}
 					</span>
