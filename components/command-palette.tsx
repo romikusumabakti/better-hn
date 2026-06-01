@@ -163,6 +163,13 @@ export function CommandPalette({
 				}
 			}}
 		>
+			{/* SR-only live region: announces result count on query change */}
+			<div role="status" aria-live="polite" aria-atomic="true" className="sr-only">
+				{filtered.length > 0
+					? `${filtered.length} result${filtered.length === 1 ? "" : "s"}`
+					: query.trim() ? "No results" : ""}
+			</div>
+
 			{/* Combobox — keyboard navigation stays on input, aria-activedescendant tracks selection */}
 			<div className="flex items-center gap-3 border-b border-border px-4 py-3">
 				<Search

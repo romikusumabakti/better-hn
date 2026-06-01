@@ -181,12 +181,12 @@
   }
 
   [data-visited]:not(:hover):not(:focus-within) article {
-    opacity: 0.6;
+    opacity: 0.75;
   }
 
   @media (prefers-contrast: more) {
     [data-visited]:not(:hover):not(:focus-within) article {
-      opacity: 0.8;
+      opacity: 0.9;
     }
   }
 

@@ -174,7 +174,7 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 
 						{storyHtml && (
 							<div
-								className="mb-5 max-w-none text-muted-foreground [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs [&_p]:mb-2.5 [&_p:last-child]:mb-0 [&_pre:not(.shiki)]:rounded-md [&_pre:not(.shiki)]:bg-muted [&_pre:not(.shiki)]:p-3 [&_pre:not(.shiki)]:text-xs [&_pre:not(.shiki)]:overflow-x-auto"
+								className="mb-5 max-w-none text-muted-foreground [&_a]:text-primary [&_a]:no-underline [&_a:hover]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_code]:text-xs [&_p]:mb-2.5 [&_p]:text-pretty [&_p:last-child]:mb-0 [&_pre:not(.shiki)]:rounded-md [&_pre:not(.shiki)]:bg-muted [&_pre:not(.shiki)]:p-3 [&_pre:not(.shiki)]:text-xs [&_pre:not(.shiki)]:overflow-x-auto"
 								dangerouslySetInnerHTML={{ __html: storyHtml }}
 							/>
 						)}
