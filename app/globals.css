@@ -422,14 +422,10 @@
     animation: panel-up 0.28s cubic-bezier(0.32, 0.72, 0, 1) both;
   }
 
+  /* Dim is drawn by the JS overlay (.backdrop-overlay) so it can also capture
+     taps; the native popover ::backdrop stays transparent to avoid double-dim. */
   #filter-panel::backdrop {
-    background: var(--backdrop);
-    opacity: 0;
-    transition: opacity 0.22s ease, overlay 0.22s allow-discrete, display 0.22s allow-discrete;
-  }
-
-  #filter-panel:popover-open::backdrop {
-    opacity: 1;
+    background: transparent;
   }
 
   @media (min-width: 640px) {

@@ -1,7 +1,7 @@
 "use client";
 
 import { Info, RotateCcw, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import {
@@ -46,6 +46,10 @@ export function FilterPanel({
 	const panelRef = useRef<HTMLDivElement>(null);
 	const onOpenChangeRef = useRef(onOpenChange);
 	onOpenChangeRef.current = onOpenChange;
+	// Drives the mobile tap-capturing overlay. The native popover ::backdrop is
+	// purely visual (non-modal popover doesn't block pointers), so taps would
+	// otherwise pass through to links behind it.
+	const [open, setOpen] = useState(false);
 
 	useEffect(() => {
 		const panel = panelRef.current;
@@ -57,8 +61,10 @@ export function FilterPanel({
 		// We only move focus into the search field on open.
 		const handleToggle = (e: Event) => {
 			const te = e as ToggleEvent;
-			onOpenChangeRef.current?.(te.newState === "open");
-			if (te.newState === "open") {
+			const isOpen = te.newState === "open";
+			setOpen(isOpen);
+			onOpenChangeRef.current?.(isOpen);
+			if (isOpen) {
 				const first = panel.querySelector<HTMLInputElement>("#keyword-search");
 				(first ?? panel).focus();
 			}
@@ -77,6 +83,21 @@ export function FilterPanel({
 
 	return (
 		<TooltipProvider>
+			{/* Mobile-only tap-capturing overlay. Sits in the normal layer (below
+			    the top-layer popover), so it dims the page and absorbs taps that
+			    would otherwise reach links behind the bottom sheet. */}
+			<div
+				className="backdrop-overlay fixed inset-0 z-40 bg-[var(--backdrop)] sm:hidden"
+				hidden={!open}
+				aria-hidden
+				onClick={() => {
+					(
+						panelRef.current as HTMLElement & {
+							hidePopover(): void;
+						}
+					)?.hidePopover();
+				}}
+			/>
 			<div
 				id={id}
 				ref={panelRef}
