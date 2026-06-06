@@ -189,19 +189,9 @@
 /* ─── Components layer: custom UI patterns ─── */
 
 @layer components {
-  /* ─── Visited story dimming ─── */
+  /* ─── Visited story: dim title only (single signal, keeps meta legible) ─── */
   [data-visited] h2 {
     color: var(--muted-foreground);
-  }
-
-  [data-visited]:not(:hover):not(:focus-within) article {
-    opacity: 0.75;
-  }
-
-  @media (prefers-contrast: more) {
-    [data-visited]:not(:hover):not(:focus-within) article {
-      opacity: 0.9;
-    }
   }
 
   /* ─── Card entrance via @starting-style (CSS-native, no JS) ─── */

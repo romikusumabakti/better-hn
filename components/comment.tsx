@@ -56,6 +56,14 @@ export function Comment({ comment, depth }: CommentProps) {
 					className="absolute inset-0 cursor-pointer rounded focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset"
 				/>
 				<ChevronDown className="comment-chevron relative h-3 w-3 shrink-0" />
+				{depth > 4 && (
+					<span
+						className="relative font-mono text-muted-foreground/50 tabular-nums"
+						title={`Nesting depth ${depth}`}
+					>
+						{depth}↳
+					</span>
+				)}
 				<Link
 					href={`/user/${comment.by}`}
 					className="relative z-10 font-medium transition-colors hover:text-primary"

@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpRight, Check, Share2, Sparkles } from "lucide-react";
+import { ArrowUpRight, Check, Share2, TrendingUp } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -58,7 +58,7 @@ function ScoreBadge({ score }: { score: number }) {
 				cls,
 			)}
 		>
-			<Sparkles className="h-2.5 w-2.5" />
+			<TrendingUp className="h-2.5 w-2.5" />
 			{score.toFixed(1)}
 		</span>
 	);
@@ -88,7 +88,7 @@ function ShareButton({ story }: { story: ScoredStory }) {
 		<button
 			type="button"
 			onClick={handleShare}
-			className="share-btn relative z-10 -m-2 p-2 rounded opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 group-focus-within:opacity-60 focus-visible:opacity-100"
+			className="share-btn relative z-10 -m-2.5 inline-flex h-9 w-9 items-center justify-center rounded opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 group-focus-within:opacity-60 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 			aria-label={copied ? "Link copied!" : "Share story"}
 		>
 			{copied ? (
@@ -175,7 +175,7 @@ export function StoryCard({
 								href={`https://${story.domain}`}
 								target="_blank"
 								rel="noopener noreferrer"
-								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								{story.domain}
 							</a>
@@ -197,7 +197,7 @@ export function StoryCard({
 						<Link
 							href={`/story/${story.id}`}
 							transitionTypes={["nav-forward"]}
-							className="relative z-10 transition-colors hover:text-foreground"
+							className="relative z-10 rounded transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 							onClick={onVisit}
 						>
 							{story.descendants ?? 0} comments
@@ -208,7 +208,7 @@ export function StoryCard({
 						<Link
 							href={`/user/${story.by}`}
 							transitionTypes={["nav-forward"]}
-							className="relative z-10 transition-colors hover:text-foreground"
+							className="relative z-10 rounded transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 						>
 							{story.by}
 						</Link>
