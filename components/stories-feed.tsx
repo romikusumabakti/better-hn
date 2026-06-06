@@ -385,12 +385,20 @@ export function StoriesFeed() {
 						)}
 
 						{hasMore && (
-							<div
-								ref={sentinelRef}
-								className="flex justify-center py-8 text-muted-foreground/30"
-								aria-hidden
-							>
-								<Loader2 className="h-4 w-4 animate-spin" />
+							<div ref={sentinelRef} className="flex justify-center py-8">
+								{/* Auto-loads via IntersectionObserver; the button is the
+								    keyboard/SR fallback when the observer never fires. */}
+								<button
+									type="button"
+									onClick={() => setPage((p) => p + 1)}
+									className="inline-flex items-center gap-2 rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								>
+									<Loader2
+										className="h-4 w-4 animate-spin motion-reduce:hidden"
+										aria-hidden
+									/>
+									Load more stories
+								</button>
 							</div>
 						)}
 
