@@ -456,6 +456,7 @@ export function StoriesFeed() {
 				onReset={() => handleFiltersChange(DEFAULT_FILTERS)}
 				totalCount={scored.length}
 				visibleCount={filtered.length}
+				maxScore={scored[0]?.computedScore ?? 100}
 				onOpenChange={setFilterOpen}
 			/>
 			<CommandPalette

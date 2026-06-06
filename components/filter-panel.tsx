@@ -25,6 +25,7 @@ interface FilterPanelProps {
 	onReset: () => void;
 	totalCount: number;
 	visibleCount: number;
+	maxScore?: number;
 	onOpenChange?: (open: boolean) => void;
 	id?: string;
 }
@@ -35,9 +36,13 @@ export function FilterPanel({
 	onReset,
 	totalCount,
 	visibleCount,
+	maxScore = 100,
 	onOpenChange,
 	id = "filter-panel",
 }: FilterPanelProps) {
+	// Round up to a clean slider ceiling; never below 100 so the control
+	// stays stable when the feed's top score is low.
+	const scoreMax = Math.max(100, Math.ceil(maxScore / 10) * 10);
 	const panelRef = useRef<HTMLDivElement>(null);
 	const onOpenChangeRef = useRef(onOpenChange);
 	onOpenChangeRef.current = onOpenChange;
@@ -109,7 +114,7 @@ export function FilterPanel({
 									}
 								)?.hidePopover();
 							}}
-							className="flex h-8 w-8 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+							className="filter-close flex h-8 w-8 items-center justify-center rounded text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
 							aria-label="Close filters"
 						>
 							<X className="h-4 w-4" />
@@ -206,7 +211,7 @@ export function FilterPanel({
 						<Slider
 							aria-labelledby="min-score-label"
 							min={0}
-							max={100}
+							max={scoreMax}
 							step={0.5}
 							value={[filters.minScore]}
 							onValueChange={([v]) =>
@@ -216,7 +221,7 @@ export function FilterPanel({
 						/>
 						<div className="flex justify-between text-xs text-muted-foreground">
 							<span>0 (show all)</span>
-							<span>100 (high bar)</span>
+							<span>{scoreMax} (high bar)</span>
 						</div>
 					</div>
 

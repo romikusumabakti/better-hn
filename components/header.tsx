@@ -36,6 +36,10 @@ export function Header({
 	const [mounted, setMounted] = useState(false);
 	useEffect(() => setMounted(true), []);
 
+	// Cycle order: light → dark → system → light
+	const nextTheme =
+		theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
+
 	return (
 		<>
 			<header
@@ -118,19 +122,14 @@ export function Header({
 							size="icon"
 							onClick={() => {
 								if (!mounted) return;
-								setTheme(
-									theme === "light"
-										? "dark"
-										: theme === "dark"
-											? "system"
-											: "light",
-								);
+								setTheme(nextTheme);
 							}}
 							aria-label={
 								mounted
-									? `Theme: ${theme ?? "system"} — click to cycle`
+									? `Theme: ${theme ?? "system"}. Switch to ${nextTheme}`
 									: "Toggle theme"
 							}
+							title={mounted ? `Switch to ${nextTheme} theme` : undefined}
 							className="h-10 w-10 text-muted-foreground hover:text-foreground"
 						>
 							{mounted && theme === "light" ? (

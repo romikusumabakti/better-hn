@@ -353,6 +353,16 @@
     .share-btn {
       opacity: 0.6;
     }
+
+    /* Touch targets: expand to 44px (Apple HIG / WCAG AAA). Icons stay
+       centered via existing flex; buttons already use negative margin /
+       end-of-row placement so growth doesn't shift sibling content. */
+    .share-btn,
+    .filter-close,
+    .palette-ext {
+      min-width: 2.75rem;
+      min-height: 2.75rem;
+    }
   }
 
   .comment-chevron {

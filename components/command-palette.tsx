@@ -301,7 +301,9 @@ export function CommandPalette({
 									id={`${listboxId}-option-${i}`}
 									aria-selected={i === selectedIndex}
 									onClick={() => navigate(story)}
-									onMouseEnter={() => setSelectedIndex(i)}
+									onMouseMove={() => {
+										if (i !== selectedIndex) setSelectedIndex(i);
+									}}
 									className={cn(
 										"flex w-full cursor-pointer items-start gap-3 px-4 py-2.5 transition-colors",
 										i === selectedIndex ? "bg-accent" : "",
@@ -327,7 +329,7 @@ export function CommandPalette({
 												window.open(story.url, "_blank", "noopener,noreferrer");
 												onClose();
 											}}
-											className="mt-0.5 shrink-0 rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
+											className="palette-ext mt-0.5 flex shrink-0 items-center justify-center rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
 											aria-label={`Open ${story.domain ?? "link"} in new tab`}
 										>
 											<ExternalLink className="h-3.5 w-3.5" />

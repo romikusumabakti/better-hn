@@ -124,39 +124,15 @@ export function StoryCard({
 				isActive ? "border-primary/50 ring-2 ring-primary/40" : "border-border",
 			)}
 		>
-			{/* Stretched link — external when story has URL, internal (comments) otherwise */}
-			{story.url ? (
-				<a
-					href={story.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					aria-labelledby={`story-title-${story.id}`}
-					onClick={onVisit}
-				>
-					<span className="sr-only">{story.title}</span>
-				</a>
-			) : (
-				<Link
-					href={`/story/${story.id}`}
-					transitionTypes={["nav-forward"]}
-					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-					aria-labelledby={`story-title-${story.id}`}
-					onClick={onVisit}
-				>
-					<span className="sr-only">{story.title}</span>
-				</Link>
-			)}
-
-			{/* External link indicator */}
-			{story.url && (
-				<div
-					className="pointer-events-none absolute right-3 top-3 opacity-0 transition-opacity group-hover:opacity-100"
-					aria-hidden
-				>
-					<ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground" />
-				</div>
-			)}
+			{/* Stretched link — whole card opens the discussion (comments).
+			    The title is a separate link to the external article (below). */}
+			<Link
+				href={`/story/${story.id}`}
+				transitionTypes={["nav-forward"]}
+				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+				aria-label={`${story.title} — ${story.descendants ?? 0} comments`}
+				onClick={onVisit}
+			/>
 
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
@@ -191,10 +167,28 @@ export function StoryCard({
 
 					<h2
 						id={`story-title-${story.id}`}
-						className="text-fluid-card-title font-semibold text-balance text-foreground transition-colors group-hover:text-primary"
+						className="text-fluid-card-title font-semibold text-balance text-foreground"
 						style={{ viewTransitionName: `story-title-${story.id}` }}
 					>
-						<HighlightedText text={story.title} query={query} />
+						{story.url ? (
+							<a
+								href={story.url}
+								target="_blank"
+								rel="noopener noreferrer"
+								onClick={onVisit}
+								className="relative z-10 inline transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							>
+								<HighlightedText text={story.title} query={query} />
+								<ArrowUpRight
+									className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50"
+									aria-hidden
+								/>
+							</a>
+						) : (
+							<span className="transition-colors group-hover:text-primary">
+								<HighlightedText text={story.title} query={query} />
+							</span>
+						)}
 					</h2>
 
 					{/* Meta row */}
