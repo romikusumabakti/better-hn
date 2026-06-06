@@ -1,11 +1,5 @@
 @import "tailwindcss";
 
-@property --backdrop {
-  syntax: "<color>";
-  inherits: true;
-  initial-value: oklch(0 0 0 / 0.42);
-}
-
 @utility text-fluid-card-title {
   font-size: clamp(0.9375rem, 0.8rem + 0.7vw, 1.25rem);
   line-height: 1.35;

@@ -49,12 +49,10 @@ function ScoreBadge({ score }: { score: number }) {
 		score >= 100
 			? "text-primary font-bold"
 			: score >= 50
-				? "text-primary/80 font-semibold"
+				? "text-primary font-semibold"
 				: score >= 20
-					? "text-primary/65"
-					: score >= 5
-						? "text-muted-foreground"
-						: "text-muted-foreground/80";
+					? "text-primary"
+					: "text-muted-foreground";
 
 	// Only flag genuinely trending stories — the icon is a "rising" signal,
 	// not decoration, so it would mislead on low/stale scores.

@@ -304,6 +304,9 @@ export function StoriesFeed() {
 						aria-busy={isLoading}
 						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 pt-4 pb-24 sm:pt-6 sm:pb-8"
 					>
+						<h1 className="sr-only">
+							Hacker News — top stories, reranked by score
+						</h1>
 						{error && (
 							<div className="flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
 								<AlertCircle className="h-4 w-4 shrink-0" />

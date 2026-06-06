@@ -22,8 +22,9 @@ const DEPTH_BORDER_COLORS = [
 
 export function Comment({ comment, depth }: CommentProps) {
 	const [collapsed, setCollapsed] = useState(false);
-	const hoursAgo =
-		comment.hoursAgo ?? (Date.now() / 1000 - comment.time) / 3600;
+	// hoursAgo is always computed server-side (processComment), so render is
+	// deterministic across server/client — no Date.now(), no hydration mismatch.
+	const hoursAgo = comment.hoursAgo ?? 0;
 
 	if (!comment.text && comment.children.length === 0) return null;
 
@@ -77,7 +78,6 @@ export function Comment({ comment, depth }: CommentProps) {
 				<time
 					dateTime={new Date(comment.time * 1000).toISOString()}
 					className="text-muted-foreground/60"
-					suppressHydrationWarning
 				>
 					{formatTime(hoursAgo)}
 				</time>
