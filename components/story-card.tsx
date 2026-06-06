@@ -194,7 +194,7 @@ export function StoryCard({
 								target="_blank"
 								rel="noopener noreferrer"
 								onClick={onVisit}
-								className="relative z-10 inline transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								className="relative z-10 block transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 							>
 								<HighlightedText text={story.title} query={query} />
 								<ArrowUpRight
