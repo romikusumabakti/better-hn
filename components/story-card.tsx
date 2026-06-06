@@ -2,7 +2,7 @@
 
 import { ArrowUpRight, Check, Share2, TrendingUp } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import type { ScoredStory } from "@/lib/hn-api";
 import { cn, formatTime, getTypeLabel } from "@/lib/utils";
@@ -16,26 +16,31 @@ interface StoryCardProps {
 }
 
 function HighlightedText({ text, query }: { text: string; query: string }) {
-	if (!query.trim()) return <>{text}</>;
-	const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	const regex = new RegExp(escaped, "gi");
-	const nodes: React.ReactNode[] = [];
-	let last = 0;
-	let m: RegExpExecArray | null;
-	// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop pattern
-	while ((m = regex.exec(text)) !== null) {
-		if (m.index > last) nodes.push(text.slice(last, m.index));
-		nodes.push(
-			<mark
-				key={m.index}
-				className="rounded-sm bg-highlight px-0.5 text-foreground not-italic"
-			>
-				{m[0]}
-			</mark>,
-		);
-		last = m.index + m[0].length;
-	}
-	if (last < text.length) nodes.push(text.slice(last));
+	const nodes = useMemo(() => {
+		const q = query.trim();
+		if (!q) return [text];
+		const escaped = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+		const regex = new RegExp(escaped, "gi");
+		const out: React.ReactNode[] = [];
+		let last = 0;
+		let m: RegExpExecArray | null;
+		// biome-ignore lint/suspicious/noAssignInExpressions: standard regex exec loop pattern
+		while ((m = regex.exec(text)) !== null) {
+			if (m.index > last) out.push(text.slice(last, m.index));
+			out.push(
+				<mark
+					key={m.index}
+					className="rounded-sm bg-highlight px-0.5 text-foreground not-italic"
+				>
+					{m[0]}
+				</mark>,
+			);
+			last = m.index + m[0].length;
+		}
+		if (last < text.length) out.push(text.slice(last));
+		return out;
+	}, [text, query]);
+
 	return <>{nodes}</>;
 }
 
@@ -51,6 +56,10 @@ function ScoreBadge({ score }: { score: number }) {
 						? "text-muted-foreground"
 						: "text-muted-foreground/80";
 
+	// Only flag genuinely trending stories — the icon is a "rising" signal,
+	// not decoration, so it would mislead on low/stale scores.
+	const trending = score >= 20;
+
 	return (
 		<span
 			className={cn(
@@ -58,7 +67,7 @@ function ScoreBadge({ score }: { score: number }) {
 				cls,
 			)}
 		>
-			<TrendingUp className="h-2.5 w-2.5" />
+			{trending && <TrendingUp className="h-2.5 w-2.5" aria-hidden />}
 			{score.toFixed(1)}
 		</span>
 	);
@@ -88,7 +97,7 @@ function ShareButton({ story }: { story: ScoredStory }) {
 		<button
 			type="button"
 			onClick={handleShare}
-			className="share-btn relative z-10 -m-2.5 inline-flex h-9 w-9 items-center justify-center rounded opacity-0 transition-opacity hover:text-foreground group-hover:opacity-60 group-focus-within:opacity-60 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+			className="share-btn relative z-10 -m-2.5 inline-flex h-9 w-9 items-center justify-center rounded text-muted-foreground/70 opacity-40 transition-opacity hover:text-foreground group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 			aria-label={copied ? "Link copied!" : "Share story"}
 		>
 			{copied ? (

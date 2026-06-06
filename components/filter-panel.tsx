@@ -41,56 +41,27 @@ export function FilterPanel({
 	const panelRef = useRef<HTMLDivElement>(null);
 	const onOpenChangeRef = useRef(onOpenChange);
 	onOpenChangeRef.current = onOpenChange;
-	const focusTrapRef = useRef<((e: KeyboardEvent) => void) | null>(null);
 
 	useEffect(() => {
 		const panel = panelRef.current;
 		if (!panel) return;
 
+		// Non-modal popover: no JS focus trap (that would contradict
+		// aria-modal="false"). Native popover="auto" handles Esc,
+		// light-dismiss, and returning focus to the trigger on close.
+		// We only move focus into the search field on open.
 		const handleToggle = (e: Event) => {
 			const te = e as ToggleEvent;
 			onOpenChangeRef.current?.(te.newState === "open");
 			if (te.newState === "open") {
 				const first = panel.querySelector<HTMLInputElement>("#keyword-search");
 				(first ?? panel).focus();
-
-				const trapFocus = (evt: KeyboardEvent) => {
-					if (evt.key !== "Tab") return;
-					const focusable = Array.from(
-						panel.querySelectorAll<HTMLElement>(
-							'button:not([disabled]), input:not([disabled]), [tabindex]:not([tabindex="-1"])',
-						),
-					);
-					if (!focusable.length) return;
-					const firstEl = focusable[0];
-					const lastEl = focusable[focusable.length - 1];
-					if (evt.shiftKey && document.activeElement === firstEl) {
-						evt.preventDefault();
-						lastEl.focus();
-					} else if (!evt.shiftKey && document.activeElement === lastEl) {
-						evt.preventDefault();
-						firstEl.focus();
-					}
-				};
-
-				focusTrapRef.current = trapFocus;
-				panel.addEventListener("keydown", trapFocus);
-			} else {
-				if (focusTrapRef.current) {
-					panel.removeEventListener("keydown", focusTrapRef.current);
-					focusTrapRef.current = null;
-				}
-				document.getElementById("filter-toggle")?.focus();
 			}
 		};
 
 		panel.addEventListener("toggle", handleToggle);
 		return () => {
 			panel.removeEventListener("toggle", handleToggle);
-			if (focusTrapRef.current) {
-				panel.removeEventListener("keydown", focusTrapRef.current);
-				focusTrapRef.current = null;
-			}
 		};
 	}, []);
 
