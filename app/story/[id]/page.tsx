@@ -144,14 +144,14 @@ export default async function StoryPage(props: PageProps<"/story/[id]">) {
 								</Badge>
 							)}
 							{domain && (
-								<a
-									href={`https://${domain}`}
-									target="_blank"
-									rel="noopener noreferrer"
+								<Link
+									href={`/?q=${encodeURIComponent(domain)}`}
+									transitionTypes={["nav-back"]}
 									className="font-mono text-xs text-muted-foreground transition-colors hover:text-primary"
+									aria-label={`Filter feed by ${domain}`}
 								>
 									{domain}
-								</a>
+								</Link>
 							)}
 						</div>
 

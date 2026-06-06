@@ -28,6 +28,19 @@ export default function Home() {
 			exit={{ "nav-forward": "nav-forward", default: "none" }}
 			default="none"
 		>
+			<noscript>
+				<div className="mx-auto max-w-4xl px-4 py-16 text-center text-sm text-muted-foreground">
+					Better HN needs JavaScript to load and rank the live feed. Meanwhile,
+					browse{" "}
+					<a
+						href="https://news.ycombinator.com"
+						className="text-primary underline underline-offset-2"
+					>
+						Hacker News
+					</a>{" "}
+					directly.
+				</div>
+			</noscript>
 			{/* Suspense required because StoriesFeed uses useSearchParams() */}
 			<Suspense fallback={<FeedSkeleton />}>
 				<StoriesFeed />

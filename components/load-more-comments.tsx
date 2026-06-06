@@ -1,8 +1,14 @@
 "use client";
 
-import { Loader2 } from "lucide-react";
+import {
+	ArrowDown,
+	ArrowUp,
+	ChevronsDownUp,
+	ChevronsUpDown,
+	Loader2,
+} from "lucide-react";
 import { useState } from "react";
-import { Comment } from "@/components/comment";
+import { Comment, CommentControlContext } from "@/components/comment";
 import type { HNComment } from "@/lib/hn-api";
 
 const BATCH_SIZE = 10;
@@ -21,6 +27,31 @@ export function LoadMoreComments({
 	const [comments, setComments] = useState(initialComments);
 	const [kids, setKids] = useState(remainingKids);
 	const [loading, setLoading] = useState(false);
+	// Collapse/expand-all broadcast to top-level threads.
+	const [allCollapsed, setAllCollapsed] = useState(false);
+	const [controlToken, setControlToken] = useState(0);
+
+	const toggleAll = () => {
+		setAllCollapsed((v) => !v);
+		setControlToken((t) => t + 1);
+	};
+
+	// Scroll to the next/previous top-level thread, accounting for the sticky
+	// header so the comment header isn't hidden underneath it.
+	const jumpThread = (dir: 1 | -1) => {
+		const HEADER_OFFSET = 72;
+		const roots = Array.from(
+			document.querySelectorAll<HTMLElement>("[data-comment-root]"),
+		).map((el) => el.getBoundingClientRect().top + window.scrollY);
+		if (roots.length === 0) return;
+		const cur = window.scrollY + HEADER_OFFSET;
+		const target =
+			dir === 1
+				? roots.find((top) => top > cur + 1)
+				: [...roots].reverse().find((top) => top < cur - 1);
+		if (target === undefined) return;
+		window.scrollTo({ top: target - HEADER_OFFSET, behavior: "smooth" });
+	};
 
 	const loadMore = async () => {
 		setLoading(true);
@@ -40,9 +71,52 @@ export function LoadMoreComments({
 
 	return (
 		<div>
-			{comments.map((comment) => (
-				<Comment key={comment.id} comment={comment} depth={0} />
-			))}
+			{comments.length > 1 && (
+				<div className="mb-4 flex items-center justify-end gap-1 text-xs">
+					<button
+						type="button"
+						onClick={() => jumpThread(-1)}
+						aria-label="Previous thread"
+						className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					>
+						<ArrowUp className="h-3.5 w-3.5" />
+					</button>
+					<button
+						type="button"
+						onClick={() => jumpThread(1)}
+						aria-label="Next thread"
+						className="flex h-8 w-8 items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					>
+						<ArrowDown className="h-3.5 w-3.5" />
+					</button>
+					<button
+						type="button"
+						onClick={toggleAll}
+						aria-pressed={allCollapsed}
+						className="inline-flex h-8 items-center gap-1.5 rounded-md border border-border px-2.5 font-medium text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					>
+						{allCollapsed ? (
+							<>
+								<ChevronsUpDown className="h-3.5 w-3.5" />
+								Expand all
+							</>
+						) : (
+							<>
+								<ChevronsDownUp className="h-3.5 w-3.5" />
+								Collapse all
+							</>
+						)}
+					</button>
+				</div>
+			)}
+
+			<CommentControlContext.Provider
+				value={{ collapsed: allCollapsed, token: controlToken }}
+			>
+				{comments.map((comment) => (
+					<Comment key={comment.id} comment={comment} depth={0} />
+				))}
+			</CommentControlContext.Provider>
 
 			{kids.length > 0 && (
 				<div className="mt-6 flex flex-col items-center gap-2">
@@ -77,7 +151,7 @@ export function LoadMoreComments({
 			)}
 
 			{kids.length === 0 && comments.length > 0 && (
-				<p className="mt-8 text-center text-xs text-muted-foreground/40">
+				<p className="mt-8 text-center text-xs text-muted-foreground/60">
 					<a
 						href={`https://news.ycombinator.com/item?id=${storyId}`}
 						target="_blank"

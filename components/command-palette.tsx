@@ -276,7 +276,7 @@ export function CommandPalette({
 						<div
 							role="presentation"
 							aria-hidden
-							className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/40 select-none"
+							className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/55 select-none"
 						>
 							Recent
 						</div>
@@ -289,7 +289,7 @@ export function CommandPalette({
 									<div
 										role="presentation"
 										aria-hidden
-										className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/40 select-none"
+										className="px-4 pb-1 pt-2.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground/55 select-none"
 									>
 										Top stories
 									</div>
@@ -329,7 +329,7 @@ export function CommandPalette({
 												window.open(story.url, "_blank", "noopener,noreferrer");
 												onClose();
 											}}
-											className="palette-ext mt-0.5 flex shrink-0 items-center justify-center rounded p-1 text-muted-foreground/40 transition-colors hover:bg-background hover:text-foreground"
+											className="palette-ext mt-0.5 flex shrink-0 items-center justify-center rounded p-1 text-muted-foreground/55 transition-colors hover:bg-background hover:text-foreground"
 											aria-label={`Open ${story.domain ?? "link"} in new tab`}
 										>
 											<ExternalLink className="h-3.5 w-3.5" />
@@ -356,7 +356,7 @@ export function CommandPalette({
 			) : null}
 
 			{/* Footer shortcuts */}
-			<div className="flex select-none items-center gap-4 border-t border-border px-4 py-2 text-xs text-muted-foreground/40">
+			<div className="flex select-none items-center gap-4 border-t border-border px-4 py-2 text-xs text-muted-foreground/60">
 				<span>
 					<kbd>↑↓</kbd> navigate
 				</span>

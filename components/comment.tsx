@@ -2,10 +2,20 @@
 
 import { ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import type { HNComment } from "@/lib/hn-api";
 import { sanitize } from "@/lib/sanitize";
 import { cn, formatTime } from "@/lib/utils";
+
+/**
+ * Broadcasts a collapse/expand-all command to top-level threads. `token`
+ * changes on every command so each press re-applies `collapsed` even if the
+ * user has since toggled an individual thread.
+ */
+export const CommentControlContext = createContext<{
+	collapsed: boolean;
+	token: number;
+} | null>(null);
 
 interface CommentProps {
 	comment: HNComment;
@@ -26,6 +36,15 @@ export function Comment({ comment, depth }: CommentProps) {
 	// deterministic across server/client — no Date.now(), no hydration mismatch.
 	const hoursAgo = comment.hoursAgo ?? 0;
 
+	// Collapse/expand-all only acts on top-level threads (depth 0).
+	const control = useContext(CommentControlContext);
+	const controlToken = control?.token ?? 0;
+	const controlCollapsed = control?.collapsed ?? false;
+	// biome-ignore lint/correctness/useExhaustiveDependencies: re-run only when a new command (token) arrives
+	useEffect(() => {
+		if (depth === 0 && controlToken > 0) setCollapsed(controlCollapsed);
+	}, [controlToken]);
+
 	if (!comment.text && comment.children.length === 0) return null;
 
 	const depthBorder =
@@ -34,6 +53,7 @@ export function Comment({ comment, depth }: CommentProps) {
 	return (
 		<div
 			data-collapsed={collapsed ? "" : undefined}
+			data-comment-root={depth === 0 ? "" : undefined}
 			style={
 				depth === 0
 					? ({
@@ -43,6 +63,7 @@ export function Comment({ comment, depth }: CommentProps) {
 					: undefined
 			}
 			className={cn(
+				depth === 0 && "scroll-mt-20",
 				depth > 0 && `border-l pl-3 sm:pl-4 ${depthBorder}`,
 				depth > 0 && depth <= 4 && "ml-3 sm:ml-5",
 			)}

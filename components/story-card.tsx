@@ -1,6 +1,12 @@
 "use client";
 
-import { ArrowUpRight, Check, Share2, TrendingUp } from "lucide-react";
+import {
+	ArrowUpRight,
+	Check,
+	MessageSquare,
+	Share2,
+	TrendingUp,
+} from "lucide-react";
 import Link from "next/link";
 import { useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -124,15 +130,28 @@ export function StoryCard({
 				isActive ? "border-primary/50 ring-2 ring-primary/40" : "border-border",
 			)}
 		>
-			{/* Stretched link — whole card opens the discussion (comments).
-			    The title is a separate link to the external article (below). */}
-			<Link
-				href={`/story/${story.id}`}
-				transitionTypes={["nav-forward"]}
-				className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-				aria-label={`${story.title} — ${story.descendants ?? 0} comments`}
-				onClick={onVisit}
-			/>
+			{/* Stretched link — card-tap opens the article (matching the title's
+			    ↗ affordance), or the discussion for text-only posts. The
+			    "comments" pill below is a separate, explicit action. */}
+			{story.url ? (
+				// biome-ignore lint/a11y/useAnchorContent: stretched overlay link is labelled via aria-label
+				<a
+					href={story.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					onClick={onVisit}
+					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-label={`${story.title} — open article${story.domain ? ` on ${story.domain}` : ""}`}
+				/>
+			) : (
+				<Link
+					href={`/story/${story.id}`}
+					transitionTypes={["nav-forward"]}
+					onClick={onVisit}
+					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+					aria-label={`${story.title} — ${story.descendants ?? 0} comments`}
+				/>
+			)}
 
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
@@ -154,14 +173,13 @@ export function StoryCard({
 							</Badge>
 						)}
 						{story.domain && (
-							<a
-								href={`https://${story.domain}`}
-								target="_blank"
-								rel="noopener noreferrer"
+							<Link
+								href={`/?q=${encodeURIComponent(story.domain)}`}
 								className="relative z-10 shrink-0 rounded px-1.5 font-mono text-xs text-muted-foreground transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								aria-label={`Filter feed by ${story.domain}`}
 							>
 								{story.domain}
-							</a>
+							</Link>
 						)}
 					</div>
 
@@ -198,10 +216,12 @@ export function StoryCard({
 						<Link
 							href={`/story/${story.id}`}
 							transitionTypes={["nav-forward"]}
-							className="relative z-10 rounded transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+							className="relative z-10 -my-0.5 inline-flex items-center gap-1 rounded-full border border-border bg-secondary/40 px-2 py-0.5 font-medium tabular-nums transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 							onClick={onVisit}
+							aria-label={`${story.descendants ?? 0} comments — open discussion`}
 						>
-							{story.descendants ?? 0} comments
+							<MessageSquare className="h-3 w-3" aria-hidden />
+							{story.descendants ?? 0}
 						</Link>
 						<time dateTime={new Date(story.time * 1000).toISOString()}>
 							{formatTime(story.hoursAgo)}

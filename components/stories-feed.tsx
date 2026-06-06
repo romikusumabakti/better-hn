@@ -9,6 +9,7 @@ import { FilterPanel, type FilterState } from "@/components/filter-panel";
 import { Header } from "@/components/header";
 import { PullToRefresh } from "@/components/pull-to-refresh";
 import { ScrollToTop } from "@/components/scroll-to-top";
+import { ShortcutsHelp } from "@/components/shortcuts-help";
 import { StoryCard } from "@/components/story-card";
 import { StorySkeleton } from "@/components/story-skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
@@ -79,6 +80,7 @@ export function StoriesFeed() {
 
 	const [filterOpen, setFilterOpen] = useState(false);
 	const [paletteOpen, setPaletteOpen] = useState(false);
+	const [helpOpen, setHelpOpen] = useState(false);
 	const [page, setPage] = useState(1);
 	const [liveMsg, setLiveMsg] = useState("");
 
@@ -239,7 +241,8 @@ export function StoriesFeed() {
 			} else if (e.key === "c" && activeIndex >= 0) {
 				const story = visible[activeIndex];
 				if (story) router.push(`/story/${story.id}`);
-			} else if (e.key === "?") {
+			} else if (e.key === "f") {
+				e.preventDefault();
 				const panel = document.getElementById("filter-panel") as
 					| (HTMLElement & {
 							showPopover(): void;
@@ -251,6 +254,9 @@ export function StoriesFeed() {
 				} else {
 					panel?.showPopover();
 				}
+			} else if (e.key === "?") {
+				e.preventDefault();
+				setHelpOpen((v) => !v);
 			}
 		};
 		window.addEventListener("keydown", onKey);
@@ -395,7 +401,7 @@ export function StoriesFeed() {
 						)}
 						{visible.length > 0 && (
 							<div
-								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/30 select-none sm:flex"
+								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/60 select-none sm:flex"
 								aria-hidden
 							>
 								<span>
@@ -408,7 +414,7 @@ export function StoriesFeed() {
 									<kbd>c</kbd> comments
 								</span>
 								<span>
-									<kbd>?</kbd> filters
+									<kbd>f</kbd> filters
 								</span>
 								<span>
 									<kbd suppressHydrationWarning>
@@ -418,6 +424,9 @@ export function StoriesFeed() {
 										K
 									</kbd>{" "}
 									search
+								</span>
+								<span>
+									<kbd>?</kbd> help
 								</span>
 							</div>
 						)}
@@ -464,6 +473,7 @@ export function StoriesFeed() {
 				onClose={() => setPaletteOpen(false)}
 				stories={scored}
 			/>
+			<ShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
 		</>
 	);
 }
