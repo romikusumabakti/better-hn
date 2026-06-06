@@ -18,12 +18,12 @@ const DEPTH_BORDER_COLORS = [
 	"border-border/38",
 	"border-border/28",
 	"border-border/20",
-	"border-border/20",
 ] as const;
 
 export function Comment({ comment, depth }: CommentProps) {
 	const [collapsed, setCollapsed] = useState(false);
-	const hoursAgo = (Date.now() / 1000 - comment.time) / 3600;
+	const hoursAgo =
+		comment.hoursAgo ?? (Date.now() / 1000 - comment.time) / 3600;
 
 	if (!comment.text && comment.children.length === 0) return null;
 

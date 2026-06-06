@@ -97,12 +97,20 @@ export async function highlightHtml(html: string): Promise<string> {
 	);
 }
 
-export async function processComment(comment: HNComment): Promise<HNComment> {
+export async function processComment(
+	comment: HNComment,
+	nowMs = Date.now(),
+): Promise<HNComment> {
 	const [_html, children] = await Promise.all([
 		comment.text
 			? highlightHtml(sanitize(comment.text))
 			: Promise.resolve(undefined),
-		Promise.all(comment.children.map(processComment)),
+		Promise.all(comment.children.map((c) => processComment(c, nowMs))),
 	]);
-	return { ...comment, _html, children };
+	return {
+		...comment,
+		_html,
+		hoursAgo: (nowMs / 1000 - comment.time) / 3600,
+		children,
+	};
 }

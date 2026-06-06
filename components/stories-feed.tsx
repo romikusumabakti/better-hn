@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, Loader2, SearchX } from "lucide-react";
+import { AlertCircle, Loader2, RefreshCw, SearchX } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
@@ -13,7 +13,7 @@ import { StoryCard } from "@/components/story-card";
 import { StorySkeleton } from "@/components/story-skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
 import { scoreStories } from "@/lib/hn-api";
-import { isWindows } from "@/lib/utils";
+import { cn, isWindows } from "@/lib/utils";
 
 const DEFAULT_FILTERS: FilterState = {
 	alpha: 0.8,
@@ -235,6 +235,7 @@ export function StoriesFeed() {
 			} else if ((e.key === "o" || e.key === "Enter") && activeIndex >= 0) {
 				const story = visible[activeIndex];
 				if (story?.url) window.open(story.url, "_blank", "noopener,noreferrer");
+				else if (story) router.push(`/story/${story.id}`);
 			} else if (e.key === "c" && activeIndex >= 0) {
 				const story = visible[activeIndex];
 				if (story) router.push(`/story/${story.id}`);
@@ -304,10 +305,25 @@ export function StoriesFeed() {
 						className="mx-auto w-full max-w-4xl flex-1 space-y-4 px-4 pt-4 pb-24 sm:pt-6 sm:pb-8"
 					>
 						{error && (
-							<div className="flex items-center gap-2 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+							<div className="flex flex-wrap items-center gap-3 rounded-xl border border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
 								<AlertCircle className="h-4 w-4 shrink-0" />
-								Failed to load stories. Check your connection and try
-								refreshing.
+								<span className="flex-1">
+									Failed to load stories. Check your connection and try again.
+								</span>
+								<button
+									type="button"
+									onClick={() => mutate()}
+									disabled={isValidating}
+									className="inline-flex shrink-0 items-center gap-1.5 rounded-lg border border-destructive/30 px-3 py-1.5 font-medium transition-colors hover:bg-destructive/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive/50 disabled:pointer-events-none disabled:opacity-50"
+								>
+									<RefreshCw
+										className={cn(
+											"h-3.5 w-3.5",
+											isValidating && "animate-spin",
+										)}
+									/>
+									Retry
+								</button>
 							</div>
 						)}
 
