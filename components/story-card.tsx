@@ -28,7 +28,7 @@ function HighlightedText({ text, query }: { text: string; query: string }) {
 		nodes.push(
 			<mark
 				key={m.index}
-				className="rounded-sm bg-amber-200/80 px-0.5 text-foreground not-italic dark:bg-amber-500/35"
+				className="rounded-sm bg-highlight px-0.5 text-foreground not-italic"
 			>
 				{m[0]}
 			</mark>,
@@ -126,7 +126,9 @@ export function StoryCard({
 					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 					aria-labelledby={`story-title-${story.id}`}
 					onClick={onVisit}
-				/>
+				>
+					<span className="sr-only">{story.title}</span>
+				</a>
 			) : (
 				<Link
 					href={`/story/${story.id}`}
@@ -134,7 +136,9 @@ export function StoryCard({
 					className="absolute inset-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 					aria-labelledby={`story-title-${story.id}`}
 					onClick={onVisit}
-				/>
+				>
+					<span className="sr-only">{story.title}</span>
+				</Link>
 			)}
 
 			{/* External link indicator */}

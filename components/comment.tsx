@@ -33,6 +33,14 @@ export function Comment({ comment, depth }: CommentProps) {
 	return (
 		<div
 			data-collapsed={collapsed ? "" : undefined}
+			style={
+				depth === 0
+					? ({
+							contentVisibility: "auto",
+							containIntrinsicSize: "auto 160px",
+						} as React.CSSProperties)
+					: undefined
+			}
 			className={cn(
 				depth > 0 && `border-l pl-3 sm:pl-4 ${depthBorder}`,
 				depth > 0 && depth <= 4 && "ml-3 sm:ml-5",
@@ -61,6 +69,7 @@ export function Comment({ comment, depth }: CommentProps) {
 				<time
 					dateTime={new Date(comment.time * 1000).toISOString()}
 					className="text-muted-foreground/60"
+					suppressHydrationWarning
 				>
 					{formatTime(hoursAgo)}
 				</time>
