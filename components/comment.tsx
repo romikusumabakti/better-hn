@@ -98,12 +98,12 @@ export function Comment({ comment, depth }: CommentProps) {
 				</span>
 				<time
 					dateTime={new Date(comment.time * 1000).toISOString()}
-					className="text-muted-foreground/60"
+					className="text-muted-foreground"
 				>
 					{formatTime(hoursAgo)}
 				</time>
 				{collapsed && comment.children.length > 0 && (
-					<span className="text-muted-foreground/50">
+					<span className="text-muted-foreground">
 						[{comment.children.length}{" "}
 						{comment.children.length === 1 ? "reply" : "replies"}]
 					</span>

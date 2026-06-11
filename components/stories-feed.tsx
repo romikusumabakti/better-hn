@@ -14,7 +14,7 @@ import { StoryCard } from "@/components/story-card";
 import { StorySkeleton } from "@/components/story-skeleton";
 import type { HNStory, ScoredStory } from "@/lib/hn-api";
 import { scoreStories } from "@/lib/hn-api";
-import { cn, isWindows } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 const DEFAULT_FILTERS: FilterState = {
 	alpha: 0.8,
@@ -408,34 +408,14 @@ export function StoriesFeed() {
 							</p>
 						)}
 						{visible.length > 0 && (
-							<div
-								className="hidden items-center justify-center gap-x-5 pb-8 pt-3 text-xs text-muted-foreground/60 select-none sm:flex"
-								aria-hidden
-							>
-								<span>
-									<kbd>j</kbd> / <kbd>k</kbd> navigate
-								</span>
-								<span>
-									<kbd>o</kbd> open link
-								</span>
-								<span>
-									<kbd>c</kbd> comments
-								</span>
-								<span>
-									<kbd>f</kbd> filters
-								</span>
-								<span>
-									<kbd suppressHydrationWarning>
-										{typeof navigator !== "undefined" && !isWindows()
-											? "⌘"
-											: "Ctrl"}
-										K
-									</kbd>{" "}
-									search
-								</span>
-								<span>
-									<kbd>?</kbd> help
-								</span>
+							<div className="hidden justify-center pb-8 pt-3 sm:flex">
+								<button
+									type="button"
+									onClick={() => setHelpOpen(true)}
+									className="rounded text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+								>
+									Press <kbd>?</kbd> for keyboard shortcuts
+								</button>
 							</div>
 						)}
 					</main>

@@ -63,9 +63,11 @@
   to   { translate: 0; }
 }
 
-@keyframes nav-fill {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(0.9); }
+/* Indeterminate sweep — navigation duration is unknown, so a moving chunk is
+   more honest than faking progress toward a fixed percentage. */
+@keyframes nav-indeterminate {
+  from { transform: translateX(-100%) scaleX(0.4); }
+  to   { transform: translateX(250%) scaleX(0.4); }
 }
 
 @keyframes panel-up {
@@ -380,7 +382,7 @@
   }
 
   .nav-progress[data-state="active"] {
-    animation: nav-fill 8s cubic-bezier(0.05, 0.5, 0.1, 1) forwards;
+    animation: nav-indeterminate 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   }
 
   .nav-progress[data-state="complete"] {
@@ -629,6 +631,11 @@
     .nav-progress {
       animation: none;
       opacity: 0.6;
+    }
+    /* No sweep animation here, so force the bar visible (base state is
+       scaleX(0)) — otherwise reduced-motion users get no loading signal. */
+    .nav-progress[data-state="active"] {
+      transform: scaleX(1);
     }
 
     ::view-transition-old(*),

@@ -66,12 +66,14 @@ function ScoreBadge({ score }: { score: number }) {
 
 	return (
 		<span
+			title="Ranking score — points weighted by freshness"
 			className={cn(
 				"inline-flex items-center gap-1 font-mono text-xs tabular-nums",
 				cls,
 			)}
 		>
 			{trending && <TrendingUp className="h-2.5 w-2.5" aria-hidden />}
+			<span className="sr-only">Ranking score: </span>
 			{score.toFixed(1)}
 		</span>
 	);
@@ -156,7 +158,7 @@ export function StoryCard({
 			<div className="flex gap-3 p-4">
 				{/* Rank */}
 				<div className="flex shrink-0">
-					<span className="mt-0.5 w-6 text-right font-mono text-xs font-medium text-muted-foreground/70">
+					<span className="mt-0.5 w-6 text-right font-mono text-xs font-medium text-muted-foreground">
 						{rank}
 					</span>
 				</div>
@@ -188,25 +190,18 @@ export function StoryCard({
 						className="text-fluid-card-title font-semibold text-balance text-foreground"
 						style={{ viewTransitionName: `story-title-${story.id}` }}
 					>
-						{story.url ? (
-							<a
-								href={story.url}
-								target="_blank"
-								rel="noopener noreferrer"
-								onClick={onVisit}
-								className="relative z-10 block transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-							>
-								<HighlightedText text={story.title} query={query} />
+						{/* Title is not its own link — the stretched overlay link above
+						    handles navigation, so a second <a> to the same target would
+						    just be redundant link-soup for screen readers. */}
+						<span className="transition-colors group-hover:text-primary">
+							<HighlightedText text={story.title} query={query} />
+							{story.url && (
 								<ArrowUpRight
-									className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/50"
+									className="mb-0.5 ml-1 inline h-3.5 w-3.5 text-muted-foreground/60"
 									aria-hidden
 								/>
-							</a>
-						) : (
-							<span className="transition-colors group-hover:text-primary">
-								<HighlightedText text={story.title} query={query} />
-							</span>
-						)}
+							)}
+						</span>
 					</h2>
 
 					{/* Meta row */}
