@@ -52,7 +52,9 @@ export function ShortcutsHelp({ open, onClose }: ShortcutsHelpProps) {
 				<h2 className="text-sm font-semibold text-foreground">
 					Keyboard shortcuts
 				</h2>
-				<kbd className="hidden text-xs text-muted-foreground sm:inline">esc</kbd>
+				<kbd className="hidden text-xs text-muted-foreground sm:inline">
+					esc
+				</kbd>
 			</div>
 			<ul className="p-2">
 				{SHORTCUTS.map((s) => (

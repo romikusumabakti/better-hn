@@ -235,14 +235,15 @@ export default async function UserPage({
 							</div>
 						</div>
 
-						{!user.about && (!user.submitted || user.submitted.length === 0) && (
-						<div className="mt-5 border-t border-border pt-5 flex items-center gap-2 text-sm text-muted-foreground/60">
-							<Ghost className="h-4 w-4 shrink-0" />
-							No public content.
-						</div>
-					)}
+						{!user.about &&
+							(!user.submitted || user.submitted.length === 0) && (
+								<div className="mt-5 border-t border-border pt-5 flex items-center gap-2 text-sm text-muted-foreground/60">
+									<Ghost className="h-4 w-4 shrink-0" />
+									No public content.
+								</div>
+							)}
 
-					{user.about && (
+						{user.about && (
 							<div className="mt-5 border-t border-border pt-5">
 								<p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
 									About

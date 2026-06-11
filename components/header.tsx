@@ -57,8 +57,7 @@ function ThemeMenu() {
 	}, [open]);
 
 	const current = mounted ? (theme ?? "system") : "system";
-	const CurrentIcon =
-		THEMES.find((t) => t.value === current)?.Icon ?? Monitor;
+	const CurrentIcon = THEMES.find((t) => t.value === current)?.Icon ?? Monitor;
 
 	return (
 		<div ref={wrapRef} className="relative">

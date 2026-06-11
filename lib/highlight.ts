@@ -32,7 +32,7 @@ function getHighlighter(): Promise<Highlighter> {
 	return _hl;
 }
 
-function detectLang(code: string): string {
+export function detectLang(code: string): string {
 	const t = code.trim();
 	if (
 		/^\s*(from \S+ import |import \w|def |class \w+:|if __name__)/.test(t) ||
