@@ -26,9 +26,9 @@ const PAGE_SIZE = 30;
 
 const fetcher = (url: string) => fetch(url).then((r) => r.json());
 
-function parseFiltersFromURL(
-	sp: ReturnType<typeof useSearchParams>,
-): Partial<FilterState> {
+function parseFiltersFromURL(sp: {
+	get(name: string): string | null;
+}): Partial<FilterState> {
 	const out: Partial<FilterState> = {};
 	const alpha = parseFloat(sp.get("alpha") ?? "");
 	if (!Number.isNaN(alpha) && alpha >= 0.1 && alpha <= 2.0) out.alpha = alpha;
@@ -47,6 +47,9 @@ export function StoriesFeed() {
 	const activeRef = useRef<HTMLLIElement | null>(null);
 	const sentinelRef = useRef<HTMLDivElement | null>(null);
 	const urlUpdateTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	// Last query string we read from / wrote to the URL. Lets the sync effect
+	// below skip our own history writes (and StrictMode's double-invoke).
+	const lastSP = useRef(searchParams.toString());
 
 	// URL params take precedence over localStorage on initial load
 	const hasURLParams = useRef(
@@ -77,6 +80,30 @@ export function StoriesFeed() {
 			if (stored.length > 0) setVisitedIds(new Set(stored));
 		} catch {}
 	}, []);
+
+	// Sync filters when the URL changes externally — clicking a domain link
+	// (/?q=domain), the logo (/), or browser back/forward. Without this, the
+	// list keeps rendering stale `filters` because state is only seeded from the
+	// URL once at mount. `lastSP` skips our own history writes (see below) and
+	// StrictMode's double-invoke, so this never fights handleFiltersChange.
+	const spString = searchParams.toString();
+	// biome-ignore lint/correctness/useExhaustiveDependencies: searchParams tracked via spString
+	useEffect(() => {
+		if (spString === lastSP.current) return;
+		lastSP.current = spString;
+		const fromURL: FilterState = {
+			...DEFAULT_FILTERS,
+			...parseFiltersFromURL(searchParams),
+		};
+		setFilters((prev) =>
+			prev.alpha === fromURL.alpha &&
+			prev.minScore === fromURL.minScore &&
+			prev.query === fromURL.query
+				? prev
+				: fromURL,
+		);
+		setPage(1);
+	}, [spString]);
 
 	const [filterOpen, setFilterOpen] = useState(false);
 	const [paletteOpen, setPaletteOpen] = useState(false);
@@ -164,29 +191,31 @@ export function StoriesFeed() {
 		}
 	}, [isLoading]);
 
-	const handleFiltersChange = useCallback(
-		(next: FilterState) => {
-			setFilters(next);
-			setPage(1);
-			try {
-				localStorage.setItem("hn-filters", JSON.stringify(next));
-			} catch {}
+	const handleFiltersChange = useCallback((next: FilterState) => {
+		setFilters(next);
+		setPage(1);
+		try {
+			localStorage.setItem("hn-filters", JSON.stringify(next));
+		} catch {}
 
-			// Debounce URL update (avoids rapid pushes while typing in query)
-			if (urlUpdateTimer.current) clearTimeout(urlUpdateTimer.current);
-			urlUpdateTimer.current = setTimeout(() => {
-				const params = new URLSearchParams();
-				if (next.alpha !== DEFAULT_FILTERS.alpha)
-					params.set("alpha", String(next.alpha));
-				if (next.minScore !== DEFAULT_FILTERS.minScore)
-					params.set("min", String(next.minScore));
-				if (next.query) params.set("q", next.query);
-				const qs = params.toString();
-				router.replace(qs ? `/?${qs}` : "/", { scroll: false });
-			}, 300);
-		},
-		[router],
-	);
+		// Debounce URL update (avoids rapid writes while typing in query).
+		// history.replaceState (not router.replace) keeps this a shallow query
+		// update: no RSC navigation, and it reliably clears the URL on reset in
+		// prod where router.replace to the prerendered "/" gets swallowed.
+		if (urlUpdateTimer.current) clearTimeout(urlUpdateTimer.current);
+		urlUpdateTimer.current = setTimeout(() => {
+			const params = new URLSearchParams();
+			if (next.alpha !== DEFAULT_FILTERS.alpha)
+				params.set("alpha", String(next.alpha));
+			if (next.minScore !== DEFAULT_FILTERS.minScore)
+				params.set("min", String(next.minScore));
+			if (next.query) params.set("q", next.query);
+			const qs = params.toString();
+			// Mark as a self-write so the sync effect skips it.
+			lastSP.current = qs;
+			window.history.replaceState(null, "", qs ? `?${qs}` : "/");
+		}, 300);
+	}, []);
 
 	const activeFilterCount =
 		(filters.alpha !== DEFAULT_FILTERS.alpha ? 1 : 0) +
