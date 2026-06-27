@@ -187,7 +187,7 @@ export function StoryCard({
 
 					<h2
 						id={`story-title-${story.id}`}
-						className="text-fluid-card-title font-semibold text-balance text-foreground"
+						className="pointer-events-none text-fluid-card-title font-semibold text-balance text-foreground"
 						style={{ viewTransitionName: `story-title-${story.id}` }}
 					>
 						{/* Title is not its own link — the stretched overlay link above
