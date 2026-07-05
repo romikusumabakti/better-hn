@@ -180,14 +180,18 @@ export function FilterPanel({
 							</span>
 						</div>
 						<Slider
+							// Base UI Slider measures the DOM on mount to place the thumb;
+							// remount when the popover opens so it measures a visible layout.
+							key={open ? "alpha-open" : "alpha-closed"}
 							aria-labelledby="alpha-label"
 							min={0.1}
 							max={2.0}
 							step={0.05}
 							value={[filters.alpha]}
-							onValueChange={([v]) =>
-								onChange({ ...filters, alpha: Number(v.toFixed(2)) })
-							}
+							onValueChange={(value) => {
+								const v = Array.isArray(value) ? value[0] : value;
+								onChange({ ...filters, alpha: Number(v.toFixed(2)) });
+							}}
 							className="w-full"
 						/>
 						<div className="flex justify-between text-xs text-muted-foreground">
@@ -230,14 +234,16 @@ export function FilterPanel({
 							</span>
 						</div>
 						<Slider
+							key={open ? "min-score-open" : "min-score-closed"}
 							aria-labelledby="min-score-label"
 							min={0}
 							max={scoreMax}
 							step={0.5}
 							value={[filters.minScore]}
-							onValueChange={([v]) =>
-								onChange({ ...filters, minScore: Number(v.toFixed(1)) })
-							}
+							onValueChange={(value) => {
+								const v = Array.isArray(value) ? value[0] : value;
+								onChange({ ...filters, minScore: Number(v.toFixed(1)) });
+							}}
 							className="w-full"
 						/>
 						<div className="flex justify-between text-xs text-muted-foreground">
