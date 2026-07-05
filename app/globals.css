@@ -161,6 +161,7 @@
     font-family: var(--font-geist-sans, system-ui, sans-serif);
     min-height: 100dvh;
     scrollbar-gutter: stable;
+    overscroll-behavior-y: contain;
   }
 
   * {
